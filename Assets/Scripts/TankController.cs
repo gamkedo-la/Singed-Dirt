@@ -9,7 +9,7 @@ public class TankController : MonoBehaviour {
 	public GameObject projectilePrefab;
 	public Transform shotSource;
 	public float shotPower = 30.0f;
-	public Text hud;
+
 	public Transform turret;
 	public Transform playerCameraSpot;
 
@@ -23,9 +23,29 @@ public class TankController : MonoBehaviour {
 	public GameObject liveProjectile;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		horizontalTurret = GetComponentInChildren<HorizontalTurretMover> ();
 		verticalTurret = GetComponentInChildren<VerticalTurretMover> ();
+	}
+
+	public float HorizAngle(){
+		return horizontalTurret.aimHorizontal;
+	}
+
+	public float VertAngle(){
+		return verticalTurret.aimVertical;
+	}
+
+	public float ShotPower(){
+		return shotPower;
+	}
+
+	public void SleepControls(bool toSleep){
+		bool isEnabled = (toSleep == false);
+		Debug.Log ("isEnabled = " + isEnabled);
+		horizontalTurret.enabled = isEnabled;
+		verticalTurret.enabled = isEnabled;
+		this.enabled = isEnabled;
 	}
 	
 	// Update is called once per frame
@@ -42,11 +62,6 @@ public class TankController : MonoBehaviour {
 		// These two lines stay together
 		turret.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up) *
 		Quaternion.AngleAxis (verticalTurret.aimVertical, Vector3.right);
-
-		hud.text = 
-		"Heading: " + horizontalTurret.aimHorizontal + "degrees\n" +
-		"Elevation: " + verticalTurret.aimVertical + " degrees\n" +
-		"Muzzle Velocity: " + shotPower + "m/s";
 
 		// Camera look at code
 		playerCameraSpot.position = transform.position - transform.forward * 2.0f + Vector3.up * 1.5f;
