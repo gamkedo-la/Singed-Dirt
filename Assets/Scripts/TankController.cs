@@ -9,6 +9,7 @@ public class TankController : MonoBehaviour {
 	public GameObject projectilePrefab;
 	public Transform shotSource;
 	public float shotPower = 30.0f;
+	public float showPowerModifier = 10.0f;
 
 	public Transform turret;
 	public Transform playerCameraSpot;
@@ -55,6 +56,17 @@ public class TankController : MonoBehaviour {
 			liveProjectile.transform.position = shotSource.position;
 			rb = liveProjectile.GetComponent<Rigidbody> ();
 			rb.AddForce (shotSource.forward * shotPower);
+		}
+
+		if (Input.GetKeyDown (KeyCode.LeftBracket)) {
+			shotPower -= showPowerModifier;
+			if (shotPower <= 0.0f) {
+				shotPower = 0.0f;
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.RightBracket)) {
+			shotPower += showPowerModifier;
 		}
 
 		transform.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up);

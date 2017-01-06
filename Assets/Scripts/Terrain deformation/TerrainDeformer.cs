@@ -73,6 +73,7 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
         int posXInTerrain = (int) xPos;
         int posYInTerrain = (int) yPos;
 
+		// ensure not trying to deform terrain outside of the bounds of the mesh
         int xMin = Mathf.Max(0, posXInTerrain - radius);
         int xMax = Mathf.Min(heightMapWidth , posXInTerrain + radius);
         int yMin = Mathf.Max(0, posYInTerrain - radius);
@@ -95,12 +96,14 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
         float offsetX = Random.Range(0f, 10000f);
         float offsetY = Random.Range(0f, 10000f);
 
+		// this just figures out how much to affect the terrain
         for (int i = 0; i < m_xSize; i++)
         {
             float sampleXPos = i - xMinToCentre + posXInTerrain;
 
             for (int j = 0; j < m_ySize; j++)
             {
+				// how far away is each coord from impact point
                 float sampleYPos = j - yMinToCentre + posYInTerrain;
                 float xDiff = (sampleXPos - xPos) * m_terrainData.heightmapScale.x;
                 float yDiff = (sampleYPos - yPos) * m_terrainData.heightmapScale.z;
