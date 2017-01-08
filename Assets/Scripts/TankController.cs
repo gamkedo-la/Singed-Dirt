@@ -58,14 +58,14 @@ public class TankController : MonoBehaviour {
 			rb.AddForce (shotSource.forward * shotPower);
 		}
 
-		if (Input.GetKeyDown (KeyCode.LeftBracket)) {
+		if (Input.GetKey (KeyCode.LeftBracket)) {
 			shotPower -= showPowerModifier;
 			if (shotPower <= 0.0f) {
 				shotPower = 0.0f;
 			}
 		}
 
-		if (Input.GetKeyDown (KeyCode.RightBracket)) {
+		if (Input.GetKey (KeyCode.RightBracket)) {
 			shotPower += showPowerModifier;
 		}
 

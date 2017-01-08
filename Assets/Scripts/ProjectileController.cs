@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour {
 
+	Terrain terrain;
 	// Use this for initialization
 	void Start () {
-		
+		terrain = Terrain.activeTerrain;
 	}
 
 	void OnCollisionEnter(Collision coll){
@@ -17,10 +18,7 @@ public class ProjectileController : MonoBehaviour {
 	void Update () {
 		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
 		if (transform.position.y < terrainY) {
-			Debug.Log ("Ball tried to go underground but we stopped it!");
-			Vector3 tempV3 = transform.position;
-			tempV3.y = terrainY;
-			transform.position = tempV3;
+			Destroy (gameObject);
 		}
 	}
 }
