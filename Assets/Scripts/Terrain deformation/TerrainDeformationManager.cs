@@ -148,6 +148,13 @@ public class TerrainDeformationManager : MonoBehaviour
         }
     }
 
+	public void ApplyDeform(TerrainDeformer tdScript, Vector3 where){
+		Debug.Log ("ApplyDeform got called");
+		if (m_allowErosion)
+			StartCoroutine(TurnOnErosion());
+		tdScript.DeformTerrain (m_terrain, where);
+	}
+
 
     private IEnumerator TurnOnErosion()
     {
@@ -161,6 +168,7 @@ public class TerrainDeformationManager : MonoBehaviour
 
     private void OnDestroy()
     {
+		Debug.Log ("OnDestroy for terrain got called");
         m_terrainData.SetHeights(0, 0, m_originalHeights);
         m_terrainData.SetAlphamaps(0, 0, m_originalAlphaMaps);
     }

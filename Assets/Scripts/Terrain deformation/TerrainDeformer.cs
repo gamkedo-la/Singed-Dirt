@@ -35,9 +35,17 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
 
     void Awake()
     {
-        m_rigidbody = GetComponent<Rigidbody>();
+		StoreRB ();
     }
 
+	public void StoreRB(){
+		m_rigidbody = GetComponent<Rigidbody>();
+		if (m_rigidbody == null) {
+			Debug.Log ("no rigibody on " + gameObject.name);
+		} else {
+			Debug.Log ("rigid body was found for " + gameObject.name);
+		}
+	}
 
     public void DeformTerrain(Terrain terrain, Vector3 position)
     {
@@ -209,8 +217,15 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
 
     private IEnumerator DeformIncrementally(float[,] sampleHeights, float[,] sampleScarBlend)
     {
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        gameObject.GetComponent<Collider>().enabled = false;
+		MeshRenderer tempMR = gameObject.GetComponent<MeshRenderer> ();
+		if (tempMR != null) {
+			tempMR.enabled = false;
+		}
+
+		Collider tempCO = gameObject.GetComponent<Collider> ();
+		if (tempCO != null) {
+			tempCO.enabled = false;
+		}
 
         float startTime = Time.time;
         float duration = 0;
