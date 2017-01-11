@@ -18,6 +18,9 @@ public class TankController : MonoBehaviour {
 	Rigidbody rb;
 	HorizontalTurretMover horizontalTurret;
 	VerticalTurretMover verticalTurret;
+	int playerNumber;
+	List<Transform> spawnPoints;
+	Transform spawnPoint;
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -25,8 +28,30 @@ public class TankController : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
+		spawnPoints = new List<Transform> ();
 		horizontalTurret = GetComponentInChildren<HorizontalTurretMover> ();
 		verticalTurret = GetComponentInChildren<VerticalTurretMover> ();
+		if (name == "PlayerOne") {
+			GameObject tempGO = GameObject.Find ("PlayerOneSpawnPoints");
+			if (tempGO != null) {
+				foreach (Transform child in tempGO.transform) {
+					spawnPoints.Add (child);
+				}
+			} else {
+				Debug.Log ("Can't find the spawn points for player one.");
+			}
+		} else if (name == "PlayerTwo") {
+			GameObject tempGO = GameObject.Find ("PlayerTwoSpawnPoints");
+			if (tempGO != null) {
+				foreach (Transform child in tempGO.transform) {
+					spawnPoints.Add (child);
+				}
+			} else {
+				Debug.Log ("Can't find the spawn points for player two.");
+			}
+		}
+		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
+		transform.position = spawnPoint.position;
 	}
 
 	public float HorizAngle(){
