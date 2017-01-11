@@ -73,11 +73,23 @@ public class TankController : MonoBehaviour {
 		verticalTurret.enabled = isEnabled;
 		this.enabled = isEnabled;
 	}
+
+	void OnTriggerEnter(Collider other){
+		ProjectileController tempPC = other.GetComponent<ProjectileController> ();
+		if (tempPC != null) {
+			if (tempPC.name != name + "Projectile") {
+				Destroy (other);
+				Destroy (gameObject);
+			}
+
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
+			liveProjectile.name = name + "Projectile";
 			liveProjectile.transform.position = shotSource.position;
 			rb = liveProjectile.GetComponent<Rigidbody> ();
 			rb.AddForce (shotSource.forward * shotPower);
