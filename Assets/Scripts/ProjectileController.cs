@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProjectileController : MonoBehaviour {
 
 	Terrain terrain;
+	public GameObject explosion;
 	// Use this for initialization
 	void Start () {
 		terrain = Terrain.activeTerrain;
@@ -20,5 +21,10 @@ public class ProjectileController : MonoBehaviour {
 		if (transform.position.y < terrainY) {
 			Destroy (gameObject);
 		}
+	}
+
+	void OnDestroy(){
+		GameObject fire = Instantiate (explosion, gameObject.transform.position, Quaternion.identity) as GameObject;
+		Destroy (fire, 5);
 	}
 }
