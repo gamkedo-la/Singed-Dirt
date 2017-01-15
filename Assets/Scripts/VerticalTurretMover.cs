@@ -14,7 +14,8 @@ public class VerticalTurretMover : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		aimVertical += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeed;
-
+		if (TurnManager.instance.GetGameOverState () == false) {
+			aimVertical += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeed;
+		}
 	}
 }

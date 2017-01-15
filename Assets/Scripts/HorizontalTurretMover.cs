@@ -14,7 +14,8 @@ public class HorizontalTurretMover : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeed;
-
+		if (TurnManager.instance.GetGameOverState () == false) {
+			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeed;
+		}
 	}
 }

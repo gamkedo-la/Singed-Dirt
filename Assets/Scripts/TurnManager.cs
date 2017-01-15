@@ -10,6 +10,7 @@ public class TurnManager : MonoBehaviour {
 
 	public static TurnManager instance;
 	public Text hud;
+	public Text gameOverText;
 	public List<TankController> tanks;
 
 	// Private variables
@@ -20,9 +21,19 @@ public class TurnManager : MonoBehaviour {
 	float verticalTurret;
 	float shotPower;
 	int tankTurnIndex = 0;
+	bool gameOverState = false;
 
 	void Awake(){
 		instance = this;
+		gameOverText.enabled = false;
+	}
+
+	public void GameOverMan(bool isGameOver){
+		gameOverState = isGameOver;
+	}
+
+	public bool GetGameOverState(){
+		return gameOverState;
 	}
 
 	// Use this for initialization
@@ -48,7 +59,10 @@ public class TurnManager : MonoBehaviour {
 			tankTurnIndex = 0;
 			Debug.Log ("Everyone had a turn.");
 		}
-		SetActiveTank (tanks [tankTurnIndex]);
+		if (gameOverState == false) {
+			SetActiveTank (tanks [tankTurnIndex]);
+		}
+
 	}
 
 	void GetCurrentTankHud(){
@@ -64,5 +78,10 @@ public class TurnManager : MonoBehaviour {
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + "m/s";
+		if (gameOverState == true) {
+			gameOverText.enabled = true;
+		} else {
+			gameOverText.enabled = false;
+		}
 	}
 }

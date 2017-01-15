@@ -78,6 +78,7 @@ public class TankController : MonoBehaviour {
 		ProjectileController tempPC = other.GetComponent<ProjectileController> ();
 		if (tempPC != null) {
 			if (tempPC.name != name + "Projectile") {
+				TurnManager.instance.GameOverMan (true);
 				Destroy (other);
 				Destroy (gameObject);
 			}
@@ -87,23 +88,25 @@ public class TankController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
-			liveProjectile.name = name + "Projectile";
-			liveProjectile.transform.position = shotSource.position;
-			rb = liveProjectile.GetComponent<Rigidbody> ();
-			rb.AddForce (shotSource.forward * shotPower);
-		}
-
-		if (Input.GetKey (KeyCode.LeftBracket)) {
-			shotPower -= showPowerModifier;
-			if (shotPower <= 0.0f) {
-				shotPower = 0.0f;
+		if (TurnManager.instance.GetGameOverState () == false) {
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
+				liveProjectile.name = name + "Projectile";
+				liveProjectile.transform.position = shotSource.position;
+				rb = liveProjectile.GetComponent<Rigidbody> ();
+				rb.AddForce (shotSource.forward * shotPower);
 			}
-		}
 
-		if (Input.GetKey (KeyCode.RightBracket)) {
-			shotPower += showPowerModifier;
+			if (Input.GetKey (KeyCode.LeftBracket)) {
+				shotPower -= showPowerModifier;
+				if (shotPower <= 0.0f) {
+					shotPower = 0.0f;
+				}
+			}
+
+			if (Input.GetKey (KeyCode.RightBracket)) {
+				shotPower += showPowerModifier;
+			}
 		}
 
 		transform.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up);
