@@ -1,0 +1,214 @@
+fileFormatVersion: 2
+guid: 69ea2038b36713746abab044c221c93d
+timeCreated: 1484505524
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: barrel
+    100002: chaingun002
+    100004: chaingun003
+    100006: chaingun004
+    100008: chaingun1
+    100010: Cylinder001
+    100012: Cylinder002
+    100014: ear left
+    100016: exhaust
+    100018: EYE LEFT
+    100020: EYE RIGHT
+    100022: Line002
+    100024: Line003
+    100026: Line004
+    100028: Line005
+    100030: Line007
+    100032: Line012
+    100034: Line013
+    100036: Line014
+    100038: Line016
+    100040: Line017
+    100042: Line019
+    100044: muffler
+    100046: stache
+    100048: stache001
+    100050: stache002
+    100052: //RootNode
+    100054: tank_turret_updown
+    100056: teeth
+    400000: barrel
+    400002: chaingun002
+    400004: chaingun003
+    400006: chaingun004
+    400008: chaingun1
+    400010: Cylinder001
+    400012: Cylinder002
+    400014: ear left
+    400016: exhaust
+    400018: EYE LEFT
+    400020: EYE RIGHT
+    400022: Line002
+    400024: Line003
+    400026: Line004
+    400028: Line005
+    400030: Line007
+    400032: Line012
+    400034: Line013
+    400036: Line014
+    400038: Line016
+    400040: Line017
+    400042: Line019
+    400044: muffler
+    400046: stache
+    400048: stache001
+    400050: stache002
+    400052: //RootNode
+    400054: tank_turret_updown
+    400056: teeth
+    2300000: barrel
+    2300002: chaingun002
+    2300004: chaingun003
+    2300006: chaingun004
+    2300008: chaingun1
+    2300010: Cylinder001
+    2300012: Cylinder002
+    2300014: ear left
+    2300016: exhaust
+    2300018: EYE LEFT
+    2300020: EYE RIGHT
+    2300022: Line002
+    2300024: Line003
+    2300026: Line004
+    2300028: Line005
+    2300030: Line007
+    2300032: Line012
+    2300034: Line013
+    2300036: Line014
+    2300038: Line016
+    2300040: Line017
+    2300042: Line019
+    2300044: muffler
+    2300046: stache
+    2300048: stache001
+    2300050: stache002
+    2300052: teeth
+    3300000: barrel
+    3300002: chaingun002
+    3300004: chaingun003
+    3300006: chaingun004
+    3300008: chaingun1
+    3300010: Cylinder001
+    3300012: Cylinder002
+    3300014: ear left
+    3300016: exhaust
+    3300018: EYE LEFT
+    3300020: EYE RIGHT
+    3300022: Line002
+    3300024: Line003
+    3300026: Line004
+    3300028: Line005
+    3300030: Line007
+    3300032: Line012
+    3300034: Line013
+    3300036: Line014
+    3300038: Line016
+    3300040: Line017
+    3300042: Line019
+    3300044: muffler
+    3300046: stache
+    3300048: stache001
+    3300050: stache002
+    3300052: teeth
+    4300000: muffler
+    4300002: stache001
+    4300004: stache002
+    4300006: Line002
+    4300008: Line003
+    4300010: exhaust
+    4300012: Line016
+    4300014: barrel
+    4300016: Cylinder001
+    4300018: Cylinder002
+    4300020: stache
+    4300022: EYE LEFT
+    4300024: EYE RIGHT
+    4300026: Line019
+    4300028: ear left
+    4300030: Line005
+    4300032: Line017
+    4300034: Line012
+    4300036: Line013
+    4300038: Line014
+    4300040: chaingun1
+    4300042: chaingun002
+    4300044: Line007
+    4300046: chaingun004
+    4300048: chaingun003
+    4300050: teeth
+    4300052: Line004
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
