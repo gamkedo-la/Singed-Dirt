@@ -9,7 +9,7 @@ public class TankController : MonoBehaviour {
 	public GameObject projectilePrefab;
 	public Transform shotSource;
 	public float shotPower = 30.0f;
-	public float showPowerModifier = 10.0f;
+	public float shotPowerModifier = 10.0f;
 
 	public Transform turret;
 	public Transform playerCameraSpot;
@@ -21,6 +21,8 @@ public class TankController : MonoBehaviour {
 	int playerNumber;
 	List<Transform> spawnPoints;
 	Transform spawnPoint;
+	bool togglePowerInputAmount;
+	float savedPowerModifier;
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -28,6 +30,8 @@ public class TankController : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
+		togglePowerInputAmount = false;
+		savedPowerModifier = shotPowerModifier;
 		spawnPoints = new List<Transform> ();
 		horizontalTurret = GetComponentInChildren<HorizontalTurretMover> ();
 		verticalTurret = GetComponentInChildren<VerticalTurretMover> ();
@@ -66,6 +70,31 @@ public class TankController : MonoBehaviour {
 		return shotPower;
 	}
 
+	public void InputAdjustPower(float specificPower){
+		shotPower = specificPower;
+	}
+
+	public void DialAdjustPower(int offset){
+		bool isNegative = offset < 0;
+		float tweakAmt = 0.0f;
+		switch (Mathf.FloorToInt(Mathf.Abs (offset))) {
+		case 1:
+			tweakAmt = 5.0f;
+			break;
+		case 2:
+			tweakAmt = 60.0f;
+			break;
+		case 3:
+			tweakAmt = 200.0f;
+			break;
+		}
+		if (isNegative) {
+			shotPower -= tweakAmt;
+		} else {
+			shotPower += tweakAmt;
+		}
+	}
+
 	public void SleepControls(bool toSleep){
 		bool isEnabled = (toSleep == false);
 		Debug.Log ("isEnabled = " + isEnabled);
@@ -89,6 +118,12 @@ public class TankController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (TurnManager.instance.GetGameOverState () == false) {
+			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
+				togglePowerInputAmount = true;
+			}
+			if (Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift)) {
+				togglePowerInputAmount = false;
+			}
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
 				liveProjectile.name = name + "Projectile";
@@ -96,17 +131,30 @@ public class TankController : MonoBehaviour {
 				rb = liveProjectile.GetComponent<Rigidbody> ();
 				rb.AddForce (shotSource.forward * shotPower);
 			}
+			if (togglePowerInputAmount == false) {
+				if (Input.GetKey (KeyCode.LeftBracket)) {
+					shotPower -= shotPowerModifier;
+					if (shotPower <= 0.0f) {
+						shotPower = 0.0f;
+					}
+				}
 
-			if (Input.GetKey (KeyCode.LeftBracket)) {
-				shotPower -= showPowerModifier;
-				if (shotPower <= 0.0f) {
-					shotPower = 0.0f;
+				if (Input.GetKey (KeyCode.RightBracket)) {
+					shotPower += shotPowerModifier;
+				}
+			} else {
+				if (Input.GetKeyDown (KeyCode.LeftBracket)) {
+					shotPower -= shotPowerModifier;
+					if (shotPower <= 0.0f) {
+						shotPower = 0.0f;
+					}
+				}
+
+				if (Input.GetKeyDown (KeyCode.RightBracket)) {
+					shotPower += shotPowerModifier;
 				}
 			}
 
-			if (Input.GetKey (KeyCode.RightBracket)) {
-				shotPower += showPowerModifier;
-			}
 		}
 
 		transform.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up);

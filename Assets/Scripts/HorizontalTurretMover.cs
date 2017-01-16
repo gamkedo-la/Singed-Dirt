@@ -9,7 +9,9 @@ public class HorizontalTurretMover : MonoBehaviour {
 	public float aimHorizontal = 45.0f;
 	// Use this for initialization
 	void Start () {
-		
+		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
+		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
+			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
 	}
 	
 	// Update is called once per frame

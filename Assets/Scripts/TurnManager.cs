@@ -12,6 +12,7 @@ public class TurnManager : MonoBehaviour {
 	public Text hud;
 	public Text gameOverText;
 	public List<TankController> tanks;
+	public InputField powerValue;
 
 	// Private variables
 
@@ -53,6 +54,15 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
+	public void TellTankAdjustPower(int power){
+		activeTank.DialAdjustPower (power);
+	}
+
+	public void TellTankSpecificPower(Text power){
+		Debug.Log("power");
+		activeTank.InputAdjustPower (float.Parse(power.text));
+	}
+
 	public void CycleActiveTank(){
 		tankTurnIndex++;
 		if (tankTurnIndex >= tanks.Count) {
@@ -78,6 +88,7 @@ public class TurnManager : MonoBehaviour {
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + "m/s";
+		powerValue.text = "" + shotPower;
 		if (gameOverState == true) {
 			gameOverText.enabled = true;
 		} else {
