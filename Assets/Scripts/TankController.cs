@@ -23,6 +23,7 @@ public class TankController : MonoBehaviour {
 	Transform spawnPoint;
 	bool togglePowerInputAmount;
 	float savedPowerModifier;
+	bool tankReadyToShoot = true;
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -72,6 +73,10 @@ public class TankController : MonoBehaviour {
 
 	public void InputAdjustPower(float specificPower){
 		shotPower = specificPower;
+	}
+
+	public void ReadyToShoot(){
+		tankReadyToShoot = true;
 	}
 
 	public void DialAdjustPower(int offset){
@@ -124,12 +129,13 @@ public class TankController : MonoBehaviour {
 			if (Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift)) {
 				togglePowerInputAmount = false;
 			}
-			if (Input.GetKeyDown (KeyCode.Space)) {
+			if (Input.GetKeyDown (KeyCode.Space) && tankReadyToShoot == true) {
 				liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
 				liveProjectile.name = name + "Projectile";
 				liveProjectile.transform.position = shotSource.position;
 				rb = liveProjectile.GetComponent<Rigidbody> ();
 				rb.AddForce (shotSource.forward * shotPower);
+				tankReadyToShoot = false;
 			}
 			if (togglePowerInputAmount == false) {
 				if (Input.GetKey (KeyCode.LeftBracket)) {

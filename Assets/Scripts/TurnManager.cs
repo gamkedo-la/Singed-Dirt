@@ -52,6 +52,7 @@ public class TurnManager : MonoBehaviour {
 		foreach (TankController eachTank in tanks) {
 			eachTank.SleepControls(eachTank != activeTank);
 		}
+		activeTank.ReadyToShoot ();
 	}
 
 	public void TellTankAdjustPower(int power){
