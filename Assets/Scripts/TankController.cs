@@ -156,6 +156,9 @@ public class TankController : MonoBehaviour {
 			}
 
 		}
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.Quit ();
+		}
 
 		transform.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up);
 
