@@ -172,8 +172,5 @@ public class TankController : MonoBehaviour {
 		turret.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up) *
 		Quaternion.AngleAxis (verticalTurret.aimVertical, Vector3.right);
 
-		// Camera look at code
-		playerCameraSpot.position = transform.position - transform.forward * 2.0f + Vector3.up * 1.5f;
-		playerCameraSpot.LookAt (transform.position + transform.forward * 15.0f);
 	}
 }

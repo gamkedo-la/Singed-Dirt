@@ -55,6 +55,10 @@ public class TurnManager : MonoBehaviour {
 		activeTank.ReadyToShoot ();
 	}
 
+	public TankController GetActiveTank(){
+		return activeTank;
+	}
+
 	public void TellTankAdjustPower(int power){
 		activeTank.DialAdjustPower (power);
 	}

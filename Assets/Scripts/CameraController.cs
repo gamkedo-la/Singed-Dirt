@@ -21,15 +21,33 @@ public class CameraController : MonoBehaviour {
 	float decreaseFactor = 0.0f;
 	Vector3 originalPosition;
 
+	// TODO put these zoom vars into a struct
+	float initZoom = 2.0f;
+	float currZoom;
+	float maxZoom = 4.5f;
+	float zoomIncrement = 0.25f;
+	bool zoomingOut = true;	// Used when 'releasing' the zoom
+
 	// Use this for initialization
 	void Start () {
 //		player = GameObject.Find("Player").GetComponent<TankController>();
 		chaseCameraSpot = transform.position;
+		currZoom = initZoom;
+		Debug.Log ("CameraController script starting in " + gameObject.name);
 	}
 
 	public void SetPlayerCameraFocus (TankController _player){
 		player = _player;
 		playerLocation = player.playerCameraSpot;
+		SetPlayerCameraLookAt (player);
+		Debug.Log ("Setting Player Camera Focus");
+	}
+
+	public void SetPlayerCameraLookAt (TankController _player) {
+		// Camera look at code
+		player.playerCameraSpot.position = player.transform.position - player.transform.forward * currZoom + Vector3.up * 1.5f;
+		player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
+
 	}
 
 	void ShakeCamera(float amount, float dfactor){
@@ -88,5 +106,31 @@ public class CameraController : MonoBehaviour {
 		}
 //		transform.rotation = Quaternion.Slerp (transform.rotation, chaseCameraRot, 0.4f);
 	} // FixedUpdate
+
+	void Update() {
+		if (Input.GetKey (KeyCode.Z)) {
+			if (!zoomingOut) {
+				zoomingOut = true;
+			}
+			if (currZoom < maxZoom) {
+				currZoom += zoomIncrement;
+			} else if (currZoom >= maxZoom) {
+				currZoom = maxZoom;
+			}
+
+			SetPlayerCameraLookAt (TurnManager.instance.GetActiveTank ());
+
+		} else if (zoomingOut) {	// read: "else if Z key not pressed, but still in 'zooming out' mode"
+			if (currZoom > initZoom) {
+				currZoom -= zoomIncrement;
+			} else if (currZoom <= initZoom) {
+				currZoom = initZoom;
+				zoomingOut = false;
+			}
+
+			SetPlayerCameraLookAt (TurnManager.instance.GetActiveTank ());
+
+		}
+	}
 		
 } // end Class
