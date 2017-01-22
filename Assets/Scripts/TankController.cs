@@ -10,6 +10,7 @@ public class TankController : MonoBehaviour {
 	public Transform shotSource;
 	public float shotPower = 30.0f;
 	public float shotPowerModifier = 10.0f;
+	public int hitPoints = 100;
 
 	public Transform turret;
 	public Transform playerCameraSpot;
@@ -29,6 +30,18 @@ public class TankController : MonoBehaviour {
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
 	public GameObject liveProjectile;
 
+	void FindSpawnPointAndAddToList(string playerName)
+	{
+		GameObject tempGO = GameObject.Find (playerName + "SpawnPoints");
+		if (tempGO != null) {
+			foreach (Transform child in tempGO.transform) {
+				spawnPoints.Add (child);
+			}
+		} else {
+			Debug.Log ("Can't find the spawn points for " + playerName + ".");
+		}
+	}
+
 	// Use this for initialization
 	void Awake () {
 		togglePowerInputAmount = false;
@@ -36,25 +49,7 @@ public class TankController : MonoBehaviour {
 		spawnPoints = new List<Transform> ();
 		horizontalTurret = GetComponentInChildren<HorizontalTurretMover> ();
 		verticalTurret = GetComponentInChildren<VerticalTurretMover> ();
-		if (name == "PlayerOne") {
-			GameObject tempGO = GameObject.Find ("PlayerOneSpawnPoints");
-			if (tempGO != null) {
-				foreach (Transform child in tempGO.transform) {
-					spawnPoints.Add (child);
-				}
-			} else {
-				Debug.Log ("Can't find the spawn points for player one.");
-			}
-		} else if (name == "PlayerTwo") {
-			GameObject tempGO = GameObject.Find ("PlayerTwoSpawnPoints");
-			if (tempGO != null) {
-				foreach (Transform child in tempGO.transform) {
-					spawnPoints.Add (child);
-				}
-			} else {
-				Debug.Log ("Can't find the spawn points for player two.");
-			}
-		}
+		FindSpawnPointAndAddToList (name);
 		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
 		transform.position = spawnPoint.position;
 	}
@@ -109,14 +104,38 @@ public class TankController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
+		// NOTE:  Currently, this trigger is entered whenever the cannonball collider
+		// intersects the tank's collider.  At the moment, the tank's collider is 'oversized'.
+		// Some refinement is needed, to make sure the trigger occurs only when the cannonball explodes
+		// Right now, a collision trigger can occur if the tank is situated off the ground (e.g., on a rock), and the
+		// cannonball passes through the collider's box before it hits the ground
+
+		// We can also leave the collider small, and make proximity damage is based purely on
+		// distance thresholds defined somewhere (perhaps the TankController class).  This approach would require 
+		// separate distance tests to see which tanks, if any, the cannonball landed near.
+
 		ProjectileController tempPC = other.GetComponent<ProjectileController> ();
 		if (tempPC != null) {
 			if (tempPC.name != name + "Projectile") {
-				TurnManager.instance.GameOverMan (true);
-				Destroy (other);
-				Destroy (gameObject);
-			}
+				float hitDistToTankCenter = Vector3.Distance (this.transform.position, other.transform.position);
+				Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
 
+				// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
+				// was to plug in some values and come up with a damage computation formula.  The above formula yields:
+				// direct hit (dist = 0m): 100 hit points
+				// Hit dist 5m: about 25 hit points
+				// hit dist 10m: about 1 hit point
+				// The formula is based on a max proximity damage distance of 10m
+				int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
+				hitPoints -= damagePoints;
+				Debug.Log ("Damage done to " + name + ": " + damagePoints + ". Remaining: " + hitPoints);
+
+				if (hitPoints <= 0) {
+					Destroy (other);
+					TurnManager.instance.GameOverMan (true);
+					Destroy (gameObject);
+				}
+			}
 		}
 	}
 	
