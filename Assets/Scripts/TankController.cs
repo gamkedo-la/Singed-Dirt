@@ -66,6 +66,10 @@ public class TankController : MonoBehaviour {
 		return shotPower;
 	}
 
+	public int HitPoints(){
+		return hitPoints;
+	}
+
 	public void InputAdjustPower(float specificPower){
 		Debug.Log ("recieved " + specificPower);
 		shotPower = specificPower;

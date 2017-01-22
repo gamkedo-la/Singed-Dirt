@@ -21,6 +21,7 @@ public class TurnManager : MonoBehaviour {
 	float horizontalTurret;
 	float verticalTurret;
 	float shotPower;
+	int tankHitPoints;
 	int tankTurnIndex = 0;
 	bool gameOverState = false;
 
@@ -92,7 +93,8 @@ public class TurnManager : MonoBehaviour {
 		hud.text = 
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
-			"Muzzle Velocity: " + shotPower + "m/s";
+			"Muzzle Velocity: " + shotPower + "m/s\n" +
+			"HitPoints: " + tankHitPoints;
 		powerValue.text = "" + shotPower;
 		if (gameOverState == true) {
 			gameOverText.enabled = true;
