@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour {
 
 	// Public
 	public Transform playerLocation;
+	public float cameraPositionAbovePlayer = 1.5f;
 	public float explosionViewTime = 3.0f;
 
 	// Private
@@ -45,7 +46,7 @@ public class CameraController : MonoBehaviour {
 
 	public void SetPlayerCameraLookAt (TankController _player) {
 		// Camera look at code
-		player.playerCameraSpot.position = player.transform.position - player.transform.forward * currZoom + Vector3.up * 1.5f;
+		player.playerCameraSpot.position = player.transform.position - player.transform.forward * currZoom + Vector3.up * cameraPositionAbovePlayer;
 		player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
 
 	}

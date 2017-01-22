@@ -64,7 +64,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void TellTankSpecificPower(Text power){
-		Debug.Log("power");
+		Debug.Log("power is " + power.text);
 		activeTank.InputAdjustPower (float.Parse(power.text));
 	}
 

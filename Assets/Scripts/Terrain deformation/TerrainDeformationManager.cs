@@ -166,8 +166,9 @@ public class TerrainDeformationManager : MonoBehaviour
     }
 
 
-    private void OnDestroy()
+	private void OnApplicationQuit()
     {
+		Debug.Log ("called onApplicationQuit");
         m_terrainData.SetHeights(0, 0, m_originalHeights);
         m_terrainData.SetAlphamaps(0, 0, m_originalAlphaMaps);
     }
