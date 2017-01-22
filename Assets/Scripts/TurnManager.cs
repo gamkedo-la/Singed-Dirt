@@ -85,6 +85,7 @@ public class TurnManager : MonoBehaviour {
 		horizontalTurret = activeTank.HorizAngle ();
 		verticalTurret = activeTank.VertAngle ();
 		shotPower = activeTank.ShotPower ();
+		tankHitPoints = activeTank.HitPoints ();
 	}
 	
 	// Update is called once per frame
@@ -96,6 +97,7 @@ public class TurnManager : MonoBehaviour {
 			"Muzzle Velocity: " + shotPower + "m/s\n" +
 			"HitPoints: " + tankHitPoints;
 		powerValue.text = "" + shotPower;
+		Debug.Log ("hitpoints val is " + tankHitPoints);
 		if (gameOverState == true) {
 			gameOverText.enabled = true;
 		} else {
