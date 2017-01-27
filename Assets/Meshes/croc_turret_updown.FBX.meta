@@ -1,0 +1,124 @@
+fileFormatVersion: 2
+guid: c50592ac660f98844aa1e6fe7087ffb8
+timeCreated: 1485550891
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: barrel002
+    100002: croc_tank_turret_updown
+    100004: //RootNode
+    100006: EYE LEFT002
+    100008: EYE RIGHT002
+    100010: eyebrow right002
+    100012: eyebrow002
+    100014: Line034
+    100016: Line036
+    100018: SPIKES
+    100020: turret001
+    400000: barrel002
+    400002: croc_tank_turret_updown
+    400004: //RootNode
+    400006: EYE LEFT002
+    400008: EYE RIGHT002
+    400010: eyebrow right002
+    400012: eyebrow002
+    400014: Line034
+    400016: Line036
+    400018: SPIKES
+    400020: turret001
+    2300000: barrel002
+    2300002: EYE LEFT002
+    2300004: EYE RIGHT002
+    2300006: eyebrow right002
+    2300008: eyebrow002
+    2300010: Line034
+    2300012: Line036
+    2300014: SPIKES
+    2300016: turret001
+    3300000: barrel002
+    3300002: EYE LEFT002
+    3300004: EYE RIGHT002
+    3300006: eyebrow right002
+    3300008: eyebrow002
+    3300010: Line034
+    3300012: Line036
+    3300014: SPIKES
+    3300016: turret001
+    4300000: turret001
+    4300002: Line034
+    4300004: barrel002
+    4300006: EYE LEFT002
+    4300008: EYE RIGHT002
+    4300010: Line036
+    4300012: eyebrow002
+    4300014: eyebrow right002
+    4300016: SPIKES
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
