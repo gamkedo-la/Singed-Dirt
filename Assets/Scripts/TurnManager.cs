@@ -54,6 +54,7 @@ public class TurnManager : MonoBehaviour {
 			eachTank.SleepControls(eachTank != activeTank);
 		}
 		activeTank.ReadyToShoot ();
+		Debug.Log ("hitpoints val is " + activeTank.HitPoints());
 	}
 
 	public TankController GetActiveTank(){
@@ -97,7 +98,7 @@ public class TurnManager : MonoBehaviour {
 			"Muzzle Velocity: " + shotPower + "m/s\n" +
 			"HitPoints: " + tankHitPoints;
 		powerValue.text = "" + shotPower;
-		Debug.Log ("hitpoints val is " + tankHitPoints);
+
 		if (gameOverState == true) {
 			gameOverText.enabled = true;
 		} else {

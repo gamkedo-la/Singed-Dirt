@@ -121,8 +121,12 @@ public class TankController : MonoBehaviour {
 
 		ProjectileController tempPC = other.GetComponent<ProjectileController> ();
 		if (tempPC != null) {
-			if (tempPC.name != name + "Projectile") {
-				float hitDistToTankCenter = Vector3.Distance (this.transform.position, other.transform.position);
+			if (tempPC.name != name + "Projectile" ) {
+				Vector3 cannonballCenterToTankCenter = this.transform.position - other.transform.position;
+				Debug.Log (string.Format ("tank position: {0}, cannonball position: {1}", this.transform.position, other.transform.position));
+				Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
+
+				float hitDistToTankCenter = cannonballCenterToTankCenter.magnitude;
 				Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
 
 				// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
@@ -134,6 +138,13 @@ public class TankController : MonoBehaviour {
 				int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
 				hitPoints -= damagePoints;
 				Debug.Log ("Damage done to " + name + ": " + damagePoints + ". Remaining: " + hitPoints);
+
+				// Do shock displacement
+				rb = GetComponent<Rigidbody> ();
+				Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
+				Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
+				rb.AddForce (rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
+
 
 				if (hitPoints <= 0) {
 					Destroy (other);
