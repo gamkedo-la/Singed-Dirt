@@ -25,9 +25,11 @@ public class TurnManager : MonoBehaviour {
 	int tankTurnIndex = 0;
 	bool gameOverState = false;
 
+
 	void Awake(){
 		instance = this;
 		gameOverText.enabled = false;
+
 	}
 
 	public void GameOverMan(bool isGameOver){

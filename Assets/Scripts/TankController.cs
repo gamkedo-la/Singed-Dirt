@@ -15,6 +15,10 @@ public class TankController : MonoBehaviour {
 	public Transform turret;
 	public Transform playerCameraSpot;
 
+	public GameObject[] upperMeshes;
+	public GameObject[] middleMeshes;
+	public GameObject[] lowerMeshes;
+
 	// Private
 	Rigidbody rb;
 	HorizontalTurretMover horizontalTurret;
@@ -25,6 +29,11 @@ public class TankController : MonoBehaviour {
 	bool togglePowerInputAmount;
 	float savedPowerModifier;
 	bool tankReadyToShoot = true;
+	AvatarSetup tankAvatarScript;
+	int[] playerMeshSetup;
+	int lowerMeshNum;
+	int middleMeshNum;
+	int upperMeshNum;
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -52,6 +61,13 @@ public class TankController : MonoBehaviour {
 		FindSpawnPointAndAddToList (name);
 		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
 		transform.position = spawnPoint.position;
+		lowerMeshNum = PlayerPrefs.GetInt (name + "lowerMeshNum");
+		middleMeshNum = PlayerPrefs.GetInt (name + "middleMeshNum");
+		upperMeshNum = PlayerPrefs.GetInt (name + "upperMeshNum");
+		Debug.Log ("meshes are " + lowerMeshNum + " " + middleMeshNum + " " + upperMeshNum);
+		tankAvatarScript = GetComponent<AvatarSetup> ();
+		tankAvatarScript.SetActiveMeshes (lowerMeshNum, middleMeshNum, upperMeshNum);
+		tankAvatarScript.updateAvatar ();
 	}
 
 	public float HorizAngle(){
@@ -77,6 +93,10 @@ public class TankController : MonoBehaviour {
 
 	public void ReadyToShoot(){
 		tankReadyToShoot = true;
+	}
+
+	public void SetPlayerModels(){
+		
 	}
 
 	public void DialAdjustPower(int offset){
