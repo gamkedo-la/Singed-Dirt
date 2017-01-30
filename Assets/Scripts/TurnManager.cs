@@ -42,20 +42,37 @@ public class TurnManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		TankController [] tankList = GameObject.FindObjectsOfType(typeof(TankController)) as TankController [];
-		tanks = tankList.ToList ();
-		Debug.Log ("Tank count: " + tanks.Count);
-		camController = Camera.main.GetComponent<CameraController> ();
-		SetActiveTank (tanks [tankTurnIndex]);
+		StartCoroutine (ListenForTanks ());
+	}
+
+	IEnumerator ListenForTanks(){
+		bool noTanksYet = true;
+		while (noTanksYet) {
+			TankController [] tankList = GameObject.FindObjectsOfType(typeof(TankController)) as TankController [];
+			if (tankList.Length > 1) {
+				noTanksYet = false;
+				tanks = tankList.ToList ();
+				tanks [0].name = "Player One";
+				tanks [1].name = "Player Two";
+				tanks [0].SetupTank ();
+				tanks [1].SetupTank ();
+				Debug.Log ("Tank count: " + tanks.Count);
+				camController = Camera.main.GetComponent<CameraController> ();
+				SetActiveTank (tanks [tankTurnIndex]);
+			} else {
+				Debug.Log ("Waiting for two tanks...");
+				yield return new WaitForSeconds (0.5f);
+			}
+		}
+		Debug.Log ("Tanks reporting for duty!");
 	}
 
 	void SetActiveTank(TankController tank){
 		activeTank = tank;
 		camController.SetPlayerCameraFocus (tank);
 		foreach (TankController eachTank in tanks) {
-			eachTank.SleepControls(eachTank != activeTank);
+//			eachTank.SleepControls(eachTank != activeTank);
 		}
-		activeTank.ReadyToShoot ();
 		Debug.Log ("hitpoints val is " + activeTank.HitPoints());
 	}
 
@@ -93,6 +110,9 @@ public class TurnManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (activeTank == null) {
+			return;
+		}
 		GetCurrentTankHud ();
 		hud.text = 
 			"Heading: " + horizontalTurret + "degrees\n" +

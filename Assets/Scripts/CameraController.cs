@@ -59,6 +59,9 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void LateUpdate () {
+		if (player == null || playerLocation == null) {
+			return;
+		}
 		if (player.liveProjectile != null) {
 			// Camera for following projectile
 			if (projectileRB == null){
@@ -109,6 +112,9 @@ public class CameraController : MonoBehaviour {
 	} // FixedUpdate
 
 	void Update() {
+		if (TurnManager.instance == null || TurnManager.instance.GetActiveTank () == null) {
+			return;
+		}
 		if (Input.GetKey (KeyCode.Z)) {
 			if (!zoomingOut) {
 				zoomingOut = true;

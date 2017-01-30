@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class HorizontalTurretMover : MonoBehaviour {
 
 	public float rotationSpeed = 5.0f;
-
 	public float aimHorizontal = 45.0f;
 	// Use this for initialization
 	void Start () {
@@ -16,6 +16,9 @@ public class HorizontalTurretMover : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+//		if (isLocalPlayer == false) {
+//			return;
+//		}
 		if (TurnManager.instance.GetGameOverState () == false) {
 			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeed;
 		}

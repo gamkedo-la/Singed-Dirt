@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class TankController : MonoBehaviour {
+
+public class TankController : NetworkBehaviour {
 
 	// Public
 	public GameObject projectilePrefab;
@@ -11,6 +13,11 @@ public class TankController : MonoBehaviour {
 	public float shotPower = 30.0f;
 	public float shotPowerModifier = 10.0f;
 	public int hitPoints = 100;
+
+	public float rotationSpeedVertical = 5.0f;
+	public float aimVertical = 45.0f;
+	public float rotationSpeedHorizontal = 5.0f;
+	public float aimHorizontal = 45.0f;
 
 	public Transform turret;
 	public Transform playerCameraSpot;
@@ -21,19 +28,17 @@ public class TankController : MonoBehaviour {
 
 	// Private
 	Rigidbody rb;
-	HorizontalTurretMover horizontalTurret;
-	VerticalTurretMover verticalTurret;
 	int playerNumber;
 	List<Transform> spawnPoints;
 	Transform spawnPoint;
 	bool togglePowerInputAmount;
 	float savedPowerModifier;
-	bool tankReadyToShoot = true;
 	AvatarSetup tankAvatarScript;
 	int[] playerMeshSetup;
 	int lowerMeshNum;
 	int middleMeshNum;
 	int upperMeshNum;
+	GameObject turretSpot;
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -52,12 +57,11 @@ public class TankController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Awake () {
+	public void SetupTank () {
 		togglePowerInputAmount = false;
 		savedPowerModifier = shotPowerModifier;
 		spawnPoints = new List<Transform> ();
-		horizontalTurret = GetComponentInChildren<HorizontalTurretMover> ();
-		verticalTurret = GetComponentInChildren<VerticalTurretMover> ();
+		Debug.Log ("Name is " + name + " and is local player " + isLocalPlayer);
 		FindSpawnPointAndAddToList (name);
 		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
 		transform.position = spawnPoint.position;
@@ -68,14 +72,23 @@ public class TankController : MonoBehaviour {
 		tankAvatarScript = GetComponent<AvatarSetup> ();
 		tankAvatarScript.SetActiveMeshes (lowerMeshNum, middleMeshNum, upperMeshNum);
 		tankAvatarScript.updateAvatar ();
+		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
+		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
+			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
+
+		turretSpot = new GameObject ("turretPos");
+		turretSpot.transform.position = turret.transform.position;
+		turretSpot.transform.rotation = turret.transform.rotation;
+		turretSpot.transform.SetParent (transform);
+		turret.SetParent (null);
 	}
 
 	public float HorizAngle(){
-		return horizontalTurret.aimHorizontal;
+		return aimHorizontal;
 	}
 
 	public float VertAngle(){
-		return verticalTurret.aimVertical;
+		return aimVertical;
 	}
 
 	public float ShotPower(){
@@ -91,9 +104,6 @@ public class TankController : MonoBehaviour {
 		shotPower = specificPower;
 	}
 
-	public void ReadyToShoot(){
-		tankReadyToShoot = true;
-	}
 
 	public void SetPlayerModels(){
 		
@@ -123,8 +133,6 @@ public class TankController : MonoBehaviour {
 	public void SleepControls(bool toSleep){
 		bool isEnabled = (toSleep == false);
 		Debug.Log ("isEnabled = " + isEnabled);
-		horizontalTurret.enabled = isEnabled;
-		verticalTurret.enabled = isEnabled;
 		this.enabled = isEnabled;
 	}
 
@@ -177,6 +185,12 @@ public class TankController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (TurnManager.instance == null) {
+			return;
+		}
+		if (isLocalPlayer == false) {
+			return;
+		}
 		if (TurnManager.instance.GetGameOverState () == false) {
 			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
 				togglePowerInputAmount = true;
@@ -184,13 +198,18 @@ public class TankController : MonoBehaviour {
 			if (Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift)) {
 				togglePowerInputAmount = false;
 			}
-			if (Input.GetKeyDown (KeyCode.Space) && tankReadyToShoot == true) {
-				liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
-				liveProjectile.name = name + "Projectile";
-				liveProjectile.transform.position = shotSource.position;
-				rb = liveProjectile.GetComponent<Rigidbody> ();
-				rb.AddForce (shotSource.forward * shotPower);
-				tankReadyToShoot = false;
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				if (this == TurnManager.instance.GetActiveTank ()) {
+					liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
+					NetworkServer.Spawn (liveProjectile);
+					liveProjectile.name = name + "Projectile";
+					liveProjectile.transform.position = shotSource.position;
+					rb = liveProjectile.GetComponent<Rigidbody> ();
+					rb.AddForce (shotSource.forward * shotPower);
+				} else {
+					// need to provide feedback that you tried to fire out of turn
+					Debug.Log("nope");
+				}
 			}
 			if (togglePowerInputAmount == false) {
 				if (Input.GetKey (KeyCode.LeftBracket)) {
@@ -217,15 +236,25 @@ public class TankController : MonoBehaviour {
 			}
 
 		}
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			Application.Quit ();
+
+		if (TurnManager.instance.GetGameOverState () == false) {
+			aimVertical += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedVertical;
+			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedHorizontal;
 		}
 
-		transform.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up);
+		transform.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up);
 
 		// These two lines stay together
-		turret.rotation = Quaternion.AngleAxis (horizontalTurret.aimHorizontal, Vector3.up) *
-		Quaternion.AngleAxis (verticalTurret.aimVertical, Vector3.right);
+		turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
+		Quaternion.AngleAxis (aimVertical, Vector3.right);
+
+	}
+
+	void LateUpdate(){
+		if (turret == null || turretSpot == null) {
+			return;
+		}
+		turret.transform.position = turretSpot.transform.position;
 
 	}
 }

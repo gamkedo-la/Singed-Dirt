@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ProjectileController : MonoBehaviour {
 
@@ -25,6 +26,7 @@ public class ProjectileController : MonoBehaviour {
 
 	void OnDestroy(){
 		GameObject fire = Instantiate (explosion, gameObject.transform.position, Quaternion.identity) as GameObject;
+		NetworkServer.Spawn (fire);
 		Destroy (fire, 5);
 	}
 }
