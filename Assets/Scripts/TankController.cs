@@ -26,6 +26,8 @@ public class TankController : NetworkBehaviour {
 	public GameObject[] middleMeshes;
 	public GameObject[] lowerMeshes;
 
+	public bool hasFireAuthorization=true;
+
 	// Private
 	Rigidbody rb;
 	int playerNumber;
@@ -106,7 +108,7 @@ public class TankController : NetworkBehaviour {
 
 
 	public void SetPlayerModels(){
-		
+
 	}
 
 	public void DialAdjustPower(int offset){
@@ -144,7 +146,7 @@ public class TankController : NetworkBehaviour {
 		// cannonball passes through the collider's box before it hits the ground
 
 		// We can also leave the collider small, and make proximity damage is based purely on
-		// distance thresholds defined somewhere (perhaps the TankController class).  This approach would require 
+		// distance thresholds defined somewhere (perhaps the TankController class).  This approach would require
 		// separate distance tests to see which tanks, if any, the cannonball landed near.
 
 		ProjectileController tempPC = other.GetComponent<ProjectileController> ();
@@ -182,7 +184,34 @@ public class TankController : NetworkBehaviour {
 			}
 		}
 	}
-	
+
+	/// <summary>
+	/// Called from the client, executed on the server
+	/// Fire selected projectile if current player controller is in proper state.
+	/// </summary>
+	[Command]
+	void CmdFire() {
+		// controller state-based authorization check
+		if (!hasFireAuthorization) {
+			Debug.Log("nope");
+			return;
+		}
+
+		// instantiate from prefab
+		liveProjectile = (GameObject)GameObject.Instantiate (
+			projectilePrefab,
+			shotSource.position,
+			shotSource.rotation
+		);
+		liveProjectile.name = name + "Projectile";
+
+		// set initial velocity/force
+		liveProjectile.GetComponent<Rigidbody>().AddForce(shotSource.forward * shotPower);
+
+		// set network spawn
+		NetworkServer.Spawn (liveProjectile);
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (TurnManager.instance == null) {
@@ -199,17 +228,7 @@ public class TankController : NetworkBehaviour {
 				togglePowerInputAmount = false;
 			}
 			if (Input.GetKeyDown (KeyCode.Space)) {
-				if (this == TurnManager.instance.GetActiveTank ()) {
-					liveProjectile = (GameObject)GameObject.Instantiate (projectilePrefab);
-					NetworkServer.Spawn (liveProjectile);
-					liveProjectile.name = name + "Projectile";
-					liveProjectile.transform.position = shotSource.position;
-					rb = liveProjectile.GetComponent<Rigidbody> ();
-					rb.AddForce (shotSource.forward * shotPower);
-				} else {
-					// need to provide feedback that you tried to fire out of turn
-					Debug.Log("nope");
-				}
+				CmdFire();
 			}
 			if (togglePowerInputAmount == false) {
 				if (Input.GetKey (KeyCode.LeftBracket)) {
