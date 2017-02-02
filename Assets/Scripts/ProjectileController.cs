@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ProjectileController : MonoBehaviour {
+public class ProjectileController : NetworkBehaviour {
 
 	Terrain terrain;
 	public GameObject explosion;
@@ -13,9 +13,26 @@ public class ProjectileController : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll){
-		Debug.Log (coll.collider.name);
+		Debug.Log("ProjectileController OnCollisionEnter with: " + coll.collider.name);
+		if (hasAuthority) {
+			Debug.Log("Authority - Go ahead and blow up");
+			CmdExplode();
+		} else {
+			Debug.Log("No Authority To Explode");
+		}
 	}
-	
+
+	/// <summary>
+	/// Called from the client, executed on the server
+	/// Generate Explosion for current projectile
+	/// </summary>
+	[Command]
+	void CmdExplode() {
+		GameObject fire = Instantiate (explosion, gameObject.transform.position, Quaternion.identity) as GameObject;
+		NetworkServer.Spawn(fire);
+		Destroy (fire, 5);
+	}
+
 	// Update is called once per frame
 	void Update () {
 		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
@@ -23,10 +40,11 @@ public class ProjectileController : MonoBehaviour {
 			Destroy (gameObject);
 		}
 	}
-
 	void OnDestroy(){
-		GameObject fire = Instantiate (explosion, gameObject.transform.position, Quaternion.identity) as GameObject;
-		NetworkServer.Spawn (fire);
-		Destroy (fire, 5);
+		/*
+		if (hasAuthority) {
+			CmdExplode();
+		}
+		*/
 	}
 }

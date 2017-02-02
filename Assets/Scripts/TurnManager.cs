@@ -107,14 +107,14 @@ public class TurnManager : MonoBehaviour {
 		shotPower = activeTank.ShotPower ();
 		tankHitPoints = activeTank.HitPoints ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (activeTank == null) {
 			return;
 		}
 		GetCurrentTankHud ();
-		hud.text = 
+		hud.text =
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + "m/s\n" +

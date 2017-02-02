@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour {
 		shakeAmount = amount;
 		decreaseFactor = dfactor;
 	}
-	
+
 	// Update is called once per frame
 	void LateUpdate () {
 		if (player == null || playerLocation == null) {
@@ -65,7 +65,7 @@ public class CameraController : MonoBehaviour {
 		if (player.liveProjectile != null) {
 			// Camera for following projectile
 			if (projectileRB == null){
-				projectileRB = player.liveProjectile.GetComponent<Rigidbody>();	
+				projectileRB = player.liveProjectile.GetComponent<Rigidbody>();
 			}
 			if (projectileRB.velocity.magnitude > 3.0f) {
 				chaseCameraSpot = player.liveProjectile.transform.position - projectileRB.velocity.normalized * 7.0f + Vector3.up * 3.0f;
@@ -139,5 +139,5 @@ public class CameraController : MonoBehaviour {
 
 		}
 	}
-		
+
 } // end Class
