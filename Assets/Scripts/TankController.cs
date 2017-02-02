@@ -40,7 +40,9 @@ public class TankController : NetworkBehaviour {
 	int lowerMeshNum;
 	int middleMeshNum;
 	int upperMeshNum;
-	GameObject turretSpot;
+
+	// state management variables
+	bool hasRegistered = false; 	// am I registered to turn controller
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -77,12 +79,6 @@ public class TankController : NetworkBehaviour {
 		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
 		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
 			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
-
-		turretSpot = new GameObject ("turretPos");
-		turretSpot.transform.position = turret.transform.position;
-		turretSpot.transform.rotation = turret.transform.rotation;
-		turretSpot.transform.SetParent (transform);
-		turret.SetParent (null);
 	}
 
 	public float HorizAngle(){
@@ -212,14 +208,39 @@ public class TankController : NetworkBehaviour {
 		NetworkServer.Spawn (liveProjectile);
 	}
 
+	void ServerRegisterToManager() {
+		// find manager GO
+		GameObject managerGO = GameObject.Find("GameManager");
+		if (managerGO == null) {
+			Debug.Log("server registration failed, can't find game manager");
+			return;
+		}
+		var manager = managerGO.GetComponent<TurnManager>();
+		if (manager == null) {
+			Debug.Log("server registration failed, can't find game manager script");
+			return;
+		}
+		manager.RegisterPlayer(this);
+		hasRegistered = true;
+	}
+
 	// Update is called once per frame
 	void Update () {
+		// register to turn manager (if required and if server)
+		// applies to all copies of player on the server
+		if (!hasRegistered && isServer) {
+			ServerRegisterToManager();
+		}
+
 		if (TurnManager.instance == null) {
 			return;
 		}
+
+		// multiplayer instantiates multiple player game objects... only control the local player
 		if (isLocalPlayer == false) {
 			return;
 		}
+
 		if (TurnManager.instance.GetGameOverState () == false) {
 			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
 				togglePowerInputAmount = true;
@@ -269,11 +290,4 @@ public class TankController : NetworkBehaviour {
 
 	}
 
-	void LateUpdate(){
-		if (turret == null || turretSpot == null) {
-			return;
-		}
-		turret.transform.position = turretSpot.transform.position;
-
-	}
 }

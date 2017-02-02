@@ -14,11 +14,9 @@ public class ProjectileController : NetworkBehaviour {
 
 	void OnCollisionEnter(Collision coll){
 		Debug.Log("ProjectileController OnCollisionEnter with: " + coll.collider.name);
+		// only trigger explosion (spawn) if we currently have authority
 		if (hasAuthority) {
-			Debug.Log("Authority - Go ahead and blow up");
 			CmdExplode();
-		} else {
-			Debug.Log("No Authority To Explode");
 		}
 	}
 

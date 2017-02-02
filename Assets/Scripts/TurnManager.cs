@@ -32,6 +32,9 @@ public class TurnManager : MonoBehaviour {
 
 	}
 
+	public void RegisterPlayer(TankController player) {
+	}
+
 	public void GameOverMan(bool isGameOver){
 		gameOverState = isGameOver;
 	}
