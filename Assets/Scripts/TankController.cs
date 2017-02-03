@@ -10,6 +10,8 @@ public class TankController : NetworkBehaviour {
 	// Public
 	public GameObject projectilePrefab;
 	public Transform shotSource;
+
+	[SyncVar]
 	public float shotPower = 30.0f;
 	public float shotPowerModifier = 10.0f;
 	public int hitPoints = 100;
@@ -186,7 +188,7 @@ public class TankController : NetworkBehaviour {
 	/// Fire selected projectile if current player controller is in proper state.
 	/// </summary>
 	[Command]
-	void CmdFire() {
+	void CmdFire(float shotPower) {
 		// controller state-based authorization check
 		if (!hasFireAuthorization) {
 			Debug.Log("nope");
@@ -249,7 +251,7 @@ public class TankController : NetworkBehaviour {
 				togglePowerInputAmount = false;
 			}
 			if (Input.GetKeyDown (KeyCode.Space)) {
-				CmdFire();
+				CmdFire(shotPower);
 			}
 			if (togglePowerInputAmount == false) {
 				if (Input.GetKey (KeyCode.LeftBracket)) {
