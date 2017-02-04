@@ -33,6 +33,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void RegisterPlayer(TankController player) {
+		Debug.Log("tank registered: " + player);
 	}
 
 	public void GameOverMan(bool isGameOver){
@@ -73,6 +74,7 @@ public class TurnManager : MonoBehaviour {
 	void SetActiveTank(TankController tank){
 		activeTank = tank;
 		camController.SetPlayerCameraFocus (tank);
+		tank.ServerEnableControl();
 		foreach (TankController eachTank in tanks) {
 //			eachTank.SleepControls(eachTank != activeTank);
 		}
