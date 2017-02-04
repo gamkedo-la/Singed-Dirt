@@ -7,6 +7,7 @@ public class ProjectileController : NetworkBehaviour {
 
 	Terrain terrain;
 	public GameObject explosion;
+
 	// Use this for initialization
 	void Start () {
 		terrain = Terrain.activeTerrain;
@@ -26,6 +27,12 @@ public class ProjectileController : NetworkBehaviour {
 	/// </summary>
 	[Command]
 	void CmdExplode() {
+		Debug.Log ("Your head asplode");
+
+		//foreach (TankController tank in turnMgr.instance.tanks) {
+		foreach (TankController tank in TurnManager.instance.tanks) {
+			Debug.Log("Testing for splash damage: " + tank.name);
+		}
 		GameObject fire = Instantiate (explosion, gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(fire);
 		Destroy (fire, 5);

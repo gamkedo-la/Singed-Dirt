@@ -71,10 +71,21 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	void SetActiveTank(TankController tank){
+		// Temporarily disable activeTank's collider, so the cannonball won't collide with activeTank
 		activeTank = tank;
+		Collider myCollider = activeTank.GetComponentInParent<Collider> ();
+		myCollider.enabled = false;
+		Debug.Log ("Collider disabled (I think) for " + activeTank.name);
+
 		camController.SetPlayerCameraFocus (tank);
 		foreach (TankController eachTank in tanks) {
 //			eachTank.SleepControls(eachTank != activeTank);
+			// enable colliders in all other tanks
+			if (eachTank != activeTank) {
+				Collider yourCollider = eachTank.GetComponentInParent<Collider> ();
+				yourCollider.enabled = true;
+				Debug.Log ("Collider enabled (I think) for " + eachTank.name);
+			}
 		}
 		Debug.Log ("hitpoints val is " + activeTank.HitPoints());
 	}
