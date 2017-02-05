@@ -26,6 +26,49 @@ public class ProjectileController : NetworkBehaviour {
 	/// </summary>
 	[Command]
 	void CmdExplode() {
+		// Get list of colliders in range of this explosion
+		Collider[] flakReceivers = Physics.OverlapSphere(transform.position, 10.0f);
+
+		foreach (Collider flakReceiver in flakReceivers) {
+			GameObject gameObjRef = flakReceiver.gameObject;
+			// TODO use a better method to identify Player tank objects?
+			if (gameObjRef.name.Contains ("Player") && !gameObjRef.name.Contains("Projectile")) {
+				Debug.Log (gameObjRef.name + " received splash damage");
+
+
+
+				Vector3 cannonballCenterToTankCenter = transform.position - gameObjRef.transform.position;
+				Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
+				Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
+
+				float hitDistToTankCenter = cannonballCenterToTankCenter.magnitude;
+				Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
+
+				// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
+				// was to plug in some values and come up with a damage computation formula.  The above formula yields:
+				// direct hit (dist = 0m): 100 hit points
+				// Hit dist 5m: about 25 hit points
+				// hit dist 10m: about 1 hit point
+				// The formula is based on a max proximity damage distance of 10m
+				int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
+				TankController tankCtrlRef = gameObjRef.GetComponent<TankController> ();
+				tankCtrlRef.hitPoints -= damagePoints;
+				Debug.Log ("Damage done to " + name + ": " + damagePoints + ". Remaining: " + tankCtrlRef.hitPoints);
+
+				// Do shock displacement
+				Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
+				Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
+				tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
+
+
+				// Destroy the tank (TODO - the tank should do this on its own)
+				if (tankCtrlRef.hitPoints <= 0) {
+					Destroy (gameObjRef);
+					TurnManager.instance.GameOverMan (true);
+				}
+			}
+		}
+
 		GameObject fire = Instantiate (explosion, gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(fire);
 		Destroy (fire, 5);

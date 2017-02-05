@@ -27,8 +27,10 @@ public class TankController : NetworkBehaviour {
 	public GameObject[] middleMeshes;
 	public GameObject[] lowerMeshes;
 
+	public Rigidbody rb;
+
 	// Private
-	Rigidbody rb;
+
 	int playerNumber;
 	List<Transform> spawnPoints;
 	Transform spawnPoint;
@@ -134,49 +136,7 @@ public class TankController : NetworkBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-		// NOTE:  Currently, this trigger is entered whenever the cannonball collider
-		// intersects the tank's collider.  At the moment, the tank's collider is 'oversized'.
-		// Some refinement is needed, to make sure the trigger occurs only when the cannonball explodes
-		// Right now, a collision trigger can occur if the tank is situated off the ground (e.g., on a rock), and the
-		// cannonball passes through the collider's box before it hits the ground
 
-		// We can also leave the collider small, and make proximity damage is based purely on
-		// distance thresholds defined somewhere (perhaps the TankController class).  This approach would require
-		// separate distance tests to see which tanks, if any, the cannonball landed near.
-
-		ProjectileController tempPC = other.GetComponent<ProjectileController> ();
-		if (tempPC != null) {
-			if (tempPC.name != name + "Projectile" ) {
-				Vector3 cannonballCenterToTankCenter = this.transform.position - other.transform.position;
-				Debug.Log (string.Format ("tank position: {0}, cannonball position: {1}", this.transform.position, other.transform.position));
-				Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
-
-				float hitDistToTankCenter = cannonballCenterToTankCenter.magnitude;
-				Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
-
-				// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
-				// was to plug in some values and come up with a damage computation formula.  The above formula yields:
-				// direct hit (dist = 0m): 100 hit points
-				// Hit dist 5m: about 25 hit points
-				// hit dist 10m: about 1 hit point
-				// The formula is based on a max proximity damage distance of 10m
-				int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
-				hitPoints -= damagePoints;
-				Debug.Log ("Damage done to " + name + ": " + damagePoints + ". Remaining: " + hitPoints);
-
-				// Do shock displacement
-				Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
-				Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
-				rb.AddForce (rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
-
-
-				if (hitPoints <= 0) {
-					Destroy (other);
-					TurnManager.instance.GameOverMan (true);
-					Destroy (gameObject);
-				}
-			}
-		}
 	}
 
 	// Update is called once per frame
