@@ -15,6 +15,7 @@ public class ProjectileController : NetworkBehaviour {
 	public GameObject[] projectileShape;
 
 	shotKind myKind = shotKind.Standard;
+	GameObject shape;
 	// Use this for initialization
 	void Start () {
 		terrain = Terrain.activeTerrain;
@@ -30,7 +31,7 @@ public class ProjectileController : NetworkBehaviour {
 
 	public void SetupShot(shotKind kind, Transform shotSource){
 		myKind = kind;
-		GameObject shape = (GameObject)Instantiate (projectileShape [(int)myKind], shotSource.position, shotSource.rotation);
+		shape = (GameObject)Instantiate (projectileShape [(int)myKind], shotSource.position, shotSource.rotation);
 		shape.transform.SetParent (transform);
 		NetworkServer.Spawn (shape);
 		Debug.Log ("New shot kind is: " + myKind);
@@ -87,7 +88,7 @@ public class ProjectileController : NetworkBehaviour {
 
 		GameObject fire = Instantiate (explosionKind[(int)myKind], gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(fire);
-
+		NetworkServer.Destroy (shape);
 		Destroy (fire, 5);
 	}
 
@@ -95,7 +96,7 @@ public class ProjectileController : NetworkBehaviour {
 	void Update () {
 		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
 		if (transform.position.y < terrainY) {
-			Destroy (gameObject);
+			NetworkServer.Destroy (gameObject);
 		}
 	}
 	void OnDestroy(){
