@@ -29,6 +29,7 @@ public class TankController : NetworkBehaviour {
 
 	// Private
 	Rigidbody rb;
+	TurnManager manager;
 	int playerNumber;
 	List<Transform> spawnPoints;
 	Transform spawnPoint;
@@ -44,7 +45,10 @@ public class TankController : NetworkBehaviour {
 	bool hasRegistered = false; 	// am I registered to turn controller
 
 	[SyncVar(hook="OnChangeControl")]
-	bool hasControl=false;
+	public bool hasControl=false;
+
+	[SyncVar]
+	public int playerIndex = -1;
 
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
@@ -60,6 +64,25 @@ public class TankController : NetworkBehaviour {
 		} else {
 			Debug.Log ("Can't find the spawn points for " + playerName + ".");
 		}
+	}
+
+
+	void Start() {
+
+		// find manager GO and manager script
+		GameObject managerGO = GameObject.Find("GameManager");
+		if (managerGO == null) {
+			Debug.Log("server registration failed, can't find game manager");
+			return;
+		}
+		manager = managerGO.GetComponent<TurnManager>();
+		if (manager == null) {
+			Debug.Log("server registration failed, can't find game manager script");
+			return;
+		}
+
+		// lookup/cache required components
+		rb = GetComponent<Rigidbody> ();
 	}
 
 	// Use this for initialization
@@ -82,8 +105,6 @@ public class TankController : NetworkBehaviour {
 		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
 			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
 
-		// lookup/cache required components
-		rb = GetComponent<Rigidbody> ();
 	}
 
 	public float HorizAngle(){
@@ -181,73 +202,52 @@ public class TankController : NetworkBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		// register to turn manager (if required and if server)
+		// register to turn manager (if required)
 		// applies to all copies of player on the server
-		if (!hasRegistered && isServer) {
-			ServerRegisterToManager();
-		}
-
-		/*
-		if (TurnManager.instance == null) {
-			return;
-		}
-
-		// multiplayer instantiates multiple player game objects... only control the local player
-		if (isLocalPlayer == false) {
-			return;
-		}
-
-		if (TurnManager.instance.GetGameOverState () == false) {
-			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
-				togglePowerInputAmount = true;
+		if (!hasRegistered) {
+			if (!isServer) {
+				Debug.Log("playerIndex: " + playerIndex);
 			}
-			if (Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift)) {
-				togglePowerInputAmount = false;
+			if (isServer) {
+				ServerRegisterToManager();
+			// NOTE: wait to register client until playerIndex has been assignedj
+			} else if (playerIndex != -1) {
+				ClientRegisterToManager();
 			}
-			if (Input.GetKeyDown (KeyCode.Space)) {
-				CmdFire(shotPower);
-			}
-			if (togglePowerInputAmount == false) {
-				if (Input.GetKey (KeyCode.LeftBracket)) {
-					shotPower -= shotPowerModifier;
-					if (shotPower <= 0.0f) {
-						shotPower = 0.0f;
-					}
-				}
-
-				if (Input.GetKey (KeyCode.RightBracket)) {
-					shotPower += shotPowerModifier;
-				}
-			} else {
-				if (Input.GetKeyDown (KeyCode.LeftBracket)) {
-					shotPower -= shotPowerModifier;
-					if (shotPower <= 0.0f) {
-						shotPower = 0.0f;
-					}
-				}
-
-				if (Input.GetKeyDown (KeyCode.RightBracket)) {
-					shotPower += shotPowerModifier;
-				}
-			}
-
 		}
+	}
 
-		if (TurnManager.instance.GetGameOverState () == false) {
-			aimVertical += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedVertical;
-			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedHorizontal;
-		}
+    // ------------------------------------------------------
+    // CLIENT-ONLY METHODS
 
-		transform.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up);
+	/// <summary>
+	/// Executed on the client
+	/// Register this tank to turn manager
+	/// </summary>
+	void ClientRegisterToManager() {
+		Debug.Log("ClientRegisterToManager for " + this.name);
+		if (isServer) return;
 
-		// These two lines stay together
-		turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
-		Quaternion.AngleAxis (aimVertical, Vector3.right);
-		*/
+		// ensure we haven't already registered
+		if (hasRegistered) return;
+
+		// register
+		manager.ClientRegisterPlayer(this);
+		hasRegistered = true;
 	}
 
     // ------------------------------------------------------
     // SERVER-ONLY METHODS
+
+	/// <summary>
+	/// Executed on the server
+	/// Assign index to tank... this same index will be used on both client and server and is synced when assigned
+	/// </summary>
+	public void ServerAssignIndex(int index) {
+		if (!isServer) return;
+		Debug.Log("assigning index " + index + " to " + name);
+		playerIndex = index;
+	}
 
 	/// <summary>
 	/// Executed on the server
@@ -284,20 +284,8 @@ public class TankController : NetworkBehaviour {
 		// ensure we haven't already registered
 		if (hasRegistered) return;
 
-		// find manager GO and manager script
-		GameObject managerGO = GameObject.Find("GameManager");
-		if (managerGO == null) {
-			Debug.Log("server registration failed, can't find game manager");
-			return;
-		}
-		var manager = managerGO.GetComponent<TurnManager>();
-		if (manager == null) {
-			Debug.Log("server registration failed, can't find game manager script");
-			return;
-		}
-
 		// register
-		manager.RegisterPlayer(this);
+		manager.ServerRegisterPlayer(this);
 		hasRegistered = true;
 	}
 
@@ -328,28 +316,30 @@ public class TankController : NetworkBehaviour {
 	/// </summary>
 	IEnumerator ShootStateEngine() {
 		Debug.Log("ShootStateEngine called for " + this.name + " with isServer: " + isServer);
-		// disable physics
+		// disable tank physics
 		rb.isKinematic = true;
 
 		// line up and take the shot
         yield return StartCoroutine(AimStateEngine());
 
+		// relinquish control
+		Debug.Log("ShootStateEngine release control for " + this.name);
+		CmdReleaseControl();
+
+		// re-enable tank physics
+		rb.isKinematic = false;
+
 		// shot is in the air
 
 		// target hit
 
-		// re-enable physics
-		rb.isKinematic = false;
 
-		// relinquish control
-		Debug.Log("ShootStateEngine release control for " + this.name);
-		CmdReleaseControl();
 	}
 
 	/// <summary>
 	/// This is the state-engine driving the aim/power/shot control for the tank.
 	/// Stay in this state until a shot is fired.
-	/// NOTE: ensure that all yield calls are using next of frame (yield null) to ensure proper input handling
+	/// NOTE: ensure that all yield calls are using next of frame (yield return null) to ensure proper input handling
 	/// </summary>
 	IEnumerator AimStateEngine() {
 		Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
@@ -370,7 +360,6 @@ public class TankController : NetworkBehaviour {
 				}
 
 				if (Input.GetKey (KeyCode.RightBracket)) {
-					Debug.Log("right bracket");
 					shotPower += shotPowerModifier;
 				}
 			} else {
@@ -440,11 +429,18 @@ public class TankController : NetworkBehaviour {
 		NetworkServer.Spawn (liveProjectile);
 	}
 
+	/// <summary>
+	/// Called from the client, executed on the server
+	/// release control
+	/// </summary>
 	[Command]
 	void CmdReleaseControl() {
-		/// Called from the client, executed on the server
 		/// release control
 		hasControl = false;
+
+		// tell the manager
+		//manager.ServerReleaseTank(this);
+		// FIXME
 	}
 
 }

@@ -1,10 +1,12 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class TurnManager : MonoBehaviour {
+public class TurnManager : NetworkBehaviour {
 
 	// Public variables
 
@@ -14,10 +16,23 @@ public class TurnManager : MonoBehaviour {
 	public List<TankController> tanks;
 	public InputField powerValue;
 
+	// the list of all tanks, mapping their tank ID to tank controller
+	// NOTE: this mapping is maintained on both client and server
+	public Dictionary<int, TankController> tankRegistry;
+
+	// number of players in game
+	public int expectedPlayers = 2;
+
+	// the list of tanks currently active in the round... as tanks die, they are removed from this list
+	public List<int> activeTanks;
+
 	// Private variables
+
+	int nextTankId = 1;
 
 	CameraController camController;
 	TankController activeTank;
+	TankController localTank;
 	float horizontalTurret;
 	float verticalTurret;
 	float shotPower;
@@ -25,15 +40,11 @@ public class TurnManager : MonoBehaviour {
 	int tankTurnIndex = 0;
 	bool gameOverState = false;
 
-
 	void Awake(){
 		instance = this;
 		gameOverText.enabled = false;
-
-	}
-
-	public void RegisterPlayer(TankController player) {
-		Debug.Log("tank registered: " + player);
+		tankRegistry = new Dictionary<int, TankController>();
+		activeTanks = new List<int>();
 	}
 
 	public void GameOverMan(bool isGameOver){
@@ -46,38 +57,16 @@ public class TurnManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		StartCoroutine (ListenForTanks ());
-	}
-
-	IEnumerator ListenForTanks(){
-		bool noTanksYet = true;
-		while (noTanksYet) {
-			TankController [] tankList = GameObject.FindObjectsOfType(typeof(TankController)) as TankController [];
-			if (tankList.Length > 1) {
-				noTanksYet = false;
-				tanks = tankList.ToList ();
-				tanks [0].name = "Player One";
-				tanks [1].name = "Player Two";
-				tanks [0].SetupTank ();
-				tanks [1].SetupTank ();
-				Debug.Log ("Tank count: " + tanks.Count);
-				camController = Camera.main.GetComponent<CameraController> ();
-				SetActiveTank (tanks [tankTurnIndex]);
-			} else {
-				Debug.Log ("Waiting for two tanks...");
-				yield return new WaitForSeconds (0.5f);
-			}
+		if (isServer) {
+			StartCoroutine(ServerLoop());
 		}
-		Debug.Log ("Tanks reporting for duty!");
+		camController = Camera.main.GetComponent<CameraController> ();
 	}
 
 	void SetActiveTank(TankController tank){
+		Debug.Log("Activating " + tank.name);
 		activeTank = tank;
-		camController.SetPlayerCameraFocus (tank);
 		tank.ServerEnableControl();
-		foreach (TankController eachTank in tanks) {
-//			eachTank.SleepControls(eachTank != activeTank);
-		}
 		Debug.Log ("hitpoints val is " + activeTank.HitPoints());
 	}
 
@@ -132,4 +121,184 @@ public class TurnManager : MonoBehaviour {
 			gameOverText.enabled = false;
 		}
 	}
+
+	int[] GetTurnOrder(Dictionary<int, TankController> tanks) {
+		var keys = new List<int>(tanks.Keys);
+		var turnOrder = new List<int>();
+		// randomize turn order based on given set of tanks
+		while (keys.Count > 0) {
+			var nextIndex = UnityEngine.Random.Range(0, keys.Count);
+			turnOrder.Add(keys[nextIndex]);
+			keys.RemoveAt(nextIndex);
+		}
+		return turnOrder.ToArray();
+	}
+
+    // ------------------------------------------------------
+    // CLIENT-ONLY METHODS
+	public void ClientRegisterPlayer(TankController player) {
+		if (player.isLocalPlayer) {
+			localTank = player;
+		}
+		Debug.Log("ClientRegisterPlayer: " + player);
+		tankRegistry[player.playerIndex] = player;
+	}
+
+    // ------------------------------------------------------
+    // SERVER-ONLY METHODS
+	public void ServerRegisterPlayer(TankController player) {
+		if (!isServer) return;
+		if (player.isLocalPlayer) {
+			localTank = player;
+		}
+		Debug.Log("ServerRegisterPlayer: " + player);
+
+		// assign tank index
+		var newTankIndex = nextTankId;
+		nextTankId++;
+		tankRegistry[newTankIndex] = player;
+
+		// server assigns tank index and acknowledges registration...
+		player.ServerAssignIndex(newTankIndex);
+	}
+
+    // ------------------------------------------------------
+    // SERVER->CLIENT METHODS
+
+	/// <summary>
+	/// Called from the server, executed on the client
+	/// Start the main client loop
+	/// </summary>
+	[ClientRpc]
+	void RpcStart() {
+		Debug.Log("starting game on client");
+		StartCoroutine(ClientLoop());
+	}
+
+	/// <summary>
+	/// Called from the server, executed on the client
+	/// Set the view to the local tank
+	/// </summary>
+	[ClientRpc]
+	void RpcViewLocalTank() {
+		if (localTank != null) {
+			Debug.Log("setting camera view to local: " + localTank.name);
+			camController.SetPlayerCameraFocus(localTank);
+		}
+	}
+
+	[ClientRpc]
+	void RpcWatchProjectile(NetworkInstanceId netid) {
+	//void RpcWatchProjectile(uint projectileNetId) {
+		//var netId = new NetworkInstanceId(projectileNetId);
+		var projectile = ClientScene.FindLocalObject(netId);
+		Debug.Log("RpcWatchProjectile found projectile: " + projectile);
+	}
+
+    // ------------------------------------------------------
+    // STATE ENGINES
+	/// <summary>
+	/// This is the main server loop
+	/// </summary>
+	IEnumerator ServerLoop() {
+		Debug.Log("starting ServerLoop");
+		// wait for players to join
+        yield return StartCoroutine(ListenForTanks());
+
+		// adjust camera
+		// FIXME
+		camController.SetPlayerCameraFocus(localTank);
+
+		// start the game on client
+		RpcStart();
+
+		// start the game
+        yield return StartCoroutine(PlayRound());
+		Debug.Log("finishing ServerLoop");
+	}
+
+	/// <summary>
+	/// This is the main client loop
+	/// </summary>
+	IEnumerator ClientLoop() {
+		Debug.Log("starting ClientLoop");
+		// wait for players to join
+        yield return StartCoroutine(ListenForTanks());
+
+		camController.SetPlayerCameraFocus(localTank);;
+	}
+
+	IEnumerator ListenForTanks(){
+		// wait for new players to join, up to expected number of players
+		while (tankRegistry.Count < expectedPlayers) {
+			yield return null;
+		}
+
+		// we have expected number of tanks... initialize each tank
+		foreach(int tankId in tankRegistry.Keys) {
+			tankRegistry[tankId].name = "Player " + tankId.ToString();
+			tankRegistry[tankId].SetupTank();
+		}
+
+		Debug.Log ("Tanks reporting for duty!");
+	}
+
+	IEnumerator PlayRound() {
+		Debug.Log ("Starting the game!!!");
+
+		// add current tanks to the active tank list
+		activeTanks = new List<int>(tankRegistry.Keys);
+
+		// set starting camera positions for each player (this is done client side)
+		RpcViewLocalTank();
+
+		// determine turn order
+		var turnOrder = GetTurnOrder(tankRegistry);
+		Debug.Log("turn order is -> " + String.Join(",", turnOrder.Select(v=>v.ToString()).ToArray()));
+		var currentIndex = 0;
+		yield return null;
+
+		// continue to play the round while at least two tanks are active
+		while (activeTanks.Count >= 2) {
+			// determine next tank, advance current Index
+			var nextTankId = turnOrder[(currentIndex++)%turnOrder.Length];
+
+			// validate tank is active
+			if (!activeTanks.Contains(nextTankId)) {
+				Debug.Log("skipping inactive tank: " + tankRegistry[nextTankId].name);
+				continue;
+			}
+
+			// select active tank and take turn
+			yield return StartCoroutine(TakeTankTurn(tankRegistry[nextTankId]));
+
+		}
+	}
+
+	IEnumerator TakeTankTurn(TankController tank) {
+		Debug.Log("taking turn for " + tank.name);
+		// activate the tank
+		SetActiveTank(tank);
+
+		// wait for the tank to release control
+		while (tank.hasControl) {
+			yield return null;
+		}
+
+		// follow tank projectile
+		if (tank.liveProjectile != null) {
+			var networkIdentity = tank.liveProjectile.GetComponent<NetworkIdentity>();
+			if (networkIdentity != null) {
+				//RpcWatchProjectile(networkIdentity.netId.Value);
+				RpcWatchProjectile(networkIdentity.netId);
+			}
+		}
+
+		// wait for explosion
+
+		// reset view to local tank view
+		RpcViewLocalTank();
+	}
+
+
 }

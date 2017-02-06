@@ -140,4 +140,10 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
+	public void WatchPlayer(TankController tank) {
+	}
+
+	public void WatchProjectile(ProjectileController projectile) {
+	}
+
 } // end Class

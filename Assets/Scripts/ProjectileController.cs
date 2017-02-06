@@ -38,11 +38,4 @@ public class ProjectileController : NetworkBehaviour {
 			Destroy (gameObject);
 		}
 	}
-	void OnDestroy(){
-		/*
-		if (hasAuthority) {
-			CmdExplode();
-		}
-		*/
-	}
 }
