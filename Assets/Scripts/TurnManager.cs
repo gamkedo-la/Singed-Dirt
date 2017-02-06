@@ -58,6 +58,8 @@ public class TurnManager : MonoBehaviour {
 				tanks = tankList.ToList ();
 				tanks [0].name = "Player One";
 				tanks [1].name = "Player Two";
+				tanks [0].gameObject.layer = LayerMask.NameToLayer (tanks [0].name);
+				tanks [1].gameObject.layer = LayerMask.NameToLayer (tanks [1].name);
 				tanks [0].SetupTank ();
 				tanks [1].SetupTank ();
 				Debug.Log ("Tank count: " + tanks.Count);

@@ -28,6 +28,7 @@ public class TankController : NetworkBehaviour {
 	public GameObject[] lowerMeshes;
 
 	public Rigidbody rb;
+	public ProjectileController.shotKind selectedShot;
 
 	// Private
 
@@ -346,6 +347,23 @@ public class TankController : NetworkBehaviour {
 					shotPower += shotPowerModifier;
 				}
 			}
+			int shotInt = (int)selectedShot;
+			if (Input.GetKeyDown (KeyCode.Comma)) {
+				shotInt--;
+				if (shotInt < 0) {
+					shotInt = (int)(ProjectileController.shotKind.End) - 1;
+				}
+				selectedShot = (ProjectileController.shotKind)shotInt;
+				Debug.Log ("getting smaller: " + shotInt);
+			}
+			if (Input.GetKeyDown (KeyCode.Period)) {
+				shotInt++;
+				if (shotInt > (int)(ProjectileController.shotKind.End)) {
+					shotInt = 0;
+				}
+				selectedShot = (ProjectileController.shotKind)shotInt;
+				Debug.Log ("getting larger: " + shotInt);
+			}
 
 			// Shoot already ... when shot is fired, finish this coroutine;
 			if (Input.GetKeyDown (KeyCode.Space)) {
@@ -392,6 +410,9 @@ public class TankController : NetworkBehaviour {
 			shotSource.rotation
 		);
 		liveProjectile.name = name + "Projectile";
+		liveProjectile.layer = gameObject.layer;
+		ProjectileController pcScript = liveProjectile.GetComponent<ProjectileController> ();
+		pcScript.SetupShot (selectedShot, shotSource);
 
 		// set initial velocity/force
 		liveProjectile.GetComponent<Rigidbody>().AddForce(shotSource.forward * shotPower);
