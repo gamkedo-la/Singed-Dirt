@@ -183,16 +183,23 @@ public class TurnManager : NetworkBehaviour {
 	void RpcViewLocalTank() {
 		if (localTank != null) {
 			Debug.Log("setting camera view to local: " + localTank.name);
-			camController.SetPlayerCameraFocus(localTank);
+			camController.WatchPlayer(localTank);
+			//camController.SetPlayerCameraFocus(localTank);
 		}
 	}
 
 	[ClientRpc]
-	void RpcWatchProjectile(NetworkInstanceId netid) {
-	//void RpcWatchProjectile(uint projectileNetId) {
-		//var netId = new NetworkInstanceId(projectileNetId);
-		var projectile = ClientScene.FindLocalObject(netId);
-		Debug.Log("RpcWatchProjectile found projectile: " + projectile);
+	void RpcViewProjectile(GameObject projectile) {
+		camController.ShakeCamera(0.8f, 0.8f);
+		camController.WatchProjectile(projectile.GetComponent<ProjectileController>());
+	}
+
+	[ClientRpc]
+	void RpcViewLocalProjectile(GameObject player, GameObject projectile) {
+		if (player.GetComponent<TankController>().isLocalPlayer) {
+			camController.ShakeCamera(0.8f, 0.8f);
+			camController.WatchProjectile(projectile.GetComponent<ProjectileController>());
+		}
 	}
 
     // ------------------------------------------------------
@@ -206,8 +213,7 @@ public class TurnManager : NetworkBehaviour {
         yield return StartCoroutine(ListenForTanks());
 
 		// adjust camera
-		// FIXME
-		camController.SetPlayerCameraFocus(localTank);
+		RpcViewLocalTank();
 
 		// start the game on client
 		RpcStart();
@@ -225,7 +231,8 @@ public class TurnManager : NetworkBehaviour {
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
-		camController.SetPlayerCameraFocus(localTank);;
+		camController.WatchPlayer(localTank);
+		//camController.SetPlayerCameraFocus(localTank);
 	}
 
 	IEnumerator ListenForTanks(){
@@ -289,15 +296,35 @@ public class TurnManager : NetworkBehaviour {
 		if (tank.liveProjectile != null) {
 			var networkIdentity = tank.liveProjectile.GetComponent<NetworkIdentity>();
 			if (networkIdentity != null) {
-				//RpcWatchProjectile(networkIdentity.netId.Value);
-				RpcWatchProjectile(networkIdentity.netId);
+				RpcViewLocalProjectile(tank.gameObject, tank.liveProjectile);
 			}
 		}
 
 		// wait for explosion
+		// FIXME: make projectile camera and explosion handling event driven instead of only time based
+		float explosionViewTime = 3.0f;
+		var explosionWait = new WaitForSeconds (explosionViewTime);
+		yield return explosionWait;
+
 
 		// reset view to local tank view
 		RpcViewLocalTank();
+	}
+
+
+	public static TurnManager GetGameManager() {
+		// find manager GO and manager script
+		GameObject managerGO = GameObject.Find("GameManager");
+		if (managerGO == null) {
+			Debug.Log("server registration failed, can't find game manager");
+			return null;
+		}
+		var manager = managerGO.GetComponent<TurnManager>();
+		if (manager == null) {
+			Debug.Log("server registration failed, can't find game manager script");
+			return null;
+		}
+		return manager;
 	}
 
 

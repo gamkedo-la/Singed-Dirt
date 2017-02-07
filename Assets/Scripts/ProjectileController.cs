@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class ProjectileController : NetworkBehaviour {
 
 	Terrain terrain;
+	TurnManager manager;
 	public GameObject explosion;
 
 	public enum shotKind {
@@ -19,6 +20,7 @@ public class ProjectileController : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		terrain = Terrain.activeTerrain;
+		manager = TurnManager.GetGameManager();
 	}
 
 	void OnCollisionEnter(Collision coll){

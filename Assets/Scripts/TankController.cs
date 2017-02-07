@@ -70,20 +70,9 @@ public class TankController : NetworkBehaviour {
 
 
 	void Start() {
-
-		// find manager GO and manager script
-		GameObject managerGO = GameObject.Find("GameManager");
-		if (managerGO == null) {
-			Debug.Log("server registration failed, can't find game manager");
-			return;
-		}
-		manager = managerGO.GetComponent<TurnManager>();
-		if (manager == null) {
-			Debug.Log("server registration failed, can't find game manager script");
-			return;
-		}
-
+		Debug.Log("TankController.Start");
 		// lookup/cache required components
+		manager = TurnManager.GetGameManager();
 		rb = GetComponent<Rigidbody> ();
 	}
 

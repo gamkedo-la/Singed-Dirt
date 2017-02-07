@@ -5,12 +5,22 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+	public enum CameraMode {
+		overview,
+		watchPlayer,
+		watchProjectile,
+		watchExplosion
+	}
+
 	// Public
 	public Transform playerLocation;
 	public float cameraPositionAbovePlayer = 1.5f;
 	public float explosionViewTime = 3.0f;
+	public Transform overviewLocation;
+	public Transform centerLocation;
 
 	// Private
+	CameraMode cameraMode = CameraMode.overview;
 	TankController player;
 	Vector3 explosionCamVector;
 	float timeInExplosionCam = 0.0f;
@@ -18,9 +28,17 @@ public class CameraController : MonoBehaviour {
 	Rigidbody projectileRB;
 	Vector3 chaseCameraSpot;
 	Quaternion chaseCameraRot;
-	float shakeAmount = 0.4f;
+	float shakeAmount = 0f;
 	float decreaseFactor = 0.0f;
 	Vector3 originalPosition;
+
+	public float dampTime = 0.2f;                 // Approximate time for the camera to refocus.
+	public float rotationDampTime = 0.2f;         // Approximate time for the camera to refocus.
+	public Vector3 moveVelocity;
+
+	// indicates the desired position and rotation of the camera
+	Vector3 desiredPosition;
+	Quaternion desiredRotation;
 
 	// TODO put these zoom vars into a struct
 	float initZoom = 2.0f;
@@ -35,6 +53,9 @@ public class CameraController : MonoBehaviour {
 		chaseCameraSpot = transform.position;
 		currZoom = initZoom;
 		Debug.Log ("CameraController script starting in " + gameObject.name);
+		transform.position = overviewLocation.transform.position;
+		transform.LookAt(centerLocation.position);
+		desiredPosition = transform.position;
 	}
 
 	public void SetPlayerCameraFocus (TankController _player){
@@ -51,14 +72,25 @@ public class CameraController : MonoBehaviour {
 
 	}
 
-	void ShakeCamera(float amount, float dfactor){
-		originalPosition = transform.position;
-		shakeAmount = amount;
-		decreaseFactor = dfactor;
+	void Move() {
+		if (shakeAmount > 0.0001f) {
+			transform.position += Random.insideUnitSphere * shakeAmount;
+		}
+        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref moveVelocity, dampTime);
+		//transform.position = chaseCameraSpot; // this is the interrupt the smoothing while aiming
+		//transform.rotation = playerLocation.rotation;
 	}
+
+	void Rotate() {
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, rotationDampTime);
+	}
+
 
 	// Update is called once per frame
 	void LateUpdate () {
+		Move();
+		Rotate();
+		/*
 		if (player == null || playerLocation == null) {
 			return;
 		}
@@ -98,6 +130,7 @@ public class CameraController : MonoBehaviour {
 			} // end if time in explosion cam greater than 0
 
 		} // end if statement for if live projectile doesn't equal null
+		*/
 	} // end LateUpdate
 
 	void FixedUpdate(){
@@ -112,6 +145,7 @@ public class CameraController : MonoBehaviour {
 	} // FixedUpdate
 
 	void Update() {
+		/*
 		if (TurnManager.instance == null || TurnManager.instance.GetActiveTank () == null) {
 			return;
 		}
@@ -138,12 +172,73 @@ public class CameraController : MonoBehaviour {
 			SetPlayerCameraLookAt (TurnManager.instance.GetActiveTank ());
 
 		}
+		*/
 	}
 
+	public void WatchOverview() {
+		cameraMode = CameraMode.overview;
+		StartCoroutine(WatchOverviewLoop());
+	}
+	IEnumerator WatchOverviewLoop() {
+		desiredPosition = overviewLocation.transform.position;
+		while (cameraMode == CameraMode.overview) {
+			Vector3 relativePosition = desiredPosition - transform.position;
+			desiredRotation = Quaternion.LookRotation(relativePosition);
+			yield return null;
+		}
+	}
+
+	// FIXME: ensure state loops can't overlap on each other (e.g.: two calls to WatchPlayer on top of each other)
 	public void WatchPlayer(TankController tank) {
+		Debug.Log("WatchPlayer: " + tank.name);
+		cameraMode = CameraMode.watchPlayer;
+		StartCoroutine(WatchPlayerLoop(tank));
+	}
+
+	IEnumerator WatchPlayerLoop(TankController tank) {
+		while (cameraMode == CameraMode.watchPlayer && tank != null) {
+			if (tank.hasControl) {
+				desiredPosition = tank.transform.position - tank.transform.forward * currZoom + Vector3.up * cameraPositionAbovePlayer;
+				Vector3 relativePosition = tank.transform.position + tank.transform.forward * 15.0f - transform.position;
+				desiredRotation = Quaternion.LookRotation(relativePosition);
+			} else {
+				desiredPosition = tank.playerCameraSpot.position;
+				desiredRotation = tank.playerCameraSpot.rotation;
+			}
+			yield return null;
+		}
 	}
 
 	public void WatchProjectile(ProjectileController projectile) {
+		Debug.Log("WatchProjectile: " + projectile);
+		cameraMode = CameraMode.watchProjectile;
+		StartCoroutine(WatchProjectileLoop(projectile));
+	}
+
+	IEnumerator WatchProjectileLoop(ProjectileController projectile) {
+		while (cameraMode == CameraMode.watchProjectile && projectile != null) {
+			var projectileRB = projectile.GetComponent<Rigidbody>();
+			if (projectileRB.velocity.magnitude > 3.0f) {
+				desiredPosition = projectile.transform.position - projectileRB.velocity.normalized * 7.0f + Vector3.up * 3.0f;
+				Vector3 relativePosition = projectile.transform.position + projectileRB.velocity.normalized * 7.0f - transform.position;
+				desiredRotation = Quaternion.LookRotation(relativePosition);
+			}
+			yield return null;
+		}
+	}
+
+	public void ShakeCamera(float amount, float dfactor){
+		StartCoroutine(ShakeCameraLoop(amount, dfactor));
+	}
+
+	IEnumerator ShakeCameraLoop(float amount, float decreaseFactor) {
+		shakeAmount = amount;
+		while (shakeAmount > 0.0001f) {
+			shakeAmount *= decreaseFactor;
+			// continue on next frame
+			yield return null;
+		}
+		shakeAmount = 0f;
 	}
 
 } // end Class
