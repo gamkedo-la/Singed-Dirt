@@ -26,9 +26,9 @@ public class ProjectileController : NetworkBehaviour {
 	void OnCollisionEnter(Collision coll){
 		Debug.Log("ProjectileController OnCollisionEnter with: " + coll.collider.name);
 		// only trigger explosion (spawn) if we currently have authority
-		if (hasAuthority) {
-			CmdExplode();
-		}
+		//if (hasAuthority) {
+		CmdExplode();
+		//}
 	}
 
 	public void SetupShot(shotKind kind, Transform shotSource){
@@ -45,6 +45,7 @@ public class ProjectileController : NetworkBehaviour {
 	/// </summary>
 	[Command]
 	void CmdExplode() {
+		Debug.Log("CmdExplode: " + this);
 		// Get list of colliders in range of this explosion
 		Collider[] flakReceivers = Physics.OverlapSphere(transform.position, 10.0f);
 
@@ -88,8 +89,19 @@ public class ProjectileController : NetworkBehaviour {
 			}
 		}
 
-		GameObject fire = Instantiate (explosionKind[(int)myKind], gameObject.transform.position, Quaternion.identity) as GameObject;
+		Debug.Log("CmdExplode instantiate explosion: " + this);
+		GameObject explosionPrefab;
+		if (explosionKind[(int)myKind] != null) {
+			explosionPrefab = explosionKind[(int)myKind];
+		} else {
+			explosionPrefab = explosion;
+		}
+		GameObject fire = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(fire);
+
+		// notify manager
+		manager.ServerHandleExplosion(fire);
+
 		//NetworkServer.Destroy (shape);
 		Destroy (fire, 5);
 	}

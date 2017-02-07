@@ -40,6 +40,9 @@ public class TurnManager : NetworkBehaviour {
 	int tankTurnIndex = 0;
 	bool gameOverState = false;
 
+	GameObject liveProjectile = null;
+	GameObject liveExplosion = null;
+
 	void Awake(){
 		instance = this;
 		gameOverText.enabled = false;
@@ -162,6 +165,17 @@ public class TurnManager : NetworkBehaviour {
 		player.ServerAssignIndex(newTankIndex);
 	}
 
+	public void ServerHandleShotFired(TankController player, GameObject projectileGO) {
+		if (!isServer) return;
+		liveProjectile = projectileGO;
+	}
+
+	public void ServerHandleExplosion(GameObject explosionGO) {
+		Debug.Log("ServerHandleExplosion: " + explosionGO);
+		if (!isServer) return;
+		liveExplosion = explosionGO;
+	}
+
     // ------------------------------------------------------
     // SERVER->CLIENT METHODS
 
@@ -189,16 +203,18 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	[ClientRpc]
-	void RpcViewProjectile(GameObject projectile) {
-		camController.ShakeCamera(0.8f, 0.8f);
-		camController.WatchProjectile(projectile.GetComponent<ProjectileController>());
+	void RpcViewShot(GameObject playerGO, GameObject projectileGO, bool localOnly) {
+		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
+			camController.ShakeCamera(0.8f, 0.8f);
+			camController.WatchProjectile(projectileGO);
+		}
 	}
 
 	[ClientRpc]
-	void RpcViewLocalProjectile(GameObject player, GameObject projectile) {
-		if (player.GetComponent<TankController>().isLocalPlayer) {
+	void RpcViewExplosion(GameObject playerGO, GameObject explosionGO, bool localOnly) {
+		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
 			camController.ShakeCamera(0.8f, 0.8f);
-			camController.WatchProjectile(projectile.GetComponent<ProjectileController>());
+			camController.WatchExplosion(explosionGO);
 		}
 	}
 
@@ -287,25 +303,30 @@ public class TurnManager : NetworkBehaviour {
 		// activate the tank
 		SetActiveTank(tank);
 
-		// wait for the tank to release control
+		// wait for shot fired by this tank
 		while (tank.hasControl) {
 			yield return null;
 		}
 
 		// follow tank projectile
-		if (tank.liveProjectile != null) {
-			var networkIdentity = tank.liveProjectile.GetComponent<NetworkIdentity>();
-			if (networkIdentity != null) {
-				RpcViewLocalProjectile(tank.gameObject, tank.liveProjectile);
-			}
+		if (liveProjectile != null) {
+			// update local camera to watch live projectile
+			RpcViewShot(tank.gameObject, liveProjectile, true);
+		}
+		// wait until the projectile is destroyed
+		while (liveProjectile != null) {
+			yield return null;
 		}
 
 		// wait for explosion
-		// FIXME: make projectile camera and explosion handling event driven instead of only time based
-		float explosionViewTime = 3.0f;
-		var explosionWait = new WaitForSeconds (explosionViewTime);
-		yield return explosionWait;
-
+		if (liveExplosion != null) {
+			// update local camera to watch live explosion
+			RpcViewExplosion(tank.gameObject, liveExplosion, true);
+		}
+		// wait until the explosion is destroyed
+		while (liveExplosion != null) {
+			yield return null;
+		}
 
 		// reset view to local tank view
 		RpcViewLocalTank();

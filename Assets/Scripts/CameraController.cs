@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour {
 	// Public
 	public Transform playerLocation;
 	public float cameraPositionAbovePlayer = 1.5f;
+	public float cameraPositionAboveExplosion = 1.5f;
 	public float explosionViewTime = 3.0f;
 	public Transform overviewLocation;
 	public Transform centerLocation;
@@ -209,20 +210,38 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
-	public void WatchProjectile(ProjectileController projectile) {
-		Debug.Log("WatchProjectile: " + projectile);
+	public void WatchProjectile(GameObject projectileGO) {
+		Debug.Log("WatchProjectile: " + projectileGO);
 		cameraMode = CameraMode.watchProjectile;
-		StartCoroutine(WatchProjectileLoop(projectile));
+		StartCoroutine(WatchProjectileLoop(projectileGO));
 	}
 
-	IEnumerator WatchProjectileLoop(ProjectileController projectile) {
-		while (cameraMode == CameraMode.watchProjectile && projectile != null) {
-			var projectileRB = projectile.GetComponent<Rigidbody>();
+	IEnumerator WatchProjectileLoop(GameObject projectileGO) {
+		while (cameraMode == CameraMode.watchProjectile && projectileGO != null) {
+			var projectileRB = projectileGO.GetComponent<Rigidbody>();
 			if (projectileRB.velocity.magnitude > 3.0f) {
-				desiredPosition = projectile.transform.position - projectileRB.velocity.normalized * 7.0f + Vector3.up * 3.0f;
-				Vector3 relativePosition = projectile.transform.position + projectileRB.velocity.normalized * 7.0f - transform.position;
+				desiredPosition = projectileGO.transform.position - projectileRB.velocity.normalized * 7.0f + Vector3.up * 3.0f;
+				Vector3 relativePosition = projectileGO.transform.position + projectileRB.velocity.normalized * 7.0f - transform.position;
 				desiredRotation = Quaternion.LookRotation(relativePosition);
 			}
+			yield return null;
+		}
+	}
+
+	public void WatchExplosion(GameObject explosionGO) {
+		Debug.Log("WatchExplosion: " + explosionGO);
+		cameraMode = CameraMode.watchExplosion;
+		StartCoroutine(WatchExplosionLoop(explosionGO));
+	}
+
+	IEnumerator WatchExplosionLoop(GameObject explosionGO) {
+		while (cameraMode == CameraMode.watchProjectile && explosionGO != null) {
+			var projectileRB = explosionGO.GetComponent<Rigidbody>();
+
+			desiredPosition = explosionGO.transform.position - explosionGO.transform.forward + Vector3.up * cameraPositionAboveExplosion + Vector3.right * 0.5f;
+			Vector3 relativePosition = desiredPosition - transform.position;
+			desiredRotation = Quaternion.LookRotation(relativePosition);
+			
 			yield return null;
 		}
 	}

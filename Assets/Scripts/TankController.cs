@@ -396,6 +396,9 @@ public class TankController : NetworkBehaviour {
 
 		// set network spawn
 		NetworkServer.Spawn (liveProjectile);
+
+		// update manager
+		manager.ServerHandleShotFired(this, liveProjectile);
 	}
 
 	/// <summary>
