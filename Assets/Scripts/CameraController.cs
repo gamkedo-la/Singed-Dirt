@@ -84,7 +84,7 @@ public class CameraController : MonoBehaviour {
 				transform.position = originalPosition + Random.insideUnitSphere * shakeAmount;
 				timeInExplosionCam -= Time.deltaTime;
 				if (timeInExplosionCam <= 0.0f) {
-					TurnManager.instance.CycleActiveTank ();
+					//TurnManager.instance.CycleActiveTank ();
 				}
 //				chaseCameraSpot = transform.position;
 //				chaseCameraSpot = explosionCamVector + Vector3.up * 4.0f - player.transform.forward * 4.0f;
