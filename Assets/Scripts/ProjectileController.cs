@@ -7,36 +7,22 @@ public class ProjectileController : NetworkBehaviour {
 
 	Terrain terrain;
 	TurnManager manager;
-	public GameObject explosion;
 
-	public enum shotKind {
-		Standard, Cluster, Fire, End
-	}
-	public GameObject[] explosionKind;
-	public GameObject[] projectileShape;
+	ExplosionKind explosionKind = ExplosionKind.fire;
 
-	shotKind myKind = shotKind.Standard;
-	GameObject shape;
 	// Use this for initialization
 	void Start () {
 		terrain = Terrain.activeTerrain;
 		manager = TurnManager.GetGameManager();
+		DisableCollisions(0.2f);
 	}
 
 	void OnCollisionEnter(Collision coll){
 		Debug.Log("ProjectileController OnCollisionEnter with: " + coll.collider.name);
 		// only trigger explosion (spawn) if we currently have authority
-		//if (hasAuthority) {
-		CmdExplode();
-		//}
-	}
-
-	public void SetupShot(shotKind kind, Transform shotSource){
-		myKind = kind;
-		shape = (GameObject)Instantiate (projectileShape [(int)myKind], shotSource.position, shotSource.rotation);
-		shape.transform.SetParent (transform);
-		NetworkServer.Spawn (shape);
-		Debug.Log ("New shot kind is: " + myKind);
+		if (hasAuthority) {
+			CmdExplode();
+		}
 	}
 
 	/// <summary>
@@ -54,8 +40,6 @@ public class ProjectileController : NetworkBehaviour {
 			// TODO use a better method to identify Player tank objects?
 			if (gameObjRef.name.Contains ("Player") && !gameObjRef.name.Contains("Projectile")) {
 				Debug.Log (gameObjRef.name + " received splash damage");
-
-
 
 				Vector3 cannonballCenterToTankCenter = transform.position - gameObjRef.transform.position;
 				Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
@@ -89,21 +73,47 @@ public class ProjectileController : NetworkBehaviour {
 			}
 		}
 
-		Debug.Log("CmdExplode instantiate explosion: " + this);
-		GameObject explosionPrefab;
-		if (explosionKind[(int)myKind] != null) {
-			explosionPrefab = explosionKind[(int)myKind];
-		} else {
-			explosionPrefab = explosion;
-		}
-		GameObject fire = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
-		NetworkServer.Spawn(fire);
+		// instantiate explosion
+		var explosionPrefab = PrefabRegistry.singleton.GetExplosion(explosionKind);
+		Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
+		GameObject explosion = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
+		NetworkServer.Spawn(explosion);
 
 		// notify manager
-		manager.ServerHandleExplosion(fire);
+		manager.ServerHandleExplosion(explosion);
 
-		//NetworkServer.Destroy (shape);
-		Destroy (fire, 5);
+		// set explosion duration (destroy after duration)
+		var explosionController = explosion.GetComponent<ExplosionController>();
+		var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
+		Destroy (explosion, explosionDuration);
+
+		// destroy the projectile on collision
+		NetworkServer.Destroy(gameObject);
+
+	}
+
+	public void DisableCollisions(float timer) {
+		Debug.Log("Collisions Disabled");
+		// disable collisions
+		var rb = GetComponent<Rigidbody>();
+		if (rb != null) {
+			rb.detectCollisions = false;
+			// start timer to re-enable
+	        StartCoroutine(EnableCollisionTimer(timer));
+		}
+	}
+
+	IEnumerator EnableCollisionTimer(float timer) {
+		while (timer > 0) {
+			timer -= Time.deltaTime;
+
+			// wait until next frame
+			yield return null;
+		}
+
+		// enable collisions
+		Debug.Log("Collisions Enabled");
+		GetComponent<Rigidbody>().detectCollisions = true;
 	}
 
 	// Update is called once per frame

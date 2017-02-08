@@ -28,7 +28,7 @@ public class TankController : NetworkBehaviour {
 	public GameObject[] lowerMeshes;
 
 	public Rigidbody rb;
-	public ProjectileController.shotKind selectedShot;
+	public ProjectileKind selectedShot;
 
 	// Private
 	TurnManager manager;
@@ -243,9 +243,10 @@ public class TankController : NetworkBehaviour {
 	/// Fire selected projectile if current player controller is in proper state.
 	/// </summary>
 	void OnChangeControl(bool currentHasControl) {
-		Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer);
+		Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
 		// only apply change control to local player
 		if (!isLocalPlayer) return;
+		if (currentHasControl == hasControl) return;
 		hasControl = currentHasControl;
 
 		// disable -> enable
@@ -324,27 +325,29 @@ public class TankController : NetworkBehaviour {
 					shotPower += shotPowerModifier;
 				}
 			}
-			int shotInt = (int)selectedShot;
+			var numShots = System.Enum.GetValues(typeof(ProjectileKind)).Length;
+			int shotInt = (int) selectedShot;
 			if (Input.GetKeyDown (KeyCode.Comma)) {
 				shotInt--;
 				if (shotInt < 0) {
-					shotInt = (int)(ProjectileController.shotKind.End) - 1;
+					shotInt = numShots - 1;
 				}
-				selectedShot = (ProjectileController.shotKind)shotInt;
+				selectedShot = (ProjectileKind)shotInt;
 				Debug.Log ("getting smaller: " + shotInt);
 			}
 			if (Input.GetKeyDown (KeyCode.Period)) {
 				shotInt++;
-				if (shotInt > (int)(ProjectileController.shotKind.End)) {
+				if (shotInt >= numShots) {
 					shotInt = 0;
 				}
-				selectedShot = (ProjectileController.shotKind)shotInt;
+				selectedShot = (ProjectileKind)shotInt;
 				Debug.Log ("getting larger: " + shotInt);
 			}
 
 			// Shoot already ... when shot is fired, finish this coroutine;
 			if (Input.GetKeyDown (KeyCode.Space)) {
-				CmdFire(shotPower);
+				Debug.Log("space is down, calling CmdFire");
+				CmdFire(shotPower, selectedShot);
 				yield break;
 			}
 
@@ -373,7 +376,8 @@ public class TankController : NetworkBehaviour {
 	/// Fire selected projectile if current player controller is in proper state.
 	/// </summary>
 	[Command]
-	void CmdFire(float shotPower) {
+	void CmdFire(float shotPower, ProjectileKind projectiledKind) {
+		Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
 		// controller state-based authorization check
 		if (!hasControl) {
 			Debug.Log("nope");
@@ -381,8 +385,9 @@ public class TankController : NetworkBehaviour {
 		}
 
 		// instantiate from prefab
+		var prefab = PrefabRegistry.singleton.GetProjectile(projectiledKind);
 		liveProjectile = (GameObject)GameObject.Instantiate (
-			projectilePrefab,
+			prefab,
 			shotSource.position,
 			shotSource.rotation
 		);
@@ -392,6 +397,7 @@ public class TankController : NetworkBehaviour {
 		//pcScript.SetupShot (selectedShot, shotSource);
 
 		// set initial velocity/force
+		//liveProjectile.GetComponent<ProjectileController>().DisableCollisions(0.1f);
 		liveProjectile.GetComponent<Rigidbody>().AddForce(shotSource.forward * shotPower);
 
 		// set network spawn
@@ -407,6 +413,7 @@ public class TankController : NetworkBehaviour {
 	/// </summary>
 	[Command]
 	void CmdReleaseControl() {
+		Debug.Log("CmdReleaseControl for " + name);
 		/// release control
 		hasControl = false;
 

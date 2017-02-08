@@ -166,6 +166,7 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	public void ServerHandleShotFired(TankController player, GameObject projectileGO) {
+		Debug.Log("ServerHandleShotFired: " + projectileGO);
 		if (!isServer) return;
 		liveProjectile = projectileGO;
 	}
@@ -205,7 +206,7 @@ public class TurnManager : NetworkBehaviour {
 	[ClientRpc]
 	void RpcViewShot(GameObject playerGO, GameObject projectileGO, bool localOnly) {
 		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
-			camController.ShakeCamera(0.8f, 0.8f);
+			//camController.ShakeCamera(0.8f, 0.8f);
 			camController.WatchProjectile(projectileGO);
 		}
 	}
