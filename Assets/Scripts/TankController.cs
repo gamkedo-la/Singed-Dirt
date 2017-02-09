@@ -68,12 +68,14 @@ public class TankController : NetworkBehaviour {
 		}
 	}
 
-
-	void Start() {
-		Debug.Log("TankController.Start");
+	void Awake() {
 		// lookup/cache required components
 		manager = TurnManager.GetGameManager();
 		rb = GetComponent<Rigidbody> ();
+	}
+
+	void Start() {
+		Debug.Log("TankController.Start");
 	}
 
 	// Use this for initialization

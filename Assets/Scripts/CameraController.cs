@@ -30,7 +30,6 @@ public class CameraController : MonoBehaviour {
 	Vector3 chaseCameraSpot;
 	Quaternion chaseCameraRot;
 	float shakeAmount = 0f;
-	float decreaseFactor = 0.0f;
 	Vector3 originalPosition;
 
 	public float dampTime = 0.2f;                 // Approximate time for the camera to refocus.
@@ -139,9 +138,11 @@ public class CameraController : MonoBehaviour {
 		if (inProjectileMode) {
 			transform.position = springK * transform.position + (1.0f - springK) * chaseCameraSpot;
 		}
+		/*
 		if (timeInExplosionCam > 0.0f) {
 			shakeAmount *= decreaseFactor;
 		}
+		*/
 //		transform.rotation = Quaternion.Slerp (transform.rotation, chaseCameraRot, 0.4f);
 	} // FixedUpdate
 
@@ -241,7 +242,7 @@ public class CameraController : MonoBehaviour {
 			desiredPosition = explosionGO.transform.position - explosionGO.transform.forward + Vector3.up * cameraPositionAboveExplosion + Vector3.right * 0.5f;
 			Vector3 relativePosition = desiredPosition - transform.position;
 			desiredRotation = Quaternion.LookRotation(relativePosition);
-			
+
 			yield return null;
 		}
 	}
@@ -251,6 +252,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	IEnumerator ShakeCameraLoop(float amount, float decreaseFactor) {
+		Debug.Log("start shaking camera for amount: " + amount);
 		shakeAmount = amount;
 		while (shakeAmount > 0.0001f) {
 			shakeAmount *= decreaseFactor;
@@ -258,6 +260,7 @@ public class CameraController : MonoBehaviour {
 			yield return null;
 		}
 		shakeAmount = 0f;
+		Debug.Log("done shaking camera");
 	}
 
 } // end Class

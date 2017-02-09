@@ -213,8 +213,9 @@ public class TurnManager : NetworkBehaviour {
 
 	[ClientRpc]
 	void RpcViewExplosion(GameObject playerGO, GameObject explosionGO, bool localOnly) {
+		Debug.Log("RpcViewExplosion: isLocalPlayer: " + playerGO.GetComponent<TankController>().isLocalPlayer);
 		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
-			camController.ShakeCamera(0.8f, 0.8f);
+			camController.ShakeCamera(2.0f, 0.9f);
 			camController.WatchExplosion(explosionGO);
 		}
 	}
