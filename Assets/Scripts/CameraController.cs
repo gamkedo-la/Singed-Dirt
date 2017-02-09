@@ -32,6 +32,8 @@ public class CameraController : MonoBehaviour {
 	float shakeAmount = 0f;
 	Vector3 originalPosition;
 
+	private Camera camera;
+	private float zoomSpeed;                      // Reference speed for the smooth damping of the orthographic size.
 	public float dampTime = 0.2f;                 // Approximate time for the camera to refocus.
 	public float rotationDampTime = 0.2f;         // Approximate time for the camera to refocus.
 	public Vector3 moveVelocity;
@@ -40,22 +42,21 @@ public class CameraController : MonoBehaviour {
 	Vector3 desiredPosition;
 	Quaternion desiredRotation;
 
-	// TODO put these zoom vars into a struct
-	float initZoom = 2.0f;
-	float currZoom;
-	float maxZoom = 4.5f;
+	// support camera zoom while aiming
 	float zoomIncrement = 0.25f;
-	bool zoomingOut = true;	// Used when 'releasing' the zoom
+	float playerZoom = 2f;
+	float maxPlayerZoom = 4.5f;
 
 	// Use this for initialization
 	void Start () {
 //		player = GameObject.Find("Player").GetComponent<TankController>();
 		chaseCameraSpot = transform.position;
-		currZoom = initZoom;
 		Debug.Log ("CameraController script starting in " + gameObject.name);
 		transform.position = overviewLocation.transform.position;
 		transform.LookAt(centerLocation.position);
 		desiredPosition = transform.position;
+
+        camera = GetComponentInChildren<Camera> ();
 	}
 
 	public void SetPlayerCameraFocus (TankController _player){
@@ -67,7 +68,7 @@ public class CameraController : MonoBehaviour {
 
 	public void SetPlayerCameraLookAt (TankController _player) {
 		// Camera look at code
-		player.playerCameraSpot.position = player.transform.position - player.transform.forward * currZoom + Vector3.up * cameraPositionAbovePlayer;
+		player.playerCameraSpot.position = player.transform.position - player.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
 		player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
 
 	}
@@ -134,47 +135,15 @@ public class CameraController : MonoBehaviour {
 	} // end LateUpdate
 
 	void FixedUpdate(){
+		/*
 		float springK = 0.94f;
 		if (inProjectileMode) {
 			transform.position = springK * transform.position + (1.0f - springK) * chaseCameraSpot;
 		}
-		/*
-		if (timeInExplosionCam > 0.0f) {
-			shakeAmount *= decreaseFactor;
-		}
 		*/
-//		transform.rotation = Quaternion.Slerp (transform.rotation, chaseCameraRot, 0.4f);
 	} // FixedUpdate
 
 	void Update() {
-		/*
-		if (TurnManager.instance == null || TurnManager.instance.GetActiveTank () == null) {
-			return;
-		}
-		if (Input.GetKey (KeyCode.Z)) {
-			if (!zoomingOut) {
-				zoomingOut = true;
-			}
-			if (currZoom < maxZoom) {
-				currZoom += zoomIncrement;
-			} else if (currZoom >= maxZoom) {
-				currZoom = maxZoom;
-			}
-
-			SetPlayerCameraLookAt (TurnManager.instance.GetActiveTank ());
-
-		} else if (zoomingOut) {	// read: "else if Z key not pressed, but still in 'zooming out' mode"
-			if (currZoom > initZoom) {
-				currZoom -= zoomIncrement;
-			} else if (currZoom <= initZoom) {
-				currZoom = initZoom;
-				zoomingOut = false;
-			}
-
-			SetPlayerCameraLookAt (TurnManager.instance.GetActiveTank ());
-
-		}
-		*/
 	}
 
 	public void WatchOverview() {
@@ -199,8 +168,18 @@ public class CameraController : MonoBehaviour {
 
 	IEnumerator WatchPlayerLoop(TankController tank) {
 		while (cameraMode == CameraMode.watchPlayer && tank != null) {
+			// allow camera zoom while in player mode;
+			if ((Input.GetKey(KeyCode.LeftShift) && Input.GetKey (KeyCode.Z)) ||
+				(Input.GetKey(KeyCode.RightShift) && Input.GetKey (KeyCode.Z))) {
+				playerZoom -= zoomIncrement;
+				if (playerZoom < 0) playerZoom = 0;
+
+			} else if (Input.GetKey (KeyCode.Z)) {
+				playerZoom += zoomIncrement;
+				if (playerZoom > maxPlayerZoom) playerZoom = maxPlayerZoom;
+			}
 			if (tank.hasControl) {
-				desiredPosition = tank.transform.position - tank.transform.forward * currZoom + Vector3.up * cameraPositionAbovePlayer;
+				desiredPosition = tank.transform.position - tank.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
 				Vector3 relativePosition = tank.transform.position + tank.transform.forward * 15.0f - transform.position;
 				desiredRotation = Quaternion.LookRotation(relativePosition);
 			} else {
