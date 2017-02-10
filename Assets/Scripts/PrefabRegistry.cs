@@ -20,6 +20,14 @@ public enum ExplosionKind {
 }
 
 /// <summary>
+/// List of all explosion prefabs.
+/// NOTE: the names here must match a prefab in the Resources/Explosions/ directory in order for registry to load.
+/// </summary>
+public enum DeformationKind {
+    shotCrater = 0,
+}
+
+/// <summary>
 /// A singleton registry class providing a cache and access methods to retrieve object prefabs based on
 /// enum identifiers.
 /// </summary>
@@ -85,6 +93,14 @@ public class PrefabRegistry: MonoBehaviour {
     /// </summary>
     public GameObject GetExplosion(ExplosionKind prefabID) {
         name = "Explosions/" + prefabID.ToString();
+        return GetPrefab(name);
+    }
+
+    /// <summary>
+    /// Lookup deformation prefab by ID, return prefab gameobject if found
+    /// </summary>
+    public GameObject GetDeformation(DeformationKind prefabID) {
+        name = "Deformations/" + prefabID.ToString();
         return GetPrefab(name);
     }
 

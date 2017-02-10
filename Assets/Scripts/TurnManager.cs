@@ -312,6 +312,7 @@ public class TurnManager : NetworkBehaviour {
 
 		// follow tank projectile
 		if (liveProjectile != null) {
+			Debug.Log("live projectile detected");
 			// update local camera to watch live projectile
 			RpcViewShot(tank.gameObject, liveProjectile, true);
 		}
@@ -322,6 +323,7 @@ public class TurnManager : NetworkBehaviour {
 
 		// wait for explosion
 		if (liveExplosion != null) {
+			Debug.Log("live explosion detected");
 			// update local camera to watch live explosion
 			RpcViewExplosion(tank.gameObject, liveExplosion, true);
 		}

@@ -8,7 +8,8 @@ public class ProjectileController : NetworkBehaviour {
 	Terrain terrain;
 	TurnManager manager;
 
-	ExplosionKind explosionKind = ExplosionKind.fire;
+	public ExplosionKind explosionKind = ExplosionKind.fire;
+	public DeformationKind deformationKind = DeformationKind.shotCrater;
 
 	// Use this for initialization
 	void Start () {
@@ -17,20 +18,22 @@ public class ProjectileController : NetworkBehaviour {
 		DisableCollisions(0.2f);
 	}
 
-	void OnCollisionEnter(Collision coll){
-		Debug.Log("ProjectileController OnCollisionEnter with: " + coll.collider.name);
+	void OnCollisionEnter(Collision collision){
+		Debug.Log("ProjectileController OnCollisionEnter with: " + collision.collider.name);
 		// only trigger explosion (spawn) if we currently have authority
-		if (hasAuthority) {
-			CmdExplode();
+		// run collisions on server only
+		if (isServer) {
+			ServerExplode(collision);
 		}
 	}
 
+    // ------------------------------------------------------
+    // SERVER-ONLY METHODS
+
 	/// <summary>
-	/// Called from the client, executed on the server
-	/// Generate Explosion for current projectile
+	/// Generate explosion and apply damage for projectile
 	/// </summary>
-	[Command]
-	void CmdExplode() {
+	void ServerExplode(Collision collision) {
 		Debug.Log("CmdExplode: " + this);
 		// Get list of colliders in range of this explosion
 		Collider[] flakReceivers = Physics.OverlapSphere(transform.position, 10.0f);
@@ -73,6 +76,19 @@ public class ProjectileController : NetworkBehaviour {
 			}
 		}
 
+		// perform terrain deformation (if terrain was hit)
+		var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
+		if (terrainManager != null) {
+			var deformationPrefab = PrefabRegistry.singleton.GetDeformation(deformationKind);
+			Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
+			GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
+			NetworkServer.Spawn(deformation);
+			// determine deformation seed
+			var seed = Random.Range(1, 1<<24);
+			// execute terrain deformation on client
+			terrainManager.RpcApplyDeform(deformation, seed);
+		}
+
 		// instantiate explosion
 		var explosionPrefab = PrefabRegistry.singleton.GetExplosion(explosionKind);
 		Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
@@ -88,7 +104,8 @@ public class ProjectileController : NetworkBehaviour {
 		Destroy (explosion, explosionDuration);
 
 		// destroy the projectile on collision
-		NetworkServer.Destroy(gameObject);
+		Destroy(gameObject, .2f);
+		//NetworkServer.Destroy(gameObject);
 
 	}
 

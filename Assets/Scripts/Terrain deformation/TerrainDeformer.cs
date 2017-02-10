@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
+public class TerrainDeformer : NetworkBehaviour, ITerrainDeformer
 {
     [Header("Performance options")]
     [SerializeField] bool m_delayLodUpdate;
@@ -47,11 +48,18 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
 		}
 	}
 
-    public void DeformTerrain(Terrain terrain, Vector3 position)
+    public void DeformTerrain(Terrain terrain, Vector3 position, int seed)
     {
         if (m_deformed)
             return;
-		m_rigidbody.isKinematic = true; // This is to ensure no weird camera stuff happens after hitting terrain (Singed Dirt only) - Jeremy Kenyon
+
+        // initialize to given seed
+        Debug.Log("DeformTerrain with seed: " + seed);
+        if (seed != 0) Random.InitState(seed);
+
+        if (m_rigidbody != null) {
+    		m_rigidbody.isKinematic = true; // This is to ensure no weird camera stuff happens after hitting terrain (Singed Dirt only) - Jeremy Kenyon
+        }
         m_deformed = true;
 
         m_terrain = terrain;
@@ -130,9 +138,13 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
 
         if (m_deformationDuration < 0.01f)
         {
+            Debug.Log("deform now");
             SetHeights(sampleHeights, 1f);
             SetScar(sampleScarBlend, 1f);
-            Debug.Log("I'm the first destroy");
+            // deformation is complete
+            Destroy(gameObject);
+            /*
+            Debug.Log("I'm the first destroy: childCount: " + transform.childCount + " gameObject: " + gameObject);
             for (int i = transform.childCount - 1; i >= 0; i--)
             {
                 transform.GetChild(i).transform.rotation = Quaternion.identity;
@@ -140,10 +152,12 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
                 transform.GetChild(i).parent = null;
             }
             Destroy(gameObject);
+            */
             //m_rigidbody.isKinematic = true;
         }
         else
         {
+            Debug.Log("start deform incr");
             StartCoroutine(DeformIncrementally(sampleHeights, sampleScarBlend));
         }
     }
@@ -167,7 +181,7 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
 
     private float[,] AddHeights(float[,] heights, float[,] sampleHeights, float frac)
     {
-        //print(string.Format("heights: [{0},{1}], sampleHeights: [{2},{3}]", 
+        //print(string.Format("heights: [{0},{1}], sampleHeights: [{2},{3}]",
         //    heights.GetLength(0), heights.GetLength(1), sampleHeights.GetLength(0), sampleHeights.GetLength(1)));
         //print(string.Format("xSize: {0}, ySize: {1}", m_xSize, m_ySize));
 
@@ -194,7 +208,7 @@ public class TerrainDeformer : MonoBehaviour, ITerrainDeformer
             for (int j = 0; j < m_ySize - 1; j++)
             {
                 float blend = frac * sampleScarBlend[i, j];
-    
+
                 for (int k = 0; k < textures; k++)
                 {
                     float existing = maps[j, i, k];

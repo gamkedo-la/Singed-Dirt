@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class FormTerrain : MonoBehaviour {
+public class FormTerrain : NetworkBehaviour {
 
 	public TerrainDeformationManager tdManager;
 	public GameObject[] shortTerrainShapes;
@@ -27,10 +28,10 @@ public class FormTerrain : MonoBehaviour {
 			Vector3 randInSpawnBox;
 			randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
 			randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
-			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), randInSpawnBox);
+			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), randInSpawnBox, 0);
 		}
 	}
-	
+
 	// Update is called once per frame
 	void SpawnTerrain () {
 		if (shortTerrainSpawnCount > 0) {

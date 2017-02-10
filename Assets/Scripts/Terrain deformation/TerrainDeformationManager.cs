@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(Terrain))]
-public class TerrainDeformationManager : MonoBehaviour
+public class TerrainDeformationManager : NetworkBehaviour
 {
     [SerializeField] bool m_delayLodUpdate;
     [SerializeField] bool m_allowErosion = true;
@@ -91,7 +92,7 @@ public class TerrainDeformationManager : MonoBehaviour
                 }
 
                 if (m_delayLodUpdate)
-                    m_terrainData.SetHeightsDelayLOD(jStart, iStart, newHeights);  
+                    m_terrainData.SetHeightsDelayLOD(jStart, iStart, newHeights);
                 else
                     m_terrainData.SetHeights(jStart, iStart, newHeights);
 
@@ -121,12 +122,14 @@ public class TerrainDeformationManager : MonoBehaviour
     }
 
 
+    /*
     void OnCollisionEnter(Collision col)
     {
         var terrainDeformer = col.gameObject.GetComponent<ITerrainDeformer>();
 
         if (terrainDeformer != null)
         {
+            Debug.Log("TDM OnCollisionEnter");
             if (m_allowErosion)
                 StartCoroutine(TurnOnErosion());
 
@@ -141,18 +144,30 @@ public class TerrainDeformationManager : MonoBehaviour
 
         if (terrainDeformer != null)
         {
+            Debug.Log("TDM OnTriggerEnter");
             if (m_allowErosion)
                 StartCoroutine(TurnOnErosion());
 
             terrainDeformer.DeformTerrain(m_terrain, other.transform.position);
         }
     }
+    */
 
-	public void ApplyDeform(TerrainDeformer tdScript, Vector3 where){
+	[ClientRpc]
+    public void RpcApplyDeform(GameObject deformGO, int seed) {
+        Debug.Log("RpcApplyDeform: " + deformGO + " @ " + deformGO.transform.position + " with seed: " + seed);
+        var deformer = deformGO.GetComponent<TerrainDeformer>();
+        if (deformer != null) {
+            ApplyDeform(deformer, deformGO.transform.position, seed);
+        }
+    }
+
+	public void ApplyDeform(TerrainDeformer tdScript, Vector3 where, int seed){
 		Debug.Log ("ApplyDeform got called");
-		if (m_allowErosion)
+		if (m_allowErosion) {
 			StartCoroutine(TurnOnErosion());
-		tdScript.DeformTerrain (m_terrain, where);
+        }
+		tdScript.DeformTerrain (m_terrain, where, seed);
 	}
 
 
