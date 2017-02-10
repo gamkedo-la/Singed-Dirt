@@ -86,31 +86,18 @@ public class TurnManager : NetworkBehaviour {
 		activeTank.InputAdjustPower (float.Parse(power.text));
 	}
 
-	public void CycleActiveTank(){
-		tankTurnIndex++;
-		if (tankTurnIndex >= tanks.Count) {
-			tankTurnIndex = 0;
-			Debug.Log ("Everyone had a turn.");
+	void GetLocalTankHud(){
+		if (localTank != null) {
+			horizontalTurret = localTank.HorizAngle ();
+			verticalTurret = localTank.VertAngle ();
+			shotPower = localTank.ShotPower ();
+			tankHitPoints = localTank.HitPoints ();
 		}
-		if (gameOverState == false) {
-			SetActiveTank (tanks [tankTurnIndex]);
-		}
-
-	}
-
-	void GetCurrentTankHud(){
-		horizontalTurret = activeTank.HorizAngle ();
-		verticalTurret = activeTank.VertAngle ();
-		shotPower = activeTank.ShotPower ();
-		tankHitPoints = activeTank.HitPoints ();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (activeTank == null) {
-			return;
-		}
-		GetCurrentTankHud ();
+		GetLocalTankHud ();
 		hud.text =
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
