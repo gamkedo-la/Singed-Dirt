@@ -217,6 +217,9 @@ public class TurnManager : NetworkBehaviour {
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
+		// build world
+		yield return StartCoroutine(BuildWorld());
+
 		// adjust camera
 		RpcViewLocalTank();
 
@@ -238,6 +241,16 @@ public class TurnManager : NetworkBehaviour {
 
 		camController.WatchPlayer(localTank);
 		//camController.SetPlayerCameraFocus(localTank);
+	}
+
+	/// <summary>
+	/// Build out the world
+	/// </summary>
+	IEnumerator BuildWorld() {
+		// spawn terrain
+		var formTerrain = GetComponent<FormTerrain>();
+		formTerrain.ServerGenerate();
+		yield return null;
 	}
 
 	IEnumerator ListenForTanks(){

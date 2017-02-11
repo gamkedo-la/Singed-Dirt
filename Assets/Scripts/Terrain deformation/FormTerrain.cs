@@ -16,24 +16,72 @@ public class FormTerrain : NetworkBehaviour {
 	public Transform[] midSpawnBox;
 	public Transform[] tallSpawnBox;
 
+	//INoiseGenerator noiseGenerator;
+
 	// Use this for initialization
-	void Start () {
-		SpawnTerrain ();
+	void Awake () {
+		/*
+		var generator = new FastNoise();
+		generator.SetFrequency(10f);
+        generator.SetFractalOctaves(1);
+		generator.SetNoiseType(FastNoise.NoiseType.PerlinFractal);
+		noiseGenerator = generator;
+		*/
 	}
 
-	IEnumerator SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){
-		for (int i = 0; i < terrainCount; i++) {
-			yield return new WaitForSeconds (0.5f);
-			GameObject tempGO = GameObject.Instantiate (terrainShapes [Random.Range(0, terrainShapes.Length)]);
-			Vector3 randInSpawnBox;
-			randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
-			randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
-			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), randInSpawnBox, 0);
+    // ------------------------------------------------------
+    // SERVER-ONLY METHODS
+	/// <summary>
+	/// Terrain generation is started on the server
+	/// </summary>
+	public void ServerGenerate() {
+		if (!isServer) return;
+		// pick a seed
+		var seed = Random.Range(1, 1<<24);
+
+		// tell clients to start terrain build
+		RpcSpawnTerrain(seed);
+	}
+
+	/*
+	static float SampleHeight(int x, int y, INoiseGenerator generator) {
+		//This creates the noise used for the ground.
+		//The last value (8.0f) is the amp that defines (roughly) the maximum
+		//and minimum vaule the ground varies from the surface level
+		//return perlin.FractalNoise3D(pos.x, pos.y, pos.z, 4, 80.0f, 8.0f);
+		var noise = generator.GetNoise(x, y);
+		Debug.Log("noise: " + noise);
+		return (1.0f + noise) * 0.5f;
+	}
+	*/
+
+    // ------------------------------------------------------
+    // SERVER->CLIENT METHODS
+
+	/// <summary>
+	/// The actual work of terrain generation happens on the client, initialized w/ seed value passed from server
+	/// </summary>
+	[ClientRpc]
+	void RpcSpawnTerrain (int seed) {
+		Debug.Log("RpcSpawnTerrain with seed: " + seed);
+
+		// initialize terrain heights
+		//noiseGenerator.SetSeed(seed);
+		float[,] heights = new float[tdManager.terrainWidth, tdManager.terrainHeight];
+		for (var i=0; i<tdManager.terrainWidth; i++)
+		for (var j=0; j<tdManager.terrainHeight; j++) {
+			//heights[i,j] = 0.1f + SampleHeight(i,j, noiseGenerator) * .25f;
+			heights[i,j] = 0.1f;
 		}
-	}
+	    tdManager.SetTerrainHeights(heights);
 
-	// Update is called once per frame
-	void SpawnTerrain () {
+		// initialize random state
+        if (seed != 0) Random.InitState(seed);
+
+		// start spawns
+		StartCoroutine(SpawnTerrainTypes());
+
+		/*
 		if (shortTerrainSpawnCount > 0) {
 			StartCoroutine (SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortSpawnBox));
 		}
@@ -43,6 +91,43 @@ public class FormTerrain : NetworkBehaviour {
 		if (tallTerrainSpawnCount > 0) {
 			StartCoroutine (SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallSpawnBox));
 		}
-
+		*/
 	}
+
+    // ------------------------------------------------------
+    // STATE MACHINES
+
+	/// <summary>
+	/// handle terrain deformation spawning
+	/// </summary>
+	IEnumerator SpawnTerrainTypes(){
+		if (shortTerrainSpawnCount > 0) {
+			//yield return SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortSpawnBox);
+			SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortSpawnBox);
+		}
+		if (midTerrainSpawnCount > 0) {
+			//yield return SpawnTerrainType (midTerrainSpawnCount, midTerrainShapes, midSpawnBox);
+			SpawnTerrainType (midTerrainSpawnCount, midTerrainShapes, midSpawnBox);
+		}
+		if (tallTerrainSpawnCount > 0) {
+			//yield return SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallSpawnBox);
+			SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallSpawnBox);
+		}
+		yield return null;
+	}
+
+	//IEnumerator SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){
+	void SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){
+		for (int i = 0; i < terrainCount; i++) {
+			GameObject tempGO = GameObject.Instantiate (terrainShapes [Random.Range(0, terrainShapes.Length)]);
+			Vector3 randInSpawnBox;
+			randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
+			randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
+			// pick seed for each deformation
+			var seed = Random.Range(1, 1<<24);
+			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), randInSpawnBox, seed);
+			//yield return null;
+		}
+	}
+
 }

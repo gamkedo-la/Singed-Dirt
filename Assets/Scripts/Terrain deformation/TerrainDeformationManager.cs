@@ -24,6 +24,16 @@ public class TerrainDeformationManager : NetworkBehaviour
     private bool m_errosionOn;
     private float m_maxDifference = 0;
 
+    public int terrainWidth {
+        get {
+            return m_width;
+        }
+    }
+    public int terrainHeight {
+        get {
+            return m_height;
+        }
+    }
 
     void Awake()
     {
@@ -46,6 +56,13 @@ public class TerrainDeformationManager : NetworkBehaviour
         StartCoroutine(Erode());
     }
 
+	/// <summary>
+	/// Initialize the terrainMap heights
+	/// </summary>
+    public void SetTerrainHeights(float[,] heights) {
+        m_terrainData.SetHeights(0, 0, heights);
+        m_originalHeights = heights;
+    }
 
     private IEnumerator Erode()
     {
@@ -184,7 +201,7 @@ public class TerrainDeformationManager : NetworkBehaviour
 	private void OnApplicationQuit()
     {
 		Debug.Log ("called onApplicationQuit");
-        m_terrainData.SetHeights(0, 0, m_originalHeights);
+        //m_terrainData.SetHeights(0, 0, m_originalHeights);
         m_terrainData.SetAlphamaps(0, 0, m_originalAlphaMaps);
     }
 }

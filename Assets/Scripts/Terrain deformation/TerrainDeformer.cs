@@ -157,7 +157,6 @@ public class TerrainDeformer : NetworkBehaviour, ITerrainDeformer
         }
         else
         {
-            Debug.Log("start deform incr");
             StartCoroutine(DeformIncrementally(sampleHeights, sampleScarBlend));
         }
     }
