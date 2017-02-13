@@ -16,17 +16,21 @@ public class FormTerrain : NetworkBehaviour {
 	public Transform[] midSpawnBox;
 	public Transform[] tallSpawnBox;
 
-	//INoiseGenerator noiseGenerator;
+	public bool rollingTerrain = false;
+	[Range (0.0001f,0.001f)]
+	public float noiseFrequency = 0.001f;
+	[Range (0.1f,0.25f)]
+	public float noiseAmplitude = 0.1f;
+
+	INoiseGenerator noiseGenerator;
 
 	// Use this for initialization
 	void Awake () {
-		/*
 		var generator = new FastNoise();
-		generator.SetFrequency(10f);
-        generator.SetFractalOctaves(1);
+		generator.SetFrequency(noiseFrequency);
+        generator.SetFractalOctaves(4);
 		generator.SetNoiseType(FastNoise.NoiseType.PerlinFractal);
 		noiseGenerator = generator;
-		*/
 	}
 
     // ------------------------------------------------------
@@ -43,17 +47,15 @@ public class FormTerrain : NetworkBehaviour {
 		RpcSpawnTerrain(seed);
 	}
 
-	/*
 	static float SampleHeight(int x, int y, INoiseGenerator generator) {
 		//This creates the noise used for the ground.
 		//The last value (8.0f) is the amp that defines (roughly) the maximum
 		//and minimum vaule the ground varies from the surface level
 		//return perlin.FractalNoise3D(pos.x, pos.y, pos.z, 4, 80.0f, 8.0f);
 		var noise = generator.GetNoise(x, y);
-		Debug.Log("noise: " + noise);
+		//if (x == 0 ) Debug.Log("noise: " + noise.ToString("F4"));
 		return (1.0f + noise) * 0.5f;
 	}
-	*/
 
     // ------------------------------------------------------
     // SERVER->CLIENT METHODS
@@ -66,12 +68,17 @@ public class FormTerrain : NetworkBehaviour {
 		Debug.Log("RpcSpawnTerrain with seed: " + seed);
 
 		// initialize terrain heights
-		//noiseGenerator.SetSeed(seed);
+		if (rollingTerrain) {
+			noiseGenerator.SetSeed(seed);
+		}
 		float[,] heights = new float[tdManager.terrainWidth, tdManager.terrainHeight];
 		for (var i=0; i<tdManager.terrainWidth; i++)
 		for (var j=0; j<tdManager.terrainHeight; j++) {
-			//heights[i,j] = 0.1f + SampleHeight(i,j, noiseGenerator) * .25f;
-			heights[i,j] = 0.1f;
+			if (rollingTerrain) {
+				heights[i,j] = 0.1f + SampleHeight(i,j, noiseGenerator) * noiseAmplitude;
+			} else {
+				heights[i,j] = 0.1f;
+			}
 		}
 	    tdManager.SetTerrainHeights(heights);
 
