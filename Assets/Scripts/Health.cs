@@ -8,29 +8,34 @@ public class Health : NetworkBehaviour {
     public const int maxHealth = 100;
 
     [SyncVar(hook = "OnChangeHealth")]
-    public int currentHealth = maxHealth;
+    public int health = maxHealth;
 
     public RectTransform healthBar;
 
     public void TakeDamage(int amount)
     {
-        if (!isServer)
-            return;
+        if (!isServer) return;
+        Debug.Log("TakeDamage for " + amount);
 
-        currentHealth -= amount;
-        if (currentHealth <= 0)
+        health -= amount;
+        if (health <= 0)
         {
+            health = 0;
             Debug.Log("death");
 
+    		var manager = TurnManager.GetGameManager();
+            manager.ServerHandleTankDeath(gameObject);
             //currentHealth = maxHealth;
             // called on the Server, but invoked on the Clients
             //RpcRespawn();
         }
     }
 
-    void OnChangeHealth (int currentHealth )
-    {
-        healthBar.sizeDelta = new Vector2(currentHealth , healthBar.sizeDelta.y);
+    void OnChangeHealth (int newHealth) {
+        if (healthBar != null) {
+            healthBar.sizeDelta = new Vector2(newHealth , healthBar.sizeDelta.y);
+        }
+        health = newHealth;
     }
 
     /*

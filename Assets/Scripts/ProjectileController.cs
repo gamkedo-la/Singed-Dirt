@@ -7,6 +7,7 @@ public class ProjectileController : NetworkBehaviour {
 
 	Terrain terrain;
 	TurnManager manager;
+	bool hasCollided = false;
 
 	public ExplosionKind explosionKind = ExplosionKind.fire;
 	public DeformationKind deformationKind = DeformationKind.shotCrater;
@@ -22,7 +23,9 @@ public class ProjectileController : NetworkBehaviour {
 		Debug.Log("ProjectileController OnCollisionEnter with: " + collision.collider.name);
 		// only trigger explosion (spawn) if we currently have authority
 		// run collisions on server only
-		if (isServer) {
+		if (isServer && !hasCollided) {
+			// single collision/explosion per projectile
+			hasCollided = true;
 			ServerExplode(collision);
 		}
 	}
@@ -58,20 +61,19 @@ public class ProjectileController : NetworkBehaviour {
 				// hit dist 10m: about 1 hit point
 				// The formula is based on a max proximity damage distance of 10m
 				int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
-				TankController tankCtrlRef = gameObjRef.GetComponent<TankController> ();
-				tankCtrlRef.hitPoints -= damagePoints;
-				Debug.Log ("Damage done to " + name + ": " + damagePoints + ". Remaining: " + tankCtrlRef.hitPoints);
+				if (damagePoints > 0) {
+					TankController tankCtrlRef = gameObjRef.GetComponent<TankController> ();
+					var health = tankCtrlRef.GetComponent<Health>();
+					if (health != null) {
+						health.TakeDamage(damagePoints);
+						Debug.Log ("Damage done to " + tankCtrlRef.name + ": " + damagePoints + ". Remaining: " + health.health);
+					}
 
-				// Do shock displacement
-				Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
-				Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
-				tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
+					// Do shock displacement
+					Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
+					Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
+					tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
 
-
-				// Destroy the tank (TODO - the tank should do this on its own)
-				if (tankCtrlRef.hitPoints <= 0) {
-					Destroy (gameObjRef);
-					TurnManager.instance.GameOverMan (true);
 				}
 			}
 		}
@@ -136,7 +138,8 @@ public class ProjectileController : NetworkBehaviour {
 	// Update is called once per frame
 	void Update () {
 		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
-		if (transform.position.y < terrainY) {
+		// adding a little buffer here... the logic isn't correct, and should be handled by collider, but hitting points where it isn't working
+		if (transform.position.y < terrainY - 1f) {
 			NetworkServer.Destroy (gameObject);
 		}
 	}

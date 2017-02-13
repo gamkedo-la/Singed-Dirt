@@ -13,7 +13,6 @@ public class TankController : NetworkBehaviour {
 
 	public float shotPower = 30.0f;
 	public float shotPowerModifier = 10.0f;
-	public int hitPoints = 100;
 
 	public float rotationSpeedVertical = 5.0f;
 	public float aimVertical = 45.0f;
@@ -110,10 +109,6 @@ public class TankController : NetworkBehaviour {
 
 	public float ShotPower(){
 		return shotPower;
-	}
-
-	public int HitPoints(){
-		return hitPoints;
 	}
 
 	public void InputAdjustPower(float specificPower){

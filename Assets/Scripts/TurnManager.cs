@@ -15,6 +15,7 @@ public class TurnManager : NetworkBehaviour {
 	public Text gameOverText;
 	public List<TankController> tanks;
 	public InputField powerValue;
+	public Transform healthBar;
 
 	// the list of all tanks, mapping their tank ID to tank controller
 	// NOTE: this mapping is maintained on both client and server
@@ -38,6 +39,8 @@ public class TurnManager : NetworkBehaviour {
 	float shotPower;
 	int tankHitPoints;
 	int tankTurnIndex = 0;
+
+	[SyncVar]
 	bool gameOverState = false;
 
 	GameObject liveProjectile = null;
@@ -70,7 +73,6 @@ public class TurnManager : NetworkBehaviour {
 		Debug.Log("Activating " + tank.name);
 		activeTank = tank;
 		tank.ServerEnableControl();
-		Debug.Log ("hitpoints val is " + activeTank.HitPoints());
 	}
 
 	public TankController GetActiveTank(){
@@ -91,7 +93,14 @@ public class TurnManager : NetworkBehaviour {
 			horizontalTurret = localTank.HorizAngle ();
 			verticalTurret = localTank.VertAngle ();
 			shotPower = localTank.ShotPower ();
-			tankHitPoints = localTank.HitPoints ();
+
+			// calculate health
+			var health = localTank.GetComponent<Health>();
+			if (health != null) {
+				tankHitPoints = health.health;
+				var healthScale = (float) health.health/(float)Health.maxHealth;
+				healthBar.localScale = new Vector3(healthScale,1f,1f);
+			}
 		}
 	}
 
@@ -164,6 +173,16 @@ public class TurnManager : NetworkBehaviour {
 		liveExplosion = explosionGO;
 	}
 
+	public void ServerHandleTankDeath(GameObject playerGO) {
+		Debug.Log("ServerHandleTankDeath: " + playerGO);
+		var player = playerGO.GetComponent<TankController>();
+		if (player != null) {
+			// remove player from set of active tanks
+			activeTanks.Remove(player.playerIndex);
+			Debug.Log("removing index: " + player.playerIndex + " new active tanks -> " + String.Join(",", activeTanks.Select(v=>v.ToString()).ToArray()));
+		}
+	}
+
     // ------------------------------------------------------
     // SERVER->CLIENT METHODS
 
@@ -228,6 +247,8 @@ public class TurnManager : NetworkBehaviour {
 
 		// start the game
         yield return StartCoroutine(PlayRound());
+		// FIXME: need to rework game win/loss logic
+		gameOverState = true;
 		Debug.Log("finishing ServerLoop");
 	}
 
@@ -298,6 +319,8 @@ public class TurnManager : NetworkBehaviour {
 			yield return StartCoroutine(TakeTankTurn(tankRegistry[nextTankId]));
 
 		}
+
+		Debug.Log("Round is over, winner is " + tankRegistry[activeTanks[0]].name);
 	}
 
 	IEnumerator TakeTankTurn(TankController tank) {
