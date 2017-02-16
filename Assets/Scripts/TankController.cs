@@ -25,6 +25,7 @@ public class TankController : NetworkBehaviour {
 	public GameObject[] upperMeshes;
 	public GameObject[] middleMeshes;
 	public GameObject[] lowerMeshes;
+	public GameObject[] hatMeshes;
 
 	public Rigidbody rb;
 	public ProjectileKind selectedShot;
@@ -41,6 +42,7 @@ public class TankController : NetworkBehaviour {
 	int lowerMeshNum;
 	int middleMeshNum;
 	int upperMeshNum;
+	int hatMeshNum;
 
 	// state management variables
 	bool hasRegistered = false; 	// am I registered to turn controller
@@ -89,9 +91,10 @@ public class TankController : NetworkBehaviour {
 		lowerMeshNum = PlayerPrefs.GetInt (name + "lowerMeshNum");
 		middleMeshNum = PlayerPrefs.GetInt (name + "middleMeshNum");
 		upperMeshNum = PlayerPrefs.GetInt (name + "upperMeshNum");
-		Debug.Log ("meshes are " + lowerMeshNum + " " + middleMeshNum + " " + upperMeshNum);
+		hatMeshNum = PlayerPrefs.GetInt (name + "hatMeshNum");
+		Debug.Log ("meshes are L:" + lowerMeshNum + " M:" + middleMeshNum + " U:" + upperMeshNum + " H:" + hatMeshNum);
 		tankAvatarScript = GetComponent<AvatarSetup> ();
-		tankAvatarScript.SetActiveMeshes (lowerMeshNum, middleMeshNum, upperMeshNum);
+		tankAvatarScript.SetActiveMeshes (lowerMeshNum, middleMeshNum, upperMeshNum, hatMeshNum);
 		tankAvatarScript.updateAvatar ();
 		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
 		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
