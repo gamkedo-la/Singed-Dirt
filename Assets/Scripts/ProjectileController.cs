@@ -142,5 +142,9 @@ public class ProjectileController : NetworkBehaviour {
 		if (transform.position.y < terrainY - 1f) {
 			NetworkServer.Destroy (gameObject);
 		}
+
+        // Make sure the projectile always points in the direction it travels.
+        Vector3 vel = GetComponent<Rigidbody>().velocity;
+        transform.rotation = Quaternion.LookRotation(vel);
 	}
 }
