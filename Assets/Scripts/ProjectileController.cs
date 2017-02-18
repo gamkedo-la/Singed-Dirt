@@ -144,7 +144,7 @@ public class ProjectileController : NetworkBehaviour {
 		}
 
         // Make sure the projectile always points in the direction it travels.
-        Vector3 vel = GetComponent<Rigidbody>().velocity;
-        transform.rotation = Quaternion.LookRotation(vel);
+        //Vector3 vel = GetComponent<Rigidbody>().velocity;
+        //transform.rotation = Quaternion.LookRotation(vel);
 	}
 }
