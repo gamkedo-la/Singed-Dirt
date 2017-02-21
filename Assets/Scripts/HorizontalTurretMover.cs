@@ -13,13 +13,13 @@ public class HorizontalTurretMover : MonoBehaviour {
 		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
 			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 //		if (isLocalPlayer == false) {
 //			return;
 //		}
-		if (TurnManager.instance.GetGameOverState () == false) {
+		if (TurnManager.singleton.GetGameOverState () == false) {
 			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeed;
 		}
 	}

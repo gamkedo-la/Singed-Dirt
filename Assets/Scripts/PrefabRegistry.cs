@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -31,7 +32,7 @@ public enum DeformationKind {
 /// A singleton registry class providing a cache and access methods to retrieve object prefabs based on
 /// enum identifiers.
 /// </summary>
-public class PrefabRegistry: MonoBehaviour {
+public class PrefabRegistry: NetworkBehaviour {
     // singleton instance
     private static PrefabRegistry _singleton;
     // the prefab cache
@@ -42,6 +43,33 @@ public class PrefabRegistry: MonoBehaviour {
     /// </summary>
     void Awake() {
         prefabCache = new Dictionary<string, GameObject>();
+    }
+
+    void Start() {
+        Debug.Log("PrefabRegistry Start, isServer" + isServer);
+        if (!isServer) {
+            foreach (ProjectileKind prefabId in Enum.GetValues(typeof(ProjectileKind))) {
+                var prefab = GetProjectile(prefabId);
+                if (prefab != null) {
+                    Debug.Log("registering prefab: " + prefabId);
+                    ClientScene.RegisterPrefab(prefab);
+                }
+            }
+            foreach (ExplosionKind prefabId in Enum.GetValues(typeof(ExplosionKind))) {
+                var prefab = GetExplosion(prefabId);
+                if (prefab != null) {
+                    Debug.Log("registering prefab: " + prefabId);
+                    ClientScene.RegisterPrefab(prefab);
+                }
+            }
+            foreach (DeformationKind prefabId in Enum.GetValues(typeof(DeformationKind))) {
+                var prefab = GetDeformation(prefabId);
+                if (prefab != null) {
+                    Debug.Log("registering prefab: " + prefabId);
+                    ClientScene.RegisterPrefab(prefab);
+                }
+            }
+        }
     }
 
     /// <summary>

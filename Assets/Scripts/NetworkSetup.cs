@@ -23,36 +23,12 @@ public class NetworkSetup : MonoBehaviour {
 		var gameSetupGO = GameObject.Find("GameSetup");
         Debug.Log("gameSetupGO: " + gameSetupGO);
 
-		// we were spawned from GameSetup scene...
-		if (gameSetupGO != null) {
-
-            var gameSetup = gameSetupGO.GetComponent<GameSetup>();
-            // set network manager state
-            netManager.networkPort = gameSetup.port;
-
-            // setup server
-            if (gameSetup.gameMode == GameSetup.GameMode.hostMultiPlayer) {
-                if (gameSetup.host != "localhost") {
-                    netManager.serverBindToIP = true;
-                    netManager.serverBindAddress = gameSetup.host;
-                }
-
-                Debug.Log("starting server");
-                netManager.StartHost();
-
-            // setup client
-            } else {
-                netManager.networkAddress = gameSetup.host;
-                // start the client
-                Debug.Log(String.Format("starting client: {0}:{1}", netManager.networkAddress, netManager.networkPort));
-                netManager.StartClient();
-            }
-
-		// debug mode
-		} else {
-
+		// we were spawned without network manager
+		if (netManager == null) {
+            // FIXME... fill out netManager
+            netManager = gameObject.AddComponent<NetworkManager>();
             // add HUD GUI to network manager
             netManager.gameObject.AddComponent<NetworkManagerHUD>();
-		}
+        }
 	}
 }

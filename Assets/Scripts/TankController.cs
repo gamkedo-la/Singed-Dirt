@@ -31,7 +31,6 @@ public class TankController : NetworkBehaviour {
 	public ProjectileKind selectedShot;
 
 	// Private
-	TurnManager manager;
 	int playerNumber;
 	List<Transform> spawnPoints;
 	Transform spawnPoint;
@@ -70,13 +69,13 @@ public class TankController : NetworkBehaviour {
 	}
 
 	void Awake() {
+        Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		// lookup/cache required components
-		manager = TurnManager.GetGameManager();
 		rb = GetComponent<Rigidbody> ();
 	}
 
 	void Start() {
-		Debug.Log("TankController.Start");
+        Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 	}
 
 	// Use this for initialization
@@ -181,8 +180,9 @@ public class TankController : NetworkBehaviour {
 		if (hasRegistered) return;
 
 		// register
-		manager.ClientRegisterPlayer(this);
-		hasRegistered = true;
+		if (TurnManager.singleton != null) {
+			hasRegistered = TurnManager.singleton.ClientRegisterPlayer(this);
+		}
 	}
 
     // ------------------------------------------------------
@@ -227,6 +227,7 @@ public class TankController : NetworkBehaviour {
 	/// Register this tank to turn manager
 	/// </summary>
 	void ServerRegisterToManager() {
+		Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
 		// this is a server function
 		if (!isServer) return;
 
@@ -234,8 +235,9 @@ public class TankController : NetworkBehaviour {
 		if (hasRegistered) return;
 
 		// register
-		manager.ServerRegisterPlayer(this);
-		hasRegistered = true;
+		if (TurnManager.singleton != null) {
+			hasRegistered = TurnManager.singleton.ServerRegisterPlayer(this);
+		}
 	}
 
 	/// <summary>
@@ -404,7 +406,7 @@ public class TankController : NetworkBehaviour {
 		NetworkServer.Spawn (liveProjectile);
 
 		// update manager
-		manager.ServerHandleShotFired(this, liveProjectile);
+		if (TurnManager.singleton != null) TurnManager.singleton.ServerHandleShotFired(this, liveProjectile);
 	}
 
 	/// <summary>

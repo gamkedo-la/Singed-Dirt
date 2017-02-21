@@ -10,7 +10,7 @@ public class TurnManager : NetworkBehaviour {
 
 	// Public variables
 
-	public static TurnManager instance;
+	public static TurnManager singleton;
 	public Text hud;
 	public Text gameOverText;
 	public List<TankController> tanks;
@@ -27,18 +27,21 @@ public class TurnManager : NetworkBehaviour {
 	// the list of tanks currently active in the round... as tanks die, they are removed from this list
 	public List<int> activeTanks;
 
+
 	// Private variables
+	bool isReady = false;
 
 	int nextTankId = 1;
 
 	CameraController camController;
 	TankController activeTank;
-	TankController localTank;
+	TankController lastLocalTank;
 	float horizontalTurret;
 	float verticalTurret;
 	float shotPower;
 	int tankHitPoints;
 	int tankTurnIndex = 0;
+
 
 	[SyncVar]
 	bool gameOverState = false;
@@ -46,11 +49,15 @@ public class TurnManager : NetworkBehaviour {
 	GameObject liveProjectile = null;
 	GameObject liveExplosion = null;
 
+	//public List<TankController> localTanks;
+
 	void Awake(){
-		instance = this;
+        Debug.Log("TurnManager Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+		singleton = this;
 		gameOverText.enabled = false;
 		tankRegistry = new Dictionary<int, TankController>();
 		activeTanks = new List<int>();
+		//localTanks = new List<TankController>();
 	}
 
 	public void GameOverMan(bool isGameOver){
@@ -63,15 +70,20 @@ public class TurnManager : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Debug.Log("TurnManager Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		if (isServer) {
 			StartCoroutine(ServerLoop());
 		}
 		camController = Camera.main.GetComponent<CameraController> ();
+		isReady = true;
 	}
 
 	void SetActiveTank(TankController tank){
 		Debug.Log("Activating " + tank.name);
 		activeTank = tank;
+		if (activeTank.isLocalPlayer) {
+			lastLocalTank = activeTank;
+		}
 		tank.ServerEnableControl();
 	}
 
@@ -89,13 +101,13 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	void GetLocalTankHud(){
-		if (localTank != null) {
-			horizontalTurret = localTank.HorizAngle ();
-			verticalTurret = localTank.VertAngle ();
-			shotPower = localTank.ShotPower ();
+		if (lastLocalTank != null) {
+			horizontalTurret = lastLocalTank.HorizAngle ();
+			verticalTurret = lastLocalTank.VertAngle ();
+			shotPower = lastLocalTank.ShotPower ();
 
 			// calculate health
-			var health = localTank.GetComponent<Health>();
+			var health = lastLocalTank.GetComponent<Health>();
 			if (health != null) {
 				tankHitPoints = health.health;
 				var healthScale = (float) health.health/(float)Health.maxHealth;
@@ -135,21 +147,20 @@ public class TurnManager : NetworkBehaviour {
 
     // ------------------------------------------------------
     // CLIENT-ONLY METHODS
-	public void ClientRegisterPlayer(TankController player) {
-		if (player.isLocalPlayer) {
-			localTank = player;
-		}
+	public bool ClientRegisterPlayer(TankController player) {
+		if (!isReady) return false;
 		Debug.Log("ClientRegisterPlayer: " + player);
 		tankRegistry[player.playerIndex] = player;
+		return true;
 	}
 
     // ------------------------------------------------------
     // SERVER-ONLY METHODS
-	public void ServerRegisterPlayer(TankController player) {
-		if (!isServer) return;
-		if (player.isLocalPlayer) {
-			localTank = player;
-		}
+	public bool ServerRegisterPlayer(TankController player) {
+		if (!isReady) return false;
+		Debug.Log("isServer: " + isServer);
+		Debug.Log("Network.isServer: " + Network.isServer);
+		if (!isServer) return false;
 		Debug.Log("ServerRegisterPlayer: " + player);
 
 		// assign tank index
@@ -159,6 +170,7 @@ public class TurnManager : NetworkBehaviour {
 
 		// server assigns tank index and acknowledges registration...
 		player.ServerAssignIndex(newTankIndex);
+		return true;
 	}
 
 	public void ServerHandleShotFired(TankController player, GameObject projectileGO) {
@@ -201,10 +213,11 @@ public class TurnManager : NetworkBehaviour {
 	/// Set the view to the local tank
 	/// </summary>
 	[ClientRpc]
-	void RpcViewLocalTank() {
-		if (localTank != null) {
-			Debug.Log("setting camera view to local: " + localTank.name);
-			camController.WatchPlayer(localTank);
+	void RpcViewLocalTank(GameObject tankGO) {
+		var tank = tankGO.GetComponent<TankController>();
+		if (tank != null && tank.isLocalPlayer) {
+			Debug.Log("setting camera view to local: " + tank.name);
+			camController.WatchPlayer(tank);
 			//camController.SetPlayerCameraFocus(localTank);
 		}
 	}
@@ -240,7 +253,7 @@ public class TurnManager : NetworkBehaviour {
 		yield return StartCoroutine(BuildWorld());
 
 		// adjust camera
-		RpcViewLocalTank();
+		//RpcViewLocalTank();
 
 		// start the game on client
 		RpcStart();
@@ -260,7 +273,7 @@ public class TurnManager : NetworkBehaviour {
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
-		camController.WatchPlayer(localTank);
+		//camController.WatchPlayer(localTank);
 		//camController.SetPlayerCameraFocus(localTank);
 	}
 
@@ -296,7 +309,7 @@ public class TurnManager : NetworkBehaviour {
 		activeTanks = new List<int>(tankRegistry.Keys);
 
 		// set starting camera positions for each player (this is done client side)
-		RpcViewLocalTank();
+		//RpcViewLocalTank();
 
 		// determine turn order
 		var turnOrder = GetTurnOrder(tankRegistry);
@@ -328,6 +341,9 @@ public class TurnManager : NetworkBehaviour {
 		// activate the tank
 		SetActiveTank(tank);
 
+		// set starting camera positions for each player (this is done client side)
+		RpcViewLocalTank(tank.gameObject);
+
 		// wait for shot fired by this tank
 		while (tank.hasControl) {
 			yield return null;
@@ -356,7 +372,7 @@ public class TurnManager : NetworkBehaviour {
 		}
 
 		// reset view to local tank view
-		RpcViewLocalTank();
+		RpcViewLocalTank(tank.gameObject);
 	}
 
 
