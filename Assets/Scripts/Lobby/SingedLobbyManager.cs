@@ -93,9 +93,11 @@ public class SingedLobbyManager : NetworkLobbyManager {
         // scene changed back to lobby
         if (SceneManager.GetSceneAt(0).name == lobbyScene) {
             Debug.Log("changing to lobby scene");
+            ChangeTo(gameSelectPanel.gameObject, null);
+            statusPanel.ToggleVisibility(true);
+            statusPanel.isInGame = false;
             /*
-            if (topPanel.isInGame) {
-                ChangeTo(lobbyPanel);
+            if (statusPanel.isInGame) {
                 if (_isMatchmaking) {
                     if (connection.playerControllers[0].unetView.isServer) {
                         backDelegate = StopHostClbk;
@@ -112,9 +114,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
             } else {
                 ChangeTo(mainMenuPanel);
             }
-
-            topPanel.ToggleVisibility(true);
-            topPanel.isInGame = false;
             */
 
         // otherwise ... game is starting
@@ -126,13 +125,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
             // hide status panel
             statusPanel.ToggleVisibility(false);
             statusPanel.isInGame = true;
-            /*
-            ChangeTo(null);
-            Destroy(GameObject.Find("MainMenuUI(Clone)"));
-            //backDelegate = StopGameClbk;
-            topPanel.isInGame = true;
-            topPanel.ToggleVisibility(false);
-            */
         }
     }
 

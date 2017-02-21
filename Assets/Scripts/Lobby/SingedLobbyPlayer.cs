@@ -12,7 +12,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     [Header("UI Reference")]
     public Text playerStatusInfo;
     public InputField playerNameInput;
-    public Button readyButton;
+    //public Button readyButton;
+    public Toggle readyToggle;
     public Button setupButton;
     public Button removeButton;
     public GameObject remoteIcon;
@@ -38,10 +39,6 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     // FIXME: evaluate
     public Color OddRowColor = hexToColor("562F00FF");
     public Color EvenRowColor = hexToColor("814C00FF");
-    static Color JoinColor = new Color(255.0f/255.0f, 0.0f, 101.0f/255.0f,1.0f);
-    static Color NotReadyColor = new Color(34.0f / 255.0f, 44 / 255.0f, 55.0f / 255.0f, 1.0f);
-    static Color ReadyColor = new Color(0.0f, 204.0f / 255.0f, 204.0f / 255.0f, 1.0f);
-    static Color TransparentColor = new Color(0, 0, 0, 0);
 
     void Awake() {
         Debug.Log("SingedLobbyPlayer Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
@@ -86,23 +83,20 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// <summary>
     /// Callback executed when client ready state changes
     /// </summary>
-    public override void OnClientReady(bool readyState) {
+    public override void OnClientReady(
+        bool readyState
+    ) {
+        if (!isLocalPlayer) {
+            readyToggle.isOn = readyState;
+        }
+        // disable controls if ready is pressed (NOTE: still allow player to unselect ready state)
         if (readyState) {
-            //ChangeReadyButtonColor(TransparentColor);
-
-            Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
-            textComponent.text = "READY";
-            textComponent.color = ReadyColor;
-            readyButton.interactable = false;
             setupButton.interactable = false;
             playerNameInput.interactable = false;
-        } else {
-            //ChangeReadyButtonColor(isLocalPlayer ? JoinColor : NotReadyColor);
 
-            Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
-            textComponent.text = isLocalPlayer ? "JOIN" : "...";
-            textComponent.color = Color.white;
-            readyButton.interactable = isLocalPlayer;
+        // otherwise... re-enable controls
+        } else {
+            readyToggle.interactable = isLocalPlayer;
             setupButton.interactable = isLocalPlayer;
             playerNameInput.interactable = isLocalPlayer;
         }
@@ -114,18 +108,18 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         CmdNameChanged(newName);
     }
 
-    public void OnReadyClicked() {
-        // send ready message to lobby manager
-        SendReadyToBeginMessage();
+    public void OnClickReady(bool value) {
+        // send ready or not ready message to lobby manager
+        if (readyToggle.isOn) {
+            SendReadyToBeginMessage();
+        } else {
+            SendNotReadyToBeginMessage();
+        }
     }
 
     public override void OnStartAuthority() {
         Debug.Log("OnStartAuthority");
         base.OnStartAuthority();
-
-        //if we return from a game, color of text can still be the one for "Ready"
-        //readyButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
-
         SetupLocalPlayer();
     }
 
@@ -137,11 +131,9 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         // server can boot client
         removeButton.interactable = NetworkServer.active;
 
-        //ChangeReadyButtonColor(NotReadyColor);
 
         // disable ready button for other player
-        readyButton.transform.GetChild(0).GetComponent<Text>().text = "...";
-        readyButton.interactable = false;
+        readyToggle.interactable = false;
 
         OnClientReady(false);
     }
@@ -153,18 +145,11 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         localIcon.gameObject.SetActive(true);
 
         CheckRemoveButton();
-
-        //ChangeReadyButtonColor(JoinColor);
-
-        readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
-        readyButton.interactable = true;
+        readyToggle.interactable = true;
 
         //have to use child count of player prefab already setup as "this.slot" is not set yet
         if (playerName == "") {
-            Debug.Log("setting player name: numplayers: " + SingedLobbyManager.s_singleton.playerCount);
-            Debug.Log("transform count: " + (LobbyPanelManager.singleton.playerListContentTransform.childCount-1).ToString());
             var name = "Player" + (LobbyPanelManager.singleton.playerListContentTransform.childCount-1).ToString();
-            Debug.Log("name: " + name);
             CmdNameChanged(name);
         } else {
             Debug.Log("not setting initial name, current player name: " + playerName);
@@ -182,8 +167,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         setupButton.onClick.AddListener(OnColorClicked);
         */
 
-        readyButton.onClick.RemoveAllListeners();
-        readyButton.onClick.AddListener(OnReadyClicked);
+        readyToggle.onValueChanged.RemoveAllListeners();
+        readyToggle.onValueChanged.AddListener(OnClickReady);
 
         //when OnClientEnterLobby is called, the loval PlayerController is not yet created, so we need to redo that here to disable
         //the add button if we reach maxLocalPlayer. We pass 0, as it was already counted on OnClientEnterLobby
@@ -209,11 +194,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public void OnMyName(
         string newName
     ) {
-        Debug.Log("OnMyName setting playerName: " + newName);
         playerName = newName;
         playerNameInput.text = newName;
-        //playerNameInput.transform.GetChild(0).GetComponent<Text>().text = newName;
-        Debug.Log("playerNameInput: " + playerNameInput.text);
     }
 
     public void OnClickRemovePlayer() {
@@ -237,8 +219,6 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public void CmdNameChanged(
         string newName
     ) {
-        Debug.Log("CmdNameChanged setting playerName: " + newName);
-        Debug.Log("setting playerName: " + playerName);
         playerName = newName;
     }
 }
