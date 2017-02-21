@@ -131,6 +131,9 @@ public class TurnManager : NetworkBehaviour {
 		} else {
 			gameOverText.enabled = false;
 		}
+		if (Input.GetKeyDown (KeyCode.N)) {
+			gameOverState = true;
+		}
 	}
 
 	int[] GetTurnOrder(Dictionary<int, TankController> tanks) {
