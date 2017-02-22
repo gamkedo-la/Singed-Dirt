@@ -81,9 +81,22 @@ public class SingedLobbyManager : NetworkLobbyManager {
     // EVENT HANDLER METHODS
 
     public override void OnLobbyServerDisconnect(
-        NetworkConnection connection
+        NetworkConnection    connection
     ) {
         Debug.Log("OnLobbyServerDisconnect");
+    }
+
+    public override bool OnLobbyServerSceneLoadedForPlayer(
+        GameObject lobbyPlayer,
+        GameObject gamePlayer
+    ) {
+        Debug.Log("OnLobbyServerSceneLoadedForPlayer");
+
+        var playerSetupHook = GetComponent<LobbyPlayerSetupHook>();
+        if (playerSetupHook != null) {
+            playerSetupHook.SetupPlayer(this, lobbyPlayer, gamePlayer);
+        }
+        return true;
     }
 
     public override void OnLobbyClientSceneChanged(

@@ -81,7 +81,7 @@ public class ProjectileController : NetworkBehaviour {
 		// perform terrain deformation (if terrain was hit)
 		var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
 		if (terrainManager != null) {
-			var deformationPrefab = PrefabRegistry.singleton.GetDeformation(deformationKind);
+			var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
 			Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
 			GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 			NetworkServer.Spawn(deformation);
@@ -92,7 +92,7 @@ public class ProjectileController : NetworkBehaviour {
 		}
 
 		// instantiate explosion
-		var explosionPrefab = PrefabRegistry.singleton.GetExplosion(explosionKind);
+		var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
 		Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
 		GameObject explosion = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(explosion);

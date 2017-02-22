@@ -52,6 +52,9 @@ public class TankController : NetworkBehaviour {
 	[SyncVar]
 	public int playerIndex = -1;
 
+	[SyncVar]
+	public string playerName = "";
+
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
 	public GameObject liveProjectile;
@@ -387,7 +390,7 @@ public class TankController : NetworkBehaviour {
 		}
 
 		// instantiate from prefab
-		var prefab = PrefabRegistry.singleton.GetProjectile(projectiledKind);
+		var prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(projectiledKind);
 		liveProjectile = (GameObject)GameObject.Instantiate (
 			prefab,
 			shotSource.position,
