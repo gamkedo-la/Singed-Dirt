@@ -19,6 +19,12 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public GameObject remoteIcon;
     public GameObject localIcon;
 
+    [Header("Player Variables")]
+    public TankBaseKind tankBaseKind = TankBaseKind.standard;
+    public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
+    public TankTurretKind turretKind = TankTurretKind.standard;
+    public TankHatKind hatKind = TankHatKind.sunBlue;
+
     [SyncVar(hook = "OnMyName")]
     public string playerName = "";
 
@@ -114,6 +120,16 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
             SendReadyToBeginMessage();
         } else {
             SendNotReadyToBeginMessage();
+        }
+    }
+
+    public void OnClickSetup() {
+        var manager = SingedLobbyManager.s_singleton;
+        if (manager != null) {
+            // link player setup panel to current lobby player
+            manager.playerSetupPanel.LinkPlayer(this);
+            // change to playerSetupPanel
+            manager.ChangeTo(manager.playerSetupPanel.gameObject, null);
         }
     }
 

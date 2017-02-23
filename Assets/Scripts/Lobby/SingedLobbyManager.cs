@@ -18,6 +18,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public LobbyGameSelect gameSelectPanel;
     public LobbyPanelManager lobbyPanel;
     public LobbyInfoPanelController infoPanel;
+    public LobbyPlayerSetup playerSetupPanel;
 
     GameObject currentPanel;
 
