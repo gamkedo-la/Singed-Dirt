@@ -126,10 +126,10 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public void OnClickSetup() {
         var manager = SingedLobbyManager.s_singleton;
         if (manager != null) {
-            // link player setup panel to current lobby player
-            manager.playerSetupPanel.LinkPlayer(this);
             // change to playerSetupPanel
             manager.ChangeTo(manager.playerSetupPanel.gameObject, null);
+            // link player setup panel to current lobby player
+            manager.playerSetupPanel.LinkPlayer(this);
         }
     }
 
