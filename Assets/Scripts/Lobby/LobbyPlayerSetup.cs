@@ -27,35 +27,47 @@ public class LobbyPlayerSetup : MonoBehaviour {
         UpdateAvatar();
     }
 
-    GameObject LocalInstantiate(GameObject prefab, Transform parent) {
-		var prefabInstance = (GameObject) GameObject.Instantiate(prefab, parent);
-        //prefabInstance.transform.rotation = Quaternion.AngleAxis(-130, Vector3.up);
-        //prefabInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-        return prefabInstance;
-    }
-
     public void UpdateAvatar() {
         // instantiate tank base
         if (tankBasePrefab != null) DestroyImmediate(tankBasePrefab);
         var prefab = PrefabRegistry.singleton.GetPrefab<TankBaseKind>(tankBaseKind);
-		tankBasePrefab = LocalInstantiate(prefab, tankBase.transform);
+		tankBasePrefab = Instantiate(
+            prefab,
+            tankBase.transform.position,
+            tankBase.transform.rotation,
+            tankBase.transform);
 
         // instantiate turret base
         if (turretBasePrefab != null) DestroyImmediate(turretBasePrefab);
         prefab = PrefabRegistry.singleton.GetPrefab<TankTurretBaseKind>(turretBaseKind);
-		turretBasePrefab = LocalInstantiate(prefab, turretBase.transform);
+		turretBasePrefab = Instantiate(
+            prefab,
+            turretBase.transform.position,
+            turretBase.transform.rotation,
+            turretBase.transform);
 
         // instantiate turret
         if (turretPrefab != null) DestroyImmediate(turretPrefab);
         prefab = PrefabRegistry.singleton.GetPrefab<TankTurretKind>(turretKind);
-		turretPrefab = LocalInstantiate(prefab, turret.transform);
+		turretPrefab = Instantiate(
+            prefab,
+            turret.transform.position,
+            turret.transform.rotation,
+            turret.transform
+        );
 
         // instantiate hat
         if (hatPrefab != null) DestroyImmediate(hatPrefab);
         prefab = PrefabRegistry.singleton.GetPrefab<TankHatKind>(hatKind);
-		hatPrefab = LocalInstantiate(prefab, hat.transform);
+		hatPrefab = Instantiate(
+            prefab,
+            hat.transform.position,
+            hat.transform.rotation,
+            hat.transform);
 
+        /*
         transform.rotation *= Quaternion.AngleAxis(-130, Vector3.up);
+        */
 
     }
 }
