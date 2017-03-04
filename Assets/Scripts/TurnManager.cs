@@ -91,20 +91,13 @@ public class TurnManager : NetworkBehaviour {
 		return activeTank;
 	}
 
-	public void TellTankAdjustPower(int power){
-		activeTank.DialAdjustPower (power);
-	}
-
-	public void TellTankSpecificPower(Text power){
-		Debug.Log("power is " + power.text);
-		activeTank.InputAdjustPower (float.Parse(power.text));
-	}
-
 	void GetLocalTankHud(){
 		if (lastLocalTank != null) {
-			horizontalTurret = lastLocalTank.HorizAngle ();
-			verticalTurret = lastLocalTank.VertAngle ();
-			shotPower = lastLocalTank.ShotPower ();
+			if (lastLocalTank.model != null) {
+				horizontalTurret = lastLocalTank.model.tankRotation;
+				verticalTurret = lastLocalTank.model.turretElevation;
+				shotPower = lastLocalTank.shotPower;
+			}
 
 			// calculate health
 			var health = lastLocalTank.GetComponent<Health>();

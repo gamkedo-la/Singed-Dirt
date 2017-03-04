@@ -10,18 +10,12 @@ public class TankController : NetworkBehaviour {
 	// Public
 	public GameObject modelPrefab;
 	public TankModel model;
-	public Transform shotSource;
 
 	public float shotPower = 30.0f;
 	public float shotPowerModifier = 10.0f;
 
 	public float rotationSpeedVertical = 5.0f;
-	public float aimVertical = 45.0f;
 	public float rotationSpeedHorizontal = 5.0f;
-	public float aimHorizontal = 45.0f;
-
-	public Transform turret;
-	//public Transform playerCameraSpot;
 
 	public Transform passiveCameraSource {
 		get {
@@ -43,26 +37,15 @@ public class TankController : NetworkBehaviour {
 		}
 	}
 
-	public GameObject[] upperMeshes;
-	public GameObject[] middleMeshes;
-	public GameObject[] lowerMeshes;
-	public GameObject[] hatMeshes;
-
 	public Rigidbody rb;
 	public ProjectileKind selectedShot;
 
-	// Private
-	int playerNumber;
+	// FIXME: remove from player controller
 	List<Transform> spawnPoints;
 	Transform spawnPoint;
+
 	bool togglePowerInputAmount;
 	float savedPowerModifier;
-	AvatarSetup tankAvatarScript;
-	int[] playerMeshSetup;
-	int lowerMeshNum;
-	int middleMeshNum;
-	int upperMeshNum;
-	int hatMeshNum;
 
 	// state management variables
 	bool hasRegistered = false; 	// am I registered to turn controller
@@ -85,10 +68,6 @@ public class TankController : NetworkBehaviour {
 	[SyncVar]
     public TankHatKind hatKind = TankHatKind.sunBlue;
 
-	// Hidden Public
-	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
-	public GameObject liveProjectile;
-
 	void FindSpawnPointAndAddToList(string playerName)
 	{
 		GameObject tempGO = GameObject.Find (playerName + "SpawnPoints");
@@ -105,11 +84,10 @@ public class TankController : NetworkBehaviour {
         Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		// lookup/cache required components
 		rb = GetComponent<Rigidbody> ();
+		CreateModel();
 	}
 
-	void Start() {
-		/*
-        Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+	void CreateModel() {
 		// upon start up ... instantiate the model
 		var modelGo = (GameObject) GameObject.Instantiate (
 			modelPrefab,
@@ -120,15 +98,28 @@ public class TankController : NetworkBehaviour {
 		model = modelGo.GetComponent<TankModel>();
 		// add two child network transforms
 		gameObject.SetActive(false);
+
 		var netChild = gameObject.AddComponent<NetworkTransformChild>();
 		netChild.target = modelGo.transform;
+
 		netChild = gameObject.AddComponent<NetworkTransformChild>();
 		netChild.target = model.turret.transform;
-		gameObject.SetActive(true);
-		*/
 
-        var modelGo = transform.Find("TankModel");
-		model = modelGo.GetComponent<TankModel>();
+		gameObject.SetActive(true);
+	}
+
+	void PlaceOnGround() {
+		// place tank model on ground
+		if (Terrain.activeTerrain != null) {
+			Vector3 fixedSpot = transform.position;
+			fixedSpot.y = Terrain.activeTerrain.SampleHeight(fixedSpot) + Terrain.activeTerrain.transform.position.y;
+			transform.position = fixedSpot;
+			Debug.Log("placing on ground @ " + fixedSpot);
+		}
+	}
+
+	void Start() {
+        Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 
 		// copy state to model
         model.tankBaseKind = tankBaseKind;
@@ -147,41 +138,8 @@ public class TankController : NetworkBehaviour {
 		FindSpawnPointAndAddToList (name);
 		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
 		transform.position = spawnPoint.position;
-		lowerMeshNum = PlayerPrefs.GetInt (name + "lowerMeshNum");
-		middleMeshNum = PlayerPrefs.GetInt (name + "middleMeshNum");
-		upperMeshNum = PlayerPrefs.GetInt (name + "upperMeshNum");
-		hatMeshNum = PlayerPrefs.GetInt (name + "hatMeshNum");
-		Debug.Log ("meshes are L:" + lowerMeshNum + " M:" + middleMeshNum + " U:" + upperMeshNum + " H:" + hatMeshNum);
-		/*
-		tankAvatarScript = GetComponent<AvatarSetup> ();
-		tankAvatarScript.SetActiveMeshes (lowerMeshNum, middleMeshNum, upperMeshNum, hatMeshNum);
-		tankAvatarScript.updateAvatar ();
-		*/
+		PlaceOnGround();
 		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
-		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
-			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
-
-	}
-
-	public float HorizAngle(){
-		return aimHorizontal;
-	}
-
-	public float VertAngle(){
-		return aimVertical;
-	}
-
-	public float ShotPower(){
-		return shotPower;
-	}
-
-	public void InputAdjustPower(float specificPower){
-		Debug.Log ("recieved " + specificPower);
-		shotPower = specificPower;
-	}
-
-
-	public void SetPlayerModels(){
 
 	}
 
@@ -204,10 +162,6 @@ public class TankController : NetworkBehaviour {
 		} else {
 			shotPower += tweakAmt;
 		}
-	}
-
-	void OnTriggerEnter(Collider other){
-
 	}
 
 	// Update is called once per frame
@@ -343,11 +297,6 @@ public class TankController : NetworkBehaviour {
 		// re-enable tank physics
 		rb.isKinematic = false;
 
-		// shot is in the air
-
-		// target hit
-
-
 	}
 
 	/// <summary>
@@ -419,19 +368,6 @@ public class TankController : NetworkBehaviour {
 				model.tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedVertical;
 				model.turretElevation += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
 			}
-			/*
-			aimVertical += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedVertical;
-			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedHorizontal;
-			*/
-
-			//transform.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up);
-			//turret.rotation = Quaternion.AngleAxis (aimVertical, Vector3.right);
-			//turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
-				//Quaternion.AngleAxis (aimVertical, Vector3.right);
-
-			// These two lines stay together
-			//turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
-			//Quaternion.AngleAxis (aimVertical, Vector3.right);
 
 			// continue on next frame
 			yield return null;
@@ -456,22 +392,15 @@ public class TankController : NetworkBehaviour {
 
 		// instantiate from prefab
 		var prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(projectiledKind);
-		liveProjectile = (GameObject)GameObject.Instantiate (
+		var liveProjectile = (GameObject)GameObject.Instantiate (
 			prefab,
 			model.shotSource.position,
 			model.shotSource.rotation
 		);
 		liveProjectile.name = name + "Projectile";
 		liveProjectile.layer = gameObject.layer;
-		//ProjectileController pcScript = liveProjectile.GetComponent<ProjectileController> ();
-		//pcScript.SetupShot (selectedShot, shotSource);
 
 		// set initial velocity/force
-		//liveProjectile.GetComponent<ProjectileController>().DisableCollisions(0.1f);
-		var shotDirection = model.shotSource.worldToLocalMatrix.MultiplyVector(model.shotSource.forward);
-
-
-		//liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
 		liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
 
 		// set network spawn

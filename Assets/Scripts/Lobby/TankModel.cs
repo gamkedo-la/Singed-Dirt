@@ -15,6 +15,7 @@ public class TankModel : MonoBehaviour {
     public Transform passiveCameraSource;
     public Transform chaseCameraSource;
 
+    [Header("Tank Part Selections")]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
     public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
     public TankTurretKind turretKind = TankTurretKind.standard;
@@ -34,13 +35,6 @@ public class TankModel : MonoBehaviour {
         UpdateAvatar();
     }
 
-    public void Update() {
-        //var shotDirection = shotSource.worldToLocalMatrix.MultiplyVector(shotSource.forward);
-        //Debug.DrawLine(shotSource.position, shotSource.position+(shotSource.forward*5), Color.red, 1);
-        //Debug.DrawLine(shotSource.position, shotSource.position+(shotDirection*5), Color.green, 1);
-		//tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * 50f;
-    }
-
     public float tankRotation {
         get {
             return _tankRotation;
@@ -48,12 +42,6 @@ public class TankModel : MonoBehaviour {
         set {
             _tankRotation = value;
 			transform.localRotation = Quaternion.AngleAxis(_tankRotation, Vector3.up);
-			//transform.rotation = Quaternion.AngleAxis(_tankRotation, Vector3.up);
-            //transform.Rotate(0, _tankRotation, 0);
-            /*
-            Debug.Log("transform.rotation: " + transform.rotation +
-                      "transform.localRotation: " + transform.localRotation);
-                      */
         }
     }
 
@@ -63,7 +51,6 @@ public class TankModel : MonoBehaviour {
         }
         set {
             _aimHorizontal = value;
-            //turretBase.transform.localRotation = Quaternion.AngleAxis(_aimHorizontal, Vector3.up);
         }
     }
 
@@ -74,12 +61,6 @@ public class TankModel : MonoBehaviour {
         set {
             _aimVertical = value;
 			turret.transform.localRotation = Quaternion.Euler(_aimVertical, 0, 0);
-			//turret.transform.rotation = Quaternion.Euler(_aimVertical, 0, 0);
-			//turret.transform.rotation = Quaternion.AngleAxis (_aimHorizontal, Vector3.up) * Quaternion.Euler(_aimVertical, 0, 0);
-            /*
-			turret.transform.rotation = Quaternion.AngleAxis (_aimHorizontal, Vector3.up) *
-			Quaternion.AngleAxis (_aimVertical, Vector3.right);
-            */
         }
     }
 
