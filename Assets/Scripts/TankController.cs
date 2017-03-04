@@ -8,7 +8,8 @@ using UnityEngine.Networking;
 public class TankController : NetworkBehaviour {
 
 	// Public
-	public GameObject projectilePrefab;
+	public GameObject modelPrefab;
+	public TankModel model;
 	public Transform shotSource;
 
 	public float shotPower = 30.0f;
@@ -20,7 +21,27 @@ public class TankController : NetworkBehaviour {
 	public float aimHorizontal = 45.0f;
 
 	public Transform turret;
-	public Transform playerCameraSpot;
+	//public Transform playerCameraSpot;
+
+	public Transform passiveCameraSource {
+		get {
+			if (model != null) {
+				return model.passiveCameraSource;
+			} else {
+				return transform;
+			}
+		}
+	}
+
+	public Transform chaseCameraSource {
+		get {
+			if (model != null) {
+				return model.chaseCameraSource;
+			} else {
+				return transform;
+			}
+		}
+	}
 
 	public GameObject[] upperMeshes;
 	public GameObject[] middleMeshes;
@@ -55,6 +76,15 @@ public class TankController : NetworkBehaviour {
 	[SyncVar]
 	public string playerName = "";
 
+	[SyncVar]
+    public TankBaseKind tankBaseKind = TankBaseKind.standard;
+	[SyncVar]
+    public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
+	[SyncVar]
+    public TankTurretKind turretKind = TankTurretKind.standard;
+	[SyncVar]
+    public TankHatKind hatKind = TankHatKind.sunBlue;
+
 	// Hidden Public
 	[HideInInspector]  // This makes the next variable following this to be public but not show up in the inspector.
 	public GameObject liveProjectile;
@@ -78,7 +108,34 @@ public class TankController : NetworkBehaviour {
 	}
 
 	void Start() {
+		/*
         Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+		// upon start up ... instantiate the model
+		var modelGo = (GameObject) GameObject.Instantiate (
+			modelPrefab,
+			transform.position,
+			Quaternion.identity,
+			this.transform
+		);
+		model = modelGo.GetComponent<TankModel>();
+		// add two child network transforms
+		gameObject.SetActive(false);
+		var netChild = gameObject.AddComponent<NetworkTransformChild>();
+		netChild.target = modelGo.transform;
+		netChild = gameObject.AddComponent<NetworkTransformChild>();
+		netChild.target = model.turret.transform;
+		gameObject.SetActive(true);
+		*/
+
+        var modelGo = transform.Find("TankModel");
+		model = modelGo.GetComponent<TankModel>();
+
+		// copy state to model
+        model.tankBaseKind = tankBaseKind;
+        model.turretBaseKind = turretBaseKind;
+        model.turretKind = turretKind;
+        model.hatKind = hatKind;
+		model.UpdateAvatar();
 	}
 
 	// Use this for initialization
@@ -95,9 +152,11 @@ public class TankController : NetworkBehaviour {
 		upperMeshNum = PlayerPrefs.GetInt (name + "upperMeshNum");
 		hatMeshNum = PlayerPrefs.GetInt (name + "hatMeshNum");
 		Debug.Log ("meshes are L:" + lowerMeshNum + " M:" + middleMeshNum + " U:" + upperMeshNum + " H:" + hatMeshNum);
+		/*
 		tankAvatarScript = GetComponent<AvatarSetup> ();
 		tankAvatarScript.SetActiveMeshes (lowerMeshNum, middleMeshNum, upperMeshNum, hatMeshNum);
 		tankAvatarScript.updateAvatar ();
+		*/
 		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
 		aimHorizontal = Mathf.Atan2 (centerPoint.transform.position.z - transform.position.z,
 			centerPoint.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
@@ -356,13 +415,19 @@ public class TankController : NetworkBehaviour {
 				yield break;
 			}
 
+			if (model != null) {
+				model.tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedVertical;
+				model.turretElevation += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
+			}
+			/*
 			aimVertical += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedVertical;
 			aimHorizontal += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedHorizontal;
+			*/
 
-			transform.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up);
+			//transform.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up);
 			//turret.rotation = Quaternion.AngleAxis (aimVertical, Vector3.right);
-			turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
-				Quaternion.AngleAxis (aimVertical, Vector3.right);
+			//turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
+				//Quaternion.AngleAxis (aimVertical, Vector3.right);
 
 			// These two lines stay together
 			//turret.rotation = Quaternion.AngleAxis (aimHorizontal, Vector3.up) *
@@ -393,8 +458,8 @@ public class TankController : NetworkBehaviour {
 		var prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(projectiledKind);
 		liveProjectile = (GameObject)GameObject.Instantiate (
 			prefab,
-			shotSource.position,
-			shotSource.rotation
+			model.shotSource.position,
+			model.shotSource.rotation
 		);
 		liveProjectile.name = name + "Projectile";
 		liveProjectile.layer = gameObject.layer;
@@ -403,7 +468,11 @@ public class TankController : NetworkBehaviour {
 
 		// set initial velocity/force
 		//liveProjectile.GetComponent<ProjectileController>().DisableCollisions(0.1f);
-		liveProjectile.GetComponent<Rigidbody>().AddForce(shotSource.forward * shotPower);
+		var shotDirection = model.shotSource.worldToLocalMatrix.MultiplyVector(model.shotSource.forward);
+
+
+		//liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
+		liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
 
 		// set network spawn
 		NetworkServer.Spawn (liveProjectile);

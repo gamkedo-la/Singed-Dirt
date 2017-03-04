@@ -61,15 +61,17 @@ public class CameraController : MonoBehaviour {
 
 	public void SetPlayerCameraFocus (TankController _player){
 		player = _player;
-		playerLocation = player.playerCameraSpot;
+		playerLocation = player.passiveCameraSource;
 		SetPlayerCameraLookAt (player);
 		Debug.Log ("Setting Player Camera Focus");
 	}
 
 	public void SetPlayerCameraLookAt (TankController _player) {
 		// Camera look at code
+		/*
 		player.playerCameraSpot.position = player.transform.position - player.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
 		player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
+		*/
 
 	}
 
@@ -179,12 +181,16 @@ public class CameraController : MonoBehaviour {
 				if (playerZoom > maxPlayerZoom) playerZoom = maxPlayerZoom;
 			}
 			if (tank.hasControl) {
-				desiredPosition = tank.transform.position - tank.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
-				Vector3 relativePosition = tank.transform.position + tank.transform.forward * 15.0f - transform.position;
+				desiredPosition = tank.chaseCameraSource.position;
+				desiredRotation = tank.chaseCameraSource.rotation;
+				/*
+				desiredPosition = tank.model.transform.position - tank.model.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
+				Vector3 relativePosition = tank.model.transform.position + tank.model.transform.forward * 15.0f - transform.position;
 				desiredRotation = Quaternion.LookRotation(relativePosition);
+				*/
 			} else {
-				desiredPosition = tank.playerCameraSpot.position;
-				desiredRotation = tank.playerCameraSpot.rotation;
+				desiredPosition = tank.passiveCameraSource.position;
+				desiredRotation = tank.passiveCameraSource.rotation;
 			}
 			yield return null;
 		}

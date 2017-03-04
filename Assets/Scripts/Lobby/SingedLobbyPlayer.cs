@@ -20,10 +20,58 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public GameObject localIcon;
 
     [Header("Player Variables")]
-    public TankBaseKind tankBaseKind = TankBaseKind.standard;
-    public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
-    public TankTurretKind turretKind = TankTurretKind.standard;
-    public TankHatKind hatKind = TankHatKind.sunBlue;
+    [SyncVar]
+    TankBaseKind _tankBaseKind;
+    public TankBaseKind tankBaseKind {
+        get {
+            return _tankBaseKind;
+        }
+        set {
+            _tankBaseKind = value;
+            if (!isServer) CmdTankBaseChanged(value);
+        }
+    }
+
+    [SyncVar]
+    TankTurretBaseKind _turretBaseKind;
+    public TankTurretBaseKind turretBaseKind {
+        get {
+            return _turretBaseKind;
+        }
+        set {
+            _turretBaseKind = value;
+            if (!isServer) CmdTurretBaseChanged(value);
+        }
+    }
+
+    [SyncVar]
+    TankTurretKind _turretKind;
+    public TankTurretKind turretKind {
+        get {
+            return _turretKind;
+        }
+        set {
+            _turretKind = value;
+            if (!isServer) CmdTurretChanged(value);
+        }
+    }
+
+    [SyncVar]
+    TankHatKind _hatKind;
+    public TankHatKind hatKind {
+        get {
+            return _hatKind;
+        }
+        set {
+            _hatKind = value;
+            if (!isServer) CmdHatChanged(value);
+        }
+    }
+
+    //public TankBaseKind tankBaseKind = TankBaseKind.standard;
+    //public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
+    //public TankTurretKind turretKind = TankTurretKind.standard;
+    //public TankHatKind hatKind = TankHatKind.sunBlue;
 
     [SyncVar(hook = "OnMyName")]
     public string playerName = "";
@@ -237,4 +285,33 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     ) {
         playerName = newName;
     }
+
+    [Command]
+    public void CmdTankBaseChanged(
+        TankBaseKind newKind
+    ) {
+        tankBaseKind = newKind;
+    }
+
+    [Command]
+    public void CmdTurretBaseChanged(
+        TankTurretBaseKind newKind
+    ) {
+        turretBaseKind = newKind;
+    }
+
+    [Command]
+    public void CmdTurretChanged(
+        TankTurretKind newKind
+    ) {
+        turretKind = newKind;
+    }
+
+    [Command]
+    public void CmdHatChanged(
+        TankHatKind newKind
+    ) {
+        hatKind = newKind;
+    }
+
 }

@@ -18,7 +18,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public LobbyGameSelect gameSelectPanel;
     public LobbyPanelManager lobbyPanel;
     public LobbyInfoPanelController infoPanel;
-    public LobbyPlayerSetupPanel playerSetupPanel;
+    public TankModelPanel playerSetupPanel;
 
     GameObject currentPanel;
 
@@ -93,7 +93,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     ) {
         Debug.Log("OnLobbyServerSceneLoadedForPlayer");
 
-        var playerSetupHook = GetComponent<LobbyPlayerSetupHook>();
+        var playerSetupHook = GetComponent<TankModelHook>();
         if (playerSetupHook != null) {
             playerSetupHook.SetupPlayer(this, lobbyPlayer, gamePlayer);
         }

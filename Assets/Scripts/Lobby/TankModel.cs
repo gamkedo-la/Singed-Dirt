@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyPlayerSetup : MonoBehaviour {
+public class TankModel : MonoBehaviour {
     // ------------------------------------------------------
     // UI REFERENCE VARIABLES
     [Header("UI Reference")]
@@ -11,6 +11,9 @@ public class LobbyPlayerSetup : MonoBehaviour {
     public GameObject turretBase;
     public GameObject turret;
     public GameObject hat;
+    public Transform shotSource;
+    public Transform passiveCameraSource;
+    public Transform chaseCameraSource;
 
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
     public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
@@ -23,8 +26,61 @@ public class LobbyPlayerSetup : MonoBehaviour {
     public GameObject turretPrefab = null;
     public GameObject hatPrefab = null;
 
+	float _tankRotation = 133f;
+	float _aimHorizontal = 0f;
+	float _aimVertical = 15f;
+
     public void Start() {
         UpdateAvatar();
+    }
+
+    public void Update() {
+        //var shotDirection = shotSource.worldToLocalMatrix.MultiplyVector(shotSource.forward);
+        //Debug.DrawLine(shotSource.position, shotSource.position+(shotSource.forward*5), Color.red, 1);
+        //Debug.DrawLine(shotSource.position, shotSource.position+(shotDirection*5), Color.green, 1);
+		//tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * 50f;
+    }
+
+    public float tankRotation {
+        get {
+            return _tankRotation;
+        }
+        set {
+            _tankRotation = value;
+			transform.localRotation = Quaternion.AngleAxis(_tankRotation, Vector3.up);
+			//transform.rotation = Quaternion.AngleAxis(_tankRotation, Vector3.up);
+            //transform.Rotate(0, _tankRotation, 0);
+            /*
+            Debug.Log("transform.rotation: " + transform.rotation +
+                      "transform.localRotation: " + transform.localRotation);
+                      */
+        }
+    }
+
+    public float turretRotation {
+        get {
+            return _aimHorizontal;
+        }
+        set {
+            _aimHorizontal = value;
+            //turretBase.transform.localRotation = Quaternion.AngleAxis(_aimHorizontal, Vector3.up);
+        }
+    }
+
+    public float turretElevation {
+        get {
+            return _aimVertical;
+        }
+        set {
+            _aimVertical = value;
+			turret.transform.localRotation = Quaternion.Euler(_aimVertical, 0, 0);
+			//turret.transform.rotation = Quaternion.Euler(_aimVertical, 0, 0);
+			//turret.transform.rotation = Quaternion.AngleAxis (_aimHorizontal, Vector3.up) * Quaternion.Euler(_aimVertical, 0, 0);
+            /*
+			turret.transform.rotation = Quaternion.AngleAxis (_aimHorizontal, Vector3.up) *
+			Quaternion.AngleAxis (_aimVertical, Vector3.right);
+            */
+        }
     }
 
     public void UpdateAvatar() {
@@ -64,10 +120,6 @@ public class LobbyPlayerSetup : MonoBehaviour {
             hat.transform.position,
             hat.transform.rotation,
             hat.transform);
-
-        /*
-        transform.rotation *= Quaternion.AngleAxis(-130, Vector3.up);
-        */
 
     }
 }
