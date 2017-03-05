@@ -37,43 +37,51 @@ public class ProjectileController : NetworkBehaviour {
 	/// Generate explosion and apply damage for projectile
 	/// </summary>
 	void ServerExplode(Collision collision) {
-		Debug.Log("CmdExplode: " + this);
+		Debug.Log("ServerExplode: " + this);
 		// Get list of colliders in range of this explosion
+		// FIXME: range of projectile shouldn't be hard-coded
 		Collider[] flakReceivers = Physics.OverlapSphere(transform.position, 10.0f);
+		// keep track of list of root objects already evaluated
+		var hitList = new List<GameObject>();
 
 		foreach (Collider flakReceiver in flakReceivers) {
-			GameObject gameObjRef = flakReceiver.gameObject;
-			// TODO use a better method to identify Player tank objects?
-			if (gameObjRef.name.Contains ("Player") && !gameObjRef.name.Contains("Projectile")) {
-				Debug.Log (gameObjRef.name + " received splash damage");
+			var rootObject = flakReceiver.transform.root.gameObject;
 
-				Vector3 cannonballCenterToTankCenter = transform.position - gameObjRef.transform.position;
-				Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
-				Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
+			// has this object already been hit by this projectile?
+			if (!hitList.Contains(rootObject)) {
+				hitList.Add(rootObject);
 
-				float hitDistToTankCenter = cannonballCenterToTankCenter.magnitude;
-				Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
+				GameObject gameObjRef = flakReceiver.gameObject;
+				Debug.Log("hit gameObject: " + rootObject.name);
+				var health = rootObject.GetComponent<Health>();
+				var tankCtrlRef = rootObject.GetComponent<TankController>();
+				if (health != null && tankCtrlRef != null) {
+					Debug.Log (tankCtrlRef.playerName + " received splash damage");
 
-				// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
-				// was to plug in some values and come up with a damage computation formula.  The above formula yields:
-				// direct hit (dist = 0m): 100 hit points
-				// Hit dist 5m: about 25 hit points
-				// hit dist 10m: about 1 hit point
-				// The formula is based on a max proximity damage distance of 10m
-				int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
-				if (damagePoints > 0) {
-					TankController tankCtrlRef = gameObjRef.GetComponent<TankController> ();
-					var health = tankCtrlRef.GetComponent<Health>();
-					if (health != null) {
+					Vector3 cannonballCenterToTankCenter = transform.position - gameObjRef.transform.position;
+					Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
+					Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
+
+					float hitDistToTankCenter = cannonballCenterToTankCenter.magnitude;
+					Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
+
+					// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
+					// was to plug in some values and come up with a damage computation formula.  The above formula yields:
+					// direct hit (dist = 0m): 100 hit points
+					// Hit dist 5m: about 25 hit points
+					// hit dist 10m: about 1 hit point
+					// The formula is based on a max proximity damage distance of 10m
+					int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
+					if (damagePoints > 0) {
 						health.TakeDamage(damagePoints);
 						Debug.Log ("Damage done to " + tankCtrlRef.name + ": " + damagePoints + ". Remaining: " + health.health);
+
+						// Do shock displacement
+						Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
+						Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
+						tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
+
 					}
-
-					// Do shock displacement
-					Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
-					Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
-					tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
-
 				}
 			}
 		}
