@@ -106,6 +106,9 @@ public class TankController : NetworkBehaviour {
 		netChild.target = model.turret.transform;
 
 		gameObject.SetActive(true);
+
+		// manually set center of mass for tank
+		rb.centerOfMass = model.centerOfMass.position;
 	}
 
 	void PlaceOnGround() {

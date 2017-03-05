@@ -14,6 +14,7 @@ public class TankModel : MonoBehaviour {
     public Transform shotSource;
     public Transform passiveCameraSource;
     public Transform chaseCameraSource;
+    public Transform centerOfMass;
 
     [Header("Tank Part Selections")]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
