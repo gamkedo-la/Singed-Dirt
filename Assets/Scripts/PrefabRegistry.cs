@@ -72,6 +72,7 @@ public enum TankHatKind {
     sunRed,
     sunYellow,
     sunWhite,
+	horn,
 }
 
 /// <summary>
