@@ -41,6 +41,7 @@ public enum ProjectileKind {
 
 public enum ExplosionKind {
     fire = 0,
+	virus,
 }
 
 public enum DeformationKind {
