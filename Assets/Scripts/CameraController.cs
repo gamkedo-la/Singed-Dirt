@@ -46,9 +46,10 @@ public class CameraController : MonoBehaviour {
 	float zoomIncrement = 0.25f;
 	float playerZoom = 2f;
 	float maxPlayerZoom = 4.5f;
+    private float minExplosionCamHeight = 5.0f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 //		player = GameObject.Find("Player").GetComponent<TankController>();
 		chaseCameraSpot = transform.position;
 		Debug.Log ("CameraController script starting in " + gameObject.name);
@@ -224,7 +225,12 @@ public class CameraController : MonoBehaviour {
 		while (cameraMode == CameraMode.watchProjectile && explosionGO != null) {
 			var projectileRB = explosionGO.GetComponent<Rigidbody>();
 
-			desiredPosition = explosionGO.transform.position - explosionGO.transform.forward + Vector3.up * cameraPositionAboveExplosion + Vector3.right * 0.5f;
+			Vector3 planarExplosionForward = explosionGO.transform.forward;
+			planarExplosionForward.y = 0.0f;
+			planarExplosionForward.Normalize();
+			desiredPosition = explosionGO.transform.position - planarExplosionForward + Vector3.up * cameraPositionAboveExplosion + Vector3.right * 0.5f;
+			float groundHeightAtDesiredPosition = Terrain.activeTerrain.SampleHeight(desiredPosition);
+			desiredPosition.y = Mathf.Max(desiredPosition.y, groundHeightAtDesiredPosition + minExplosionCamHeight);
 			Vector3 relativePosition = desiredPosition - transform.position;
 			desiredRotation = Quaternion.LookRotation(relativePosition);
 
