@@ -67,8 +67,10 @@ public class TankController : NetworkBehaviour {
     public TankTurretKind turretKind = TankTurretKind.standard;
 	[SyncVar]
     public TankHatKind hatKind = TankHatKind.sunBlue;
+    private float minTurretElevation = 0.00f;
+    private float maxTurretElevation = 70.0f;
 
-	void FindSpawnPointAndAddToList(string playerName)
+    void FindSpawnPointAndAddToList(string playerName)
 	{
 		GameObject tempGO = GameObject.Find (playerName + "SpawnPoints");
 		if (tempGO != null) {
@@ -370,6 +372,7 @@ public class TankController : NetworkBehaviour {
 			if (model != null) {
 				model.tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedVertical;
 				model.turretElevation += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
+				model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
 			}
 
 			// continue on next frame
