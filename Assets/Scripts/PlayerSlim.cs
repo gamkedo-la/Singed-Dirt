@@ -18,27 +18,27 @@ public class PlayerSlim : MonoBehaviour {
         PrefabRegistry.singleton.GetPrefab<TankBaseKind>(tankBaseKind);
         // instantiate tank base
         var prefab = PrefabRegistry.singleton.GetPrefab<TankBaseKind>(tankBaseKind);
-        Debug.Log("prefab: " + prefab);
+        // Debug.Log("prefab: " + prefab);
 		var instance = (GameObject) GameObject.Instantiate(prefab, tankBase.transform);
-        Debug.Log("instance: " + instance);
+        // Debug.Log("instance: " + instance);
 
         // instantiate turret base
         prefab = PrefabRegistry.singleton.GetPrefab<TankTurretBaseKind>(turretBaseKind);
-        Debug.Log("prefab: " + prefab);
+        // Debug.Log("prefab: " + prefab);
 		instance = (GameObject) GameObject.Instantiate(prefab, turretBase.transform);
-        Debug.Log("instance: " + instance);
+        // Debug.Log("instance: " + instance);
 
         // instantiate turret
         prefab = PrefabRegistry.singleton.GetPrefab<TankTurretKind>(turretKind);
-        Debug.Log("prefab: " + prefab);
+        // Debug.Log("prefab: " + prefab);
 		instance = (GameObject) GameObject.Instantiate(prefab, turret.transform);
-        Debug.Log("instance: " + instance);
+        // Debug.Log("instance: " + instance);
 
         // instantiate hat
         prefab = PrefabRegistry.singleton.GetPrefab<TankHatKind>(hatKind);
-        Debug.Log("prefab: " + prefab);
+        // Debug.Log("prefab: " + prefab);
 		instance = (GameObject) GameObject.Instantiate(prefab, hat.transform);
-        Debug.Log("instance: " + instance);
+        // Debug.Log("instance: " + instance);
     }
 
 }

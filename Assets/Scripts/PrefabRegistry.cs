@@ -101,7 +101,7 @@ public class PrefabRegistry: NetworkBehaviour {
     }
 
     void Start() {
-        Debug.Log("PrefabRegistry Start, isServer" + isServer);
+        // Debug.Log("PrefabRegistry Start, isServer" + isServer);
         if (!isServer) {
             foreach(var spawnEnum in spawnableEnums) {
                 foreach (var prefabId in Enum.GetValues(spawnEnum)) {
@@ -111,7 +111,7 @@ public class PrefabRegistry: NetworkBehaviour {
                         .MakeGenericMethod(spawnEnum)
                         .Invoke(this, new object[] { prefabId }) as GameObject;
                     if (prefab != null) {
-                        Debug.Log("registering prefab: " + prefabId);
+                        // Debug.Log("registering prefab: " + prefabId);
                         ClientScene.RegisterPrefab(prefab);
                     }
                 }

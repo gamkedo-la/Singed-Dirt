@@ -17,6 +17,9 @@ public class TurnManager : NetworkBehaviour {
 	public InputField powerValue;
 	public Transform healthBar;
 
+	public GameObject[] selectedProjectileModels;
+	public ProjectileKind selectedProjectile;
+
 	// the list of all tanks, mapping their tank ID to tank controller
 	// NOTE: this mapping is maintained on both client and server
 	public Dictionary<int, TankController> tankRegistry;
@@ -52,7 +55,7 @@ public class TurnManager : NetworkBehaviour {
 	//public List<TankController> localTanks;
 
 	void Awake(){
-        Debug.Log("TurnManager Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+        // Debug.Log("TurnManager Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		singleton = this;
 		gameOverText.enabled = false;
 		tankRegistry = new Dictionary<int, TankController>();
@@ -70,7 +73,7 @@ public class TurnManager : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Debug.Log("TurnManager Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+        // Debug.Log("TurnManager Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		if (isServer) {
 			StartCoroutine(ServerLoop());
 		}
@@ -79,7 +82,7 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	void SetActiveTank(TankController tank){
-		Debug.Log("Activating " + tank.name);
+		// Debug.Log("Activating " + tank.name);
 		activeTank = tank;
 		if (activeTank.isLocalPlayer) {
 			lastLocalTank = activeTank;
@@ -97,6 +100,13 @@ public class TurnManager : NetworkBehaviour {
 				horizontalTurret = lastLocalTank.model.tankRotation;
 				verticalTurret = lastLocalTank.model.turretElevation;
 				shotPower = lastLocalTank.shotPower;
+				if(selectedProjectile != lastLocalTank.selectedShot){
+					selectedProjectile = lastLocalTank.selectedShot;
+					for(int i =0; i < selectedProjectileModels.Length;i++){
+						selectedProjectileModels[i].SetActive((int)selectedProjectile == i);
+					}
+					
+				}
 			}
 
 			// calculate health
@@ -116,7 +126,8 @@ public class TurnManager : NetworkBehaviour {
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + "m/s\n" +
-			"HitPoints: " + tankHitPoints;
+			"HitPoints: " + tankHitPoints; // + "m/s\n" +
+			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;
 
 		if (gameOverState == true) {
@@ -145,7 +156,7 @@ public class TurnManager : NetworkBehaviour {
     // CLIENT-ONLY METHODS
 	public bool ClientRegisterPlayer(TankController player) {
 		if (!isReady) return false;
-		Debug.Log("ClientRegisterPlayer: " + player);
+		// Debug.Log("ClientRegisterPlayer: " + player);
 		tankRegistry[player.playerIndex] = player;
 		return true;
 	}
@@ -154,10 +165,10 @@ public class TurnManager : NetworkBehaviour {
     // SERVER-ONLY METHODS
 	public bool ServerRegisterPlayer(TankController player) {
 		if (!isReady) return false;
-		Debug.Log("isServer: " + isServer);
-		Debug.Log("Network.isServer: " + Network.isServer);
+		// Debug.Log("isServer: " + isServer);
+		// Debug.Log("Network.isServer: " + Network.isServer);
 		if (!isServer) return false;
-		Debug.Log("ServerRegisterPlayer: " + player);
+		// Debug.Log("ServerRegisterPlayer: " + player);
 
 		// assign tank index
 		var newTankIndex = nextTankId;
@@ -170,7 +181,7 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	public void ServerHandleShotFired(TankController player, GameObject projectileGO) {
-		Debug.Log("ServerHandleShotFired: " + projectileGO);
+		// Debug.Log("ServerHandleShotFired: " + projectileGO);
 		if (!isServer) return;
 		liveProjectile = projectileGO;
 	}
@@ -200,7 +211,7 @@ public class TurnManager : NetworkBehaviour {
 	/// </summary>
 	[ClientRpc]
 	void RpcStart() {
-		Debug.Log("starting game on client");
+		// Debug.Log("starting game on client");
 		StartCoroutine(ClientLoop());
 	}
 
@@ -212,7 +223,7 @@ public class TurnManager : NetworkBehaviour {
 	void RpcViewLocalTank(GameObject tankGO) {
 		var tank = tankGO.GetComponent<TankController>();
 		if (tank != null && tank.isLocalPlayer) {
-			Debug.Log("setting camera view to local: " + tank.name);
+			// Debug.Log("setting camera view to local: " + tank.name);
 			camController.WatchPlayer(tank);
 			//camController.SetPlayerCameraFocus(localTank);
 		}
@@ -228,7 +239,7 @@ public class TurnManager : NetworkBehaviour {
 
 	[ClientRpc]
 	void RpcViewExplosion(GameObject playerGO, GameObject explosionGO, bool localOnly) {
-		Debug.Log("RpcViewExplosion: isLocalPlayer: " + playerGO.GetComponent<TankController>().isLocalPlayer);
+		// Debug.Log("RpcViewExplosion: isLocalPlayer: " + playerGO.GetComponent<TankController>().isLocalPlayer);
 		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
 			camController.ShakeCamera(2.0f, 0.9f);
 			camController.WatchExplosion(explosionGO);
@@ -241,7 +252,7 @@ public class TurnManager : NetworkBehaviour {
 	/// This is the main server loop
 	/// </summary>
 	IEnumerator ServerLoop() {
-		Debug.Log("starting ServerLoop");
+		// Debug.Log("starting ServerLoop");
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
@@ -258,14 +269,14 @@ public class TurnManager : NetworkBehaviour {
         yield return StartCoroutine(PlayRound());
 		// FIXME: need to rework game win/loss logic
 		gameOverState = true;
-		Debug.Log("finishing ServerLoop");
+		// Debug.Log("finishing ServerLoop");
 	}
 
 	/// <summary>
 	/// This is the main client loop
 	/// </summary>
 	IEnumerator ClientLoop() {
-		Debug.Log("starting ClientLoop");
+		// Debug.Log("starting ClientLoop");
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
@@ -295,11 +306,11 @@ public class TurnManager : NetworkBehaviour {
 			tankRegistry[tankId].SetupTank();
 		}
 
-		Debug.Log ("Tanks reporting for duty!");
+		// Debug.Log ("Tanks reporting for duty!");
 	}
 
 	IEnumerator PlayRound() {
-		Debug.Log ("Starting the game!!!");
+		// Debug.Log ("Starting the game!!!");
 
 		// add current tanks to the active tank list
 		activeTanks = new List<int>(tankRegistry.Keys);
@@ -309,7 +320,7 @@ public class TurnManager : NetworkBehaviour {
 
 		// determine turn order
 		var turnOrder = GetTurnOrder(tankRegistry);
-		Debug.Log("turn order is -> " + String.Join(",", turnOrder.Select(v=>v.ToString()).ToArray()));
+		// Debug.Log("turn order is -> " + String.Join(",", turnOrder.Select(v=>v.ToString()).ToArray()));
 		var currentIndex = 0;
 		yield return null;
 
@@ -320,7 +331,7 @@ public class TurnManager : NetworkBehaviour {
 
 			// validate tank is active
 			if (!activeTanks.Contains(nextTankId)) {
-				Debug.Log("skipping inactive tank: " + tankRegistry[nextTankId].name);
+				// Debug.Log("skipping inactive tank: " + tankRegistry[nextTankId].name);
 				continue;
 			}
 
@@ -329,11 +340,11 @@ public class TurnManager : NetworkBehaviour {
 
 		}
 
-		Debug.Log("Round is over, winner is " + tankRegistry[activeTanks[0]].name);
+		// Debug.Log("Round is over, winner is " + tankRegistry[activeTanks[0]].name);
 	}
 
 	IEnumerator TakeTankTurn(TankController tank) {
-		Debug.Log("taking turn for " + tank.name);
+		// Debug.Log("taking turn for " + tank.name);
 		// activate the tank
 		SetActiveTank(tank);
 
@@ -347,7 +358,7 @@ public class TurnManager : NetworkBehaviour {
 
 		// follow tank projectile
 		if (liveProjectile != null) {
-			Debug.Log("live projectile detected");
+			// Debug.Log("live projectile detected");
 			// update local camera to watch live projectile
 			RpcViewShot(tank.gameObject, liveProjectile, true);
 		}
@@ -358,7 +369,7 @@ public class TurnManager : NetworkBehaviour {
 
 		// wait for explosion
 		if (liveExplosion != null) {
-			Debug.Log("live explosion detected");
+			// Debug.Log("live explosion detected");
 			// update local camera to watch live explosion
 			RpcViewExplosion(tank.gameObject, liveExplosion, true);
 		}
@@ -376,12 +387,12 @@ public class TurnManager : NetworkBehaviour {
 		// find manager GO and manager script
 		GameObject managerGO = GameObject.Find("GameManager");
 		if (managerGO == null) {
-			Debug.Log("server registration failed, can't find game manager");
+			// Debug.Log("server registration failed, can't find game manager");
 			return null;
 		}
 		var manager = managerGO.GetComponent<TurnManager>();
 		if (manager == null) {
-			Debug.Log("server registration failed, can't find game manager script");
+			// Debug.Log("server registration failed, can't find game manager script");
 			return null;
 		}
 		return manager;

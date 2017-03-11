@@ -119,12 +119,12 @@ public class TankController : NetworkBehaviour {
 			Vector3 fixedSpot = transform.position;
 			fixedSpot.y = Terrain.activeTerrain.SampleHeight(fixedSpot) + Terrain.activeTerrain.transform.position.y;
 			transform.position = fixedSpot;
-			Debug.Log("placing on ground @ " + fixedSpot);
+			// Debug.Log("placing on ground @ " + fixedSpot);
 		}
 	}
 
 	void Start() {
-        Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+        // Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 
 		// copy state to model
         model.tankBaseKind = tankBaseKind;
@@ -139,7 +139,7 @@ public class TankController : NetworkBehaviour {
 		togglePowerInputAmount = false;
 		savedPowerModifier = shotPowerModifier;
 		spawnPoints = new List<Transform> ();
-		Debug.Log ("Name is " + name + " and is local player " + isLocalPlayer);
+		// Debug.Log ("Name is " + name + " and is local player " + isLocalPlayer);
 		FindSpawnPointAndAddToList (name);
 		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
 		transform.position = spawnPoint.position;
@@ -175,7 +175,7 @@ public class TankController : NetworkBehaviour {
 		// applies to all copies of player on the server
 		if (!hasRegistered) {
 			if (!isServer) {
-				Debug.Log("playerIndex: " + playerIndex);
+				// Debug.Log("playerIndex: " + playerIndex);
 			}
 			if (isServer) {
 				ServerRegisterToManager();
@@ -194,7 +194,7 @@ public class TankController : NetworkBehaviour {
 	/// Register this tank to turn manager
 	/// </summary>
 	void ClientRegisterToManager() {
-		Debug.Log("ClientRegisterToManager for " + this.name);
+		// Debug.Log("ClientRegisterToManager for " + this.name);
 		if (isServer) return;
 
 		// ensure we haven't already registered
@@ -215,7 +215,7 @@ public class TankController : NetworkBehaviour {
 	/// </summary>
 	public void ServerAssignIndex(int index) {
 		if (!isServer) return;
-		Debug.Log("assigning index " + index + " to " + name);
+		// Debug.Log("assigning index " + index + " to " + name);
 		playerIndex = index;
 	}
 
@@ -248,7 +248,7 @@ public class TankController : NetworkBehaviour {
 	/// Register this tank to turn manager
 	/// </summary>
 	void ServerRegisterToManager() {
-		Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
+		// Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
 		// this is a server function
 		if (!isServer) return;
 
@@ -266,7 +266,7 @@ public class TankController : NetworkBehaviour {
 	/// Fire selected projectile if current player controller is in proper state.
 	/// </summary>
 	void OnChangeControl(bool currentHasControl) {
-		Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
+		// Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
 		// only apply change control to local player
 		if (!isLocalPlayer) return;
 		if (currentHasControl == hasControl) return;
@@ -288,7 +288,7 @@ public class TankController : NetworkBehaviour {
 	/// This is the state-engine driving tank operations while controls are active
 	/// </summary>
 	IEnumerator ShootStateEngine() {
-		Debug.Log("ShootStateEngine called for " + this.name + " with isServer: " + isServer);
+		// Debug.Log("ShootStateEngine called for " + this.name + " with isServer: " + isServer);
 		// disable tank physics
 		rb.isKinematic = true;
 
@@ -296,7 +296,7 @@ public class TankController : NetworkBehaviour {
         yield return StartCoroutine(AimStateEngine());
 
 		// relinquish control
-		Debug.Log("ShootStateEngine release control for " + this.name);
+		// Debug.Log("ShootStateEngine release control for " + this.name);
 		CmdReleaseControl();
 
 		// re-enable tank physics
@@ -310,7 +310,7 @@ public class TankController : NetworkBehaviour {
 	/// NOTE: ensure that all yield calls are using next of frame (yield return null) to ensure proper input handling
 	/// </summary>
 	IEnumerator AimStateEngine() {
-		Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
+		// Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
 		// continue while we have control
 		while (hasControl) {
 			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {

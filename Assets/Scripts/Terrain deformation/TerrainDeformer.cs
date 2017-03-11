@@ -42,9 +42,9 @@ public class TerrainDeformer : NetworkBehaviour, ITerrainDeformer
 	public void StoreRB(){
 		m_rigidbody = GetComponent<Rigidbody>();
 		if (m_rigidbody == null) {
-			Debug.Log ("no rigibody on " + gameObject.name);
+			// Debug.Log ("no rigibody on " + gameObject.name);
 		} else {
-			Debug.Log ("rigid body was found for " + gameObject.name);
+			// Debug.Log ("rigid body was found for " + gameObject.name);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class TerrainDeformer : NetworkBehaviour, ITerrainDeformer
             return;
 
         // initialize to given seed
-        Debug.Log("DeformTerrain with seed: " + seed);
+        // Debug.Log("DeformTerrain with seed: " + seed);
         if (seed != 0) Random.InitState(seed);
 
         if (m_rigidbody != null) {
@@ -138,7 +138,7 @@ public class TerrainDeformer : NetworkBehaviour, ITerrainDeformer
 
         if (m_deformationDuration < 0.01f)
         {
-            Debug.Log("deform now");
+            // Debug.Log("deform now");
             SetHeights(sampleHeights, 1f);
             SetScar(sampleScarBlend, 1f);
             // deformation is complete

@@ -52,7 +52,7 @@ public class CameraController : MonoBehaviour {
     void Start () {
 //		player = GameObject.Find("Player").GetComponent<TankController>();
 		chaseCameraSpot = transform.position;
-		Debug.Log ("CameraController script starting in " + gameObject.name);
+		// Debug.Log ("CameraController script starting in " + gameObject.name);
 		transform.position = overviewLocation.transform.position;
 		transform.LookAt(centerLocation.position);
 		desiredPosition = transform.position;
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour {
 		player = _player;
 		playerLocation = player.passiveCameraSource;
 		SetPlayerCameraLookAt (player);
-		Debug.Log ("Setting Player Camera Focus");
+		// Debug.Log ("Setting Player Camera Focus");
 	}
 
 	public void SetPlayerCameraLookAt (TankController _player) {
@@ -164,7 +164,7 @@ public class CameraController : MonoBehaviour {
 
 	// FIXME: ensure state loops can't overlap on each other (e.g.: two calls to WatchPlayer on top of each other)
 	public void WatchPlayer(TankController tank) {
-		Debug.Log("WatchPlayer: " + tank.name);
+		// Debug.Log("WatchPlayer: " + tank.name);
 		cameraMode = CameraMode.watchPlayer;
 		StartCoroutine(WatchPlayerLoop(tank));
 	}
@@ -198,7 +198,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void WatchProjectile(GameObject projectileGO) {
-		Debug.Log("WatchProjectile: " + projectileGO);
+		// Debug.Log("WatchProjectile: " + projectileGO);
 		cameraMode = CameraMode.watchProjectile;
 		StartCoroutine(WatchProjectileLoop(projectileGO));
 	}
@@ -216,7 +216,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void WatchExplosion(GameObject explosionGO) {
-		Debug.Log("WatchExplosion: " + explosionGO);
+		// Debug.Log("WatchExplosion: " + explosionGO);
 		cameraMode = CameraMode.watchExplosion;
 		StartCoroutine(WatchExplosionLoop(explosionGO));
 	}
@@ -243,7 +243,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	IEnumerator ShakeCameraLoop(float amount, float decreaseFactor) {
-		Debug.Log("start shaking camera for amount: " + amount);
+		// Debug.Log("start shaking camera for amount: " + amount);
 		shakeAmount = amount;
 		while (shakeAmount > 0.0001f) {
 			shakeAmount *= decreaseFactor;
@@ -251,7 +251,7 @@ public class CameraController : MonoBehaviour {
 			yield return null;
 		}
 		shakeAmount = 0f;
-		Debug.Log("done shaking camera");
+		// Debug.Log("done shaking camera");
 	}
 
 } // end Class

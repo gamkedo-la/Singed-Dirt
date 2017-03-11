@@ -172,7 +172,7 @@ public class TerrainDeformationManager : NetworkBehaviour
 
 	[ClientRpc]
     public void RpcApplyDeform(GameObject deformGO, int seed) {
-        Debug.Log("RpcApplyDeform: " + deformGO + " @ " + deformGO.transform.position + " with seed: " + seed);
+        // Debug.Log("RpcApplyDeform: " + deformGO + " @ " + deformGO.transform.position + " with seed: " + seed);
         var deformer = deformGO.GetComponent<TerrainDeformer>();
         if (deformer != null) {
             ApplyDeform(deformer, deformGO.transform.position, seed);
@@ -180,7 +180,7 @@ public class TerrainDeformationManager : NetworkBehaviour
     }
 
 	public void ApplyDeform(TerrainDeformer tdScript, Vector3 where, int seed){
-		Debug.Log ("ApplyDeform got called");
+		// Debug.Log ("ApplyDeform got called");
 		if (m_allowErosion) {
 			StartCoroutine(TurnOnErosion());
         }
@@ -190,17 +190,17 @@ public class TerrainDeformationManager : NetworkBehaviour
 
     private IEnumerator TurnOnErosion()
     {
-        print("Turning on erosion");
+        // print("Turning on erosion");
         yield return new WaitForSeconds(1f);
 
         m_errosionOn = true;
-        print("Erosion on");
+        // print("Erosion on");
     }
 
 
 	private void OnApplicationQuit()
     {
-		Debug.Log ("called onApplicationQuit");
+		// Debug.Log ("called onApplicationQuit");
         //m_terrainData.SetHeights(0, 0, m_originalHeights);
         m_terrainData.SetAlphamaps(0, 0, m_originalAlphaMaps);
     }
