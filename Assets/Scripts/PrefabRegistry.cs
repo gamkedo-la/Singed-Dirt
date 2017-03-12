@@ -37,6 +37,7 @@ public static class Extensions {
 public enum ProjectileKind {
     cannonBall = 0,
     acorn,
+    artilleryShell
 }
 
 public enum ExplosionKind {

@@ -60,7 +60,7 @@ public class TurnManager : NetworkBehaviour {
 		gameOverText.enabled = false;
 		tankRegistry = new Dictionary<int, TankController>();
 		activeTanks = new List<int>();
-		//localTanks = new List<TankController>();
+		selectedProjectile = ProjectileKind.acorn;
 	}
 
 	public void GameOverMan(bool isGameOver){
