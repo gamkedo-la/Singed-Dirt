@@ -67,6 +67,11 @@ public class TurnManager : NetworkBehaviour {
 		gameOverState = isGameOver;
 	}
 
+	// function for use with buttons in HUD to increase/decrease tank powerValue
+	public void TellTankAdjustPower(int power){
+		activeTank.DialAdjustPower(power);
+	}
+
 	public bool GetGameOverState(){
 		return gameOverState;
 	}
