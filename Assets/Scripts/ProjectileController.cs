@@ -12,11 +12,19 @@ public class ProjectileController : NetworkBehaviour {
 	public ExplosionKind explosionKind = ExplosionKind.fire;
 	public DeformationKind deformationKind = DeformationKind.shotCrater;
 
-	// Use this for initialization
-	void Start () {
+	public GameObject clusterBomblet;
+
+	public float clusterHeight = 20.0f;
+  	private bool passedClusterHeight = false;
+	private Rigidbody rb;
+    public float bomletForceKick = 50.0f;
+
+    // Use this for initialization
+    void Start () {
 		terrain = Terrain.activeTerrain;
 		manager = TurnManager.GetGameManager();
 		DisableCollisions(0.2f);
+		rb = GetComponent<Rigidbody>();
 	}
 
 	void OnCollisionEnter(Collision collision){
@@ -150,6 +158,32 @@ public class ProjectileController : NetworkBehaviour {
 		if (transform.position.y < terrainY - 1f) {
 			NetworkServer.Destroy (gameObject);
 		}
+		// Debug.Log("terrainY is " + terrainY);
+		if(clusterBomblet != null){
+			float shotHeightAboveTerrain = transform.position.y - terrainY;
+			Debug.Log("shotHeightAboveTerrain is " + shotHeightAboveTerrain);
+			if(shotHeightAboveTerrain > clusterHeight){
+				passedClusterHeight = true;
+			}
+			if(rb.velocity.y < 0.0f && shotHeightAboveTerrain < clusterHeight && passedClusterHeight){
+				var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
+				GameObject explosion = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
+				NetworkServer.Spawn(explosion);
+				manager.ServerHandleExplosion(explosion);
+				var explosionController = explosion.GetComponent<ExplosionController>();
+				var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
+				Destroy (explosion, explosionDuration);
+				Destroy(gameObject, 0.2f);
+				for(int i = 0; i < 4; i++){
+				GameObject bomblet = GameObject.Instantiate(clusterBomblet, transform.position, transform.rotation);
+				NetworkServer.Spawn(bomblet);
+				Rigidbody bombletRB = bomblet.GetComponent<Rigidbody>();
+				bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
+				clusterBomblet = null;
+				// preventing MULTIBOMBS (too many spawn during multiple frames)
+				}
+			}
+    	}
 
         // Make sure the projectile always points in the direction it travels.
         //Vector3 vel = GetComponent<Rigidbody>().velocity;

@@ -37,12 +37,16 @@ public static class Extensions {
 public enum ProjectileKind {
     cannonBall = 0,
     acorn,
-    artilleryShell
+    artilleryShell,
+    sharkToothCluster,
+    sharkToothBomlet
 }
 
 public enum ExplosionKind {
     fire = 0,
 	virus,
+    cluster,
+    bomblet
 }
 
 public enum DeformationKind {
