@@ -110,7 +110,7 @@ public class TurnManager : NetworkBehaviour {
 					for(int i =0; i < selectedProjectileModels.Length;i++){
 						selectedProjectileModels[i].SetActive((int)selectedProjectile == i);
 					}
-					
+
 				}
 			}
 
@@ -281,7 +281,7 @@ public class TurnManager : NetworkBehaviour {
 	/// This is the main client loop
 	/// </summary>
 	IEnumerator ClientLoop() {
-		// Debug.Log("starting ClientLoop");
+		Debug.Log("starting ClientLoop");
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
@@ -315,7 +315,7 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	IEnumerator PlayRound() {
-		// Debug.Log ("Starting the game!!!");
+		Debug.Log ("Starting the game!!!");
 
 		// add current tanks to the active tank list
 		activeTanks = new List<int>(tankRegistry.Keys);

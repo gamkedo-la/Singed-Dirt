@@ -23,118 +23,46 @@ public static class Extensions {
 }
 
 /// <summary>
-/// The following sets of enums represent different prefabs under the Resources directory.
+/// A singleton registry class providing a cache and access methods to retrieve object prefabs based on
+/// enum identifiers.
 /// Each Enum represents a separate subdirectory, and the naming of the subdirectory must
 /// match the name of the Enum minus "Kind" (e.g.: ProjectileKind expects there to be a
 /// Resources/Projectile/ subdirectory.  Under the subdirectory, the names of the prefabs
 /// must match the Enum values (e.g.: For ProjectileKind.cannonBall, there should be a
 /// prefab named Resources/Projectile/cannonBall.prefab
-
-/// NOTE: for prefabs that must be spawned over the network, ensure that spawnableEnums is
-/// updated appropriately
 /// </summary>
+public class PrefabRegistry {
 
-public enum ProjectileKind {
-    cannonBall = 0,
-    acorn,
-    artilleryShell,
-    sharkToothCluster,
-    sharkToothBomlet
-}
-
-public enum ExplosionKind {
-    fire = 0,
-	virus,
-    cluster,
-    bomblet
-}
-
-public enum DeformationKind {
-    shotCrater = 0,
-}
-
-public enum TankBaseKind {
-    standard = 0,
-    crocodile,
-    squirrel,
-}
-
-public enum TankTurretBaseKind {
-    standard = 0,
-    crocodile,
-    squirrel,
-}
-
-public enum TankTurretKind {
-    standard = 0,
-    crocodile,
-    squirrel,
-}
-
-public enum TankHatKind {
-    sunBlack = 0,
-    sunBlue,
-    sunGreen,
-    sunRed,
-    sunYellow,
-    sunWhite,
-	horn,
-}
-
-/// <summary>
-/// A singleton registry class providing a cache and access methods to retrieve object prefabs based on
-/// enum identifiers.
-/// </summary>
-public class PrefabRegistry: NetworkBehaviour {
-
-    static Type[] spawnableEnums = new Type[] {
-        typeof(ProjectileKind),
-        typeof(ExplosionKind),
-        typeof(DeformationKind)
-    };
-
-    // singleton instance
-    private static PrefabRegistry _singleton;
-    // the prefab cache
-    private Dictionary<string, GameObject> prefabCache;
-
-    /// <summary>
-    /// initialize
-    /// </summary>
-    void Awake() {
+    // singleton instance setup
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    private static readonly PrefabRegistry instance = new PrefabRegistry();
+    static PrefabRegistry() {}
+    private PrefabRegistry() {
         prefabCache = new Dictionary<string, GameObject>();
     }
-
-    void Start() {
-        // Debug.Log("PrefabRegistry Start, isServer" + isServer);
-        if (!isServer) {
-            foreach(var spawnEnum in spawnableEnums) {
-                foreach (var prefabId in Enum.GetValues(spawnEnum)) {
-                    // use reflection to generate generic method given spawnEnum type
-                    var prefab = typeof(PrefabRegistry)
-                        .GetMethod("GetPrefab")
-                        .MakeGenericMethod(spawnEnum)
-                        .Invoke(this, new object[] { prefabId }) as GameObject;
-                    if (prefab != null) {
-                        // Debug.Log("registering prefab: " + prefabId);
-                        ClientScene.RegisterPrefab(prefab);
-                    }
-                }
-            }
-        }
-    }
-
     /// <summary>
     /// public singleton property
     /// </summary>
     public static PrefabRegistry singleton {
-        get {
-            if (_singleton == null){
-                GameObject go = new GameObject();
-                _singleton = go.AddComponent<PrefabRegistry>();
-            }
-            return _singleton;
+        get { return instance; }
+    }
+
+    // the prefab cache
+    private Dictionary<string, GameObject> prefabCache;
+
+    public void LoadEnum(Type prefabEnum) {
+        foreach (var prefabId in Enum.GetValues(prefabEnum)) {
+            // use reflection to generate generic method given spawnEnum type
+            var prefab = typeof(PrefabRegistry)
+                    .GetMethod("GetPrefab")
+                    .MakeGenericMethod(prefabEnum)
+                    .Invoke(this, new object[] { prefabId }) as GameObject;
         }
+    }
+
+    public IEnumerable<GameObject> GetAll() {
+        return prefabCache.Values;
     }
 
     /// <summary>
