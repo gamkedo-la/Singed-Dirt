@@ -539,8 +539,9 @@ MonoBehaviour:
   deformationKind: 0
   clusterBomblet: {fileID: 1003205203194982, guid: fbcfb2f9a599843ff94cc0803560533c,
     type: 2}
-  clusterHeight: 15
+  clusterHeight: 25
   bomletForceKick: 300
+  numberOfBomblets: 8
 --- !u!114 &114588574264078920
 MonoBehaviour:
   m_ObjectHideFlags: 1
