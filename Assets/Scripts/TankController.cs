@@ -323,7 +323,10 @@ public class TankController : NetworkBehaviour {
 					shotInt = numShots - 1;
 				}
 				selectedShot = (ProjectileKind)shotInt;
-				Debug.Log ("getting smaller: " + shotInt);
+				if(selectedShot == ProjectileKind.sharkToothBomblet){
+					selectedShot = ProjectileKind.sharkToothCluster;
+				}
+				Debug.Log ("now using shot: " + selectedShot);
 			}
 			if (Input.GetKeyDown (KeyCode.Period)) {
 				shotInt++;
@@ -331,7 +334,10 @@ public class TankController : NetworkBehaviour {
 					shotInt = 0;
 				}
 				selectedShot = (ProjectileKind)shotInt;
-				Debug.Log ("getting larger: " + shotInt);
+				if(selectedShot == ProjectileKind.sharkToothBomblet){
+					selectedShot = ProjectileKind.sharkToothCluster;
+				}
+				Debug.Log ("now using shot: " + selectedShot);
 			}
 
 			// Shoot already ... when shot is fired, finish this coroutine;

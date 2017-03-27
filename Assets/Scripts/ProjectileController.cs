@@ -18,6 +18,7 @@ public class ProjectileController : NetworkBehaviour {
   	private bool passedClusterHeight = false;
 	private Rigidbody rb;
     public float bomletForceKick = 50.0f;
+    public int numberOfBomblets = 8;
 
     // Use this for initialization
     void Start () {
@@ -174,14 +175,15 @@ public class ProjectileController : NetworkBehaviour {
 				var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
 				Destroy (explosion, explosionDuration);
 				Destroy(gameObject, 0.2f);
-				for(int i = 0; i < 4; i++){
-				GameObject bomblet = GameObject.Instantiate(clusterBomblet, transform.position, transform.rotation);
-				NetworkServer.Spawn(bomblet);
-				Rigidbody bombletRB = bomblet.GetComponent<Rigidbody>();
-				bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
-				clusterBomblet = null;
-				// preventing MULTIBOMBS (too many spawn during multiple frames)
+				for(int i = 0; i < numberOfBomblets; i++){
+					GameObject bomblet = GameObject.Instantiate(clusterBomblet, transform.position, transform.rotation);
+					NetworkServer.Spawn(bomblet);
+					Rigidbody bombletRB = bomblet.GetComponent<Rigidbody>();
+					bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
+					
+					// preventing MULTIBOMBS (too many spawn during multiple frames)
 				}
+				clusterBomblet = null;
 			}
     	}
 

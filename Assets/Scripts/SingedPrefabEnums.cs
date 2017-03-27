@@ -30,6 +30,7 @@ public enum ExplosionKind {
 
 public enum DeformationKind {
     shotCrater = 0,
+    bombletCrater
 }
 
 public enum TankBaseKind {

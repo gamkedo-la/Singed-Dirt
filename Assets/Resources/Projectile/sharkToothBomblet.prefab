@@ -191,10 +191,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionKind: 3
-  deformationKind: 0
+  deformationKind: 1
   clusterBomblet: {fileID: 0}
-  clusterHeight: 15
-  bomletForceKick: 600
+  clusterHeight: 20
+  bomletForceKick: 50
+  numberOfBomblets: 8
 --- !u!114 &114337442244548962
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -58,6 +58,7 @@ public class PrefabRegistry {
                     .GetMethod("GetPrefab")
                     .MakeGenericMethod(prefabEnum)
                     .Invoke(this, new object[] { prefabId }) as GameObject;
+        Debug.Log("loaded: " + prefabId);
         }
     }
 
