@@ -30,9 +30,9 @@ public class TurnManager : NetworkBehaviour {
 	// the list of tanks currently active in the round... as tanks die, they are removed from this list
 	public List<int> activeTanks;
 
-
 	// Private variables
 	bool isReady = false;
+	bool gameStarted = false;
 
 	int nextTankId = 1;
 
@@ -45,14 +45,11 @@ public class TurnManager : NetworkBehaviour {
 	int tankHitPoints;
 	int tankTurnIndex = 0;
 
-
 	[SyncVar]
 	bool gameOverState = false;
 
 	GameObject liveProjectile = null;
 	GameObject liveExplosion = null;
-
-	//public List<TankController> localTanks;
 
 	void Awake(){
         // Debug.Log("TurnManager Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
@@ -61,6 +58,7 @@ public class TurnManager : NetworkBehaviour {
 		tankRegistry = new Dictionary<int, TankController>();
 		activeTanks = new List<int>();
 		selectedProjectile = ProjectileKind.acorn;
+		camController = Camera.main.GetComponent<CameraController> ();
 	}
 
 	public void GameOverMan(bool isGameOver){
@@ -79,10 +77,6 @@ public class TurnManager : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
         // Debug.Log("TurnManager Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
-		if (isServer) {
-			StartCoroutine(ServerLoop());
-		}
-		camController = Camera.main.GetComponent<CameraController> ();
 		isReady = true;
 	}
 
@@ -126,6 +120,12 @@ public class TurnManager : NetworkBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (!gameStarted && isServer) {
+			gameStarted = true;
+			StartCoroutine(ServerLoop());
+		}
+
+		// FIXME: this should get moved... not really related to turn management
 		GetLocalTankHud ();
 		hud.text =
 			"Heading: " + horizontalTurret + "degrees\n" +
@@ -146,6 +146,7 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	int[] GetTurnOrder(Dictionary<int, TankController> tanks) {
+		return new int[] {2, 1};
 		var keys = new List<int>(tanks.Keys);
 		var turnOrder = new List<int>();
 		// randomize turn order based on given set of tanks
@@ -155,15 +156,6 @@ public class TurnManager : NetworkBehaviour {
 			keys.RemoveAt(nextIndex);
 		}
 		return turnOrder.ToArray();
-	}
-
-    // ------------------------------------------------------
-    // CLIENT-ONLY METHODS
-	public bool ClientRegisterPlayer(TankController player) {
-		if (!isReady) return false;
-		// Debug.Log("ClientRegisterPlayer: " + player);
-		tankRegistry[player.playerIndex] = player;
-		return true;
 	}
 
     // ------------------------------------------------------
@@ -182,7 +174,11 @@ public class TurnManager : NetworkBehaviour {
 
 		// server assigns tank index and acknowledges registration...
 		player.ServerAssignIndex(newTankIndex);
+
+		// update client tank registration
+		RpcRegisterPlayer(player.gameObject, newTankIndex);
 		return true;
+
 	}
 
 	public void ServerHandleShotFired(TankController player, GameObject projectileGO) {
@@ -222,6 +218,15 @@ public class TurnManager : NetworkBehaviour {
 
 	/// <summary>
 	/// Called from the server, executed on the client
+	/// Start the main client loop
+	/// </summary>
+	[ClientRpc]
+	void RpcRegisterPlayer(GameObject playerGo, int newTankIndex) {
+		tankRegistry[newTankIndex] = playerGo.GetComponent<TankController>();
+	}
+
+	/// <summary>
+	/// Called from the server, executed on the client
 	/// Set the view to the local tank
 	/// </summary>
 	[ClientRpc]
@@ -251,6 +256,28 @@ public class TurnManager : NetworkBehaviour {
 		}
 	}
 
+	Vector3 GroundPosition(Vector3 position) {
+		var groundPosition = new Vector3(
+			position.x,
+			Terrain.activeTerrain.SampleHeight(position) + Terrain.activeTerrain.transform.position.y,
+			position.z
+		);
+		return groundPosition;
+	}
+
+	void PlaceTank(TankController tank) {
+		var tagName = String.Format("p{0}spawn", tank.playerIndex);
+		var spawnPoints = GameObject.FindGameObjectsWithTag(tagName);
+		if (spawnPoints != null) {
+			var tankPosition = GroundPosition(spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform.position);
+			Debug.Log("Placing tank: " + tank.playerName + " @ " + tankPosition);
+			tank.ServerPlace(tankPosition);
+			//tank.transform.position = tankPosition;
+		} else {
+			Debug.Log("failed to place tank, no spawn points");
+		}
+	}
+
     // ------------------------------------------------------
     // STATE ENGINES
 	/// <summary>
@@ -263,6 +290,13 @@ public class TurnManager : NetworkBehaviour {
 
 		// build world
 		yield return StartCoroutine(BuildWorld());
+
+		// place tanks
+		foreach (var tank in tankRegistry.Values) {
+			PlaceTank(tank);
+			tank.ServerActivate();
+		}
+		yield return null;
 
 		// adjust camera
 		//RpcViewLocalTank();
@@ -283,10 +317,11 @@ public class TurnManager : NetworkBehaviour {
 	IEnumerator ClientLoop() {
 		Debug.Log("starting ClientLoop");
 		// wait for players to join
-        yield return StartCoroutine(ListenForTanks());
+        //yield return StartCoroutine(ListenForTanks());
 
 		//camController.WatchPlayer(localTank);
 		//camController.SetPlayerCameraFocus(localTank);
+		yield return null;
 	}
 
 	/// <summary>
@@ -308,10 +343,9 @@ public class TurnManager : NetworkBehaviour {
 		// we have expected number of tanks... initialize each tank
 		foreach(int tankId in tankRegistry.Keys) {
 			tankRegistry[tankId].name = "Player " + tankId.ToString();
-			tankRegistry[tankId].SetupTank();
 		}
 
-		// Debug.Log ("Tanks reporting for duty!");
+		//Debug.Log ("Tanks reporting for duty!");
 	}
 
 	IEnumerator PlayRound() {

@@ -27,14 +27,17 @@ public class NetRegistry: NetworkBehaviour {
             PrefabRegistry.singleton.LoadEnum(spawnEnum);
         }
         foreach (var prefab in PrefabRegistry.singleton.GetAll()) {
-            ClientScene.RegisterPrefab(prefab);
+            Debug.Log("registering prefab: " + prefab.name);
+            if (null != prefab.GetComponent<NetworkIdentity>()) {
+                ClientScene.RegisterPrefab(prefab);
+            }
         }
     }
 
     void Start() {
         if (singleton == null) {
             singleton = this;
-            if (isServer) {
+            if (!isServer) {
                 ClientRegisterPrefabs();
             }
         }

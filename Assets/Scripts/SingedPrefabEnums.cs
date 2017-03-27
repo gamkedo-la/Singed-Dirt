@@ -8,8 +8,9 @@ using System;
 /// must match the Enum values (e.g.: For ProjectileKind.cannonBall, there should be a
 /// prefab named Resources/Projectile/cannonBall.prefab
 
-/// NOTE: for prefabs that must be spawned over the network,
-/// ensure that NetRegistry.spawnableEnums is updated appropriately
+/// NOTE: if prefabs must be spawned over the network, their enum type should be added to the
+/// NetRegistry.spawnableEnums definition.  This only needs to be updated for adding new enum kinds,
+/// not adding individual values to existing enums.
 /// </summary>
 
 public enum ProjectileKind {

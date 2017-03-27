@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour {
 	float shakeAmount = 0f;
 	Vector3 originalPosition;
 
-	private Camera camera;
+	private Camera gameCamera;
 	private float zoomSpeed;                      // Reference speed for the smooth damping of the orthographic size.
 	public float dampTime = 0.2f;                 // Approximate time for the camera to refocus.
 	public float rotationDampTime = 0.2f;         // Approximate time for the camera to refocus.
@@ -57,7 +57,7 @@ public class CameraController : MonoBehaviour {
 		transform.LookAt(centerLocation.position);
 		desiredPosition = transform.position;
 
-        camera = GetComponentInChildren<Camera> ();
+        gameCamera = GetComponentInChildren<Camera> ();
 	}
 
 	public void SetPlayerCameraFocus (TankController _player){
@@ -223,8 +223,6 @@ public class CameraController : MonoBehaviour {
 
 	IEnumerator WatchExplosionLoop(GameObject explosionGO) {
 		while (cameraMode == CameraMode.watchProjectile && explosionGO != null) {
-			var projectileRB = explosionGO.GetComponent<Rigidbody>();
-
 			Vector3 planarExplosionForward = explosionGO.transform.forward;
 			planarExplosionForward.y = 0.0f;
 			planarExplosionForward.Normalize();

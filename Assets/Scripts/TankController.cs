@@ -1,3 +1,4 @@
+using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,14 +41,11 @@ public class TankController : NetworkBehaviour {
 	public Rigidbody rb;
 	public ProjectileKind selectedShot;
 
-	// FIXME: remove from player controller
-	List<Transform> spawnPoints;
-	Transform spawnPoint;
-
-	bool togglePowerInputAmount;
+	bool togglePowerInputAmount = false;
 	float savedPowerModifier;
 
 	// state management variables
+	[SyncVar]
 	bool hasRegistered = false; 	// am I registered to turn controller
 
 	[SyncVar(hook="OnChangeControl")]
@@ -70,23 +68,29 @@ public class TankController : NetworkBehaviour {
     private float minTurretElevation = 0.00f;
     private float maxTurretElevation = 70.0f;
 
-    void FindSpawnPointAndAddToList(string playerName)
-	{
-		GameObject tempGO = GameObject.Find (playerName + "SpawnPoints");
-		if (tempGO != null) {
-			foreach (Transform child in tempGO.transform) {
-				spawnPoints.Add (child);
-			}
-		} else {
-			Debug.Log ("Can't find the spawn points for " + playerName + ".");
-		}
-	}
-
 	void Awake() {
-        Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+        //Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		// lookup/cache required components
 		rb = GetComponent<Rigidbody> ();
+
+		// disable rigidbody physics until activated by turn manager
+		SetPhysicsActive(false);
+
+		// create underlying model
 		CreateModel();
+	}
+
+	public void ServerActivate() {
+		RpcActivate();
+	}
+
+	public void ServerPlace(Vector3 position) {
+		RpcPlace(position);
+	}
+
+	void SetPhysicsActive(bool status) {
+		rb.isKinematic = !status;
+		rb.detectCollisions = status;
 	}
 
 	void CreateModel() {
@@ -113,16 +117,6 @@ public class TankController : NetworkBehaviour {
 		rb.centerOfMass = model.centerOfMass.position;
 	}
 
-	void PlaceOnGround() {
-		// place tank model on ground
-		if (Terrain.activeTerrain != null) {
-			Vector3 fixedSpot = transform.position;
-			fixedSpot.y = Terrain.activeTerrain.SampleHeight(fixedSpot) + Terrain.activeTerrain.transform.position.y;
-			transform.position = fixedSpot;
-			// Debug.Log("placing on ground @ " + fixedSpot);
-		}
-	}
-
 	void Start() {
         // Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 
@@ -132,20 +126,8 @@ public class TankController : NetworkBehaviour {
         model.turretKind = turretKind;
         model.hatKind = hatKind;
 		model.UpdateAvatar();
-	}
 
-	// Use this for initialization
-	public void SetupTank () {
-		togglePowerInputAmount = false;
 		savedPowerModifier = shotPowerModifier;
-		spawnPoints = new List<Transform> ();
-		// Debug.Log ("Name is " + name + " and is local player " + isLocalPlayer);
-		FindSpawnPointAndAddToList (name);
-		spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Count)];
-		transform.position = spawnPoint.position;
-		PlaceOnGround();
-		GameObject centerPoint = GameObject.Find ("MapCenterLookAt");
-
 	}
 
 	public void DialAdjustPower(int offset){
@@ -169,42 +151,32 @@ public class TankController : NetworkBehaviour {
 		}
 	}
 
+	void Register() {
+		// local player handles own registration
+		if (!isLocalPlayer) return;
+		// only register once
+		if (hasRegistered) return;
+
+		// server-side: register directly
+		if (isServer) {
+			ServerRegisterToManager();
+
+		// client-side: send command to server
+		} else {
+			CmdRegister();
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 		// register to turn manager (if required)
-		// applies to all copies of player on the server
 		if (!hasRegistered) {
-			if (!isServer) {
-				// Debug.Log("playerIndex: " + playerIndex);
-			}
-			if (isServer) {
-				ServerRegisterToManager();
-			// NOTE: wait to register client until playerIndex has been assignedj
-			} else if (playerIndex != -1) {
-				ClientRegisterToManager();
-			}
+			Register();
 		}
 	}
 
     // ------------------------------------------------------
     // CLIENT-ONLY METHODS
-
-	/// <summary>
-	/// Executed on the client
-	/// Register this tank to turn manager
-	/// </summary>
-	void ClientRegisterToManager() {
-		// Debug.Log("ClientRegisterToManager for " + this.name);
-		if (isServer) return;
-
-		// ensure we haven't already registered
-		if (hasRegistered) return;
-
-		// register
-		if (TurnManager.singleton != null) {
-			hasRegistered = TurnManager.singleton.ClientRegisterPlayer(this);
-		}
-	}
 
     // ------------------------------------------------------
     // SERVER-ONLY METHODS
@@ -248,7 +220,7 @@ public class TankController : NetworkBehaviour {
 	/// Register this tank to turn manager
 	/// </summary>
 	void ServerRegisterToManager() {
-		// Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
+		//Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
 		// this is a server function
 		if (!isServer) return;
 
@@ -381,7 +353,28 @@ public class TankController : NetworkBehaviour {
 	}
 
     // ------------------------------------------------------
+    // SERVER->CLIENT METHODS
+	[ClientRpc]
+	void RpcActivate() {
+		//Debug.Log("activating tank: " + playerName);
+		SetPhysicsActive(true);
+	}
+
+	[ClientRpc]
+	void RpcPlace(Vector3 position) {
+		if (isLocalPlayer) {
+			//Debug.Log(String.Format("positioning tank: {0} @ {1}", playerName, position));
+			transform.position = position;
+		}
+	}
+
+    // ------------------------------------------------------
     // CLIENT->SERVER METHODS
+
+	[Command]
+	void CmdRegister() {
+		ServerRegisterToManager();
+	}
 
 	/// <summary>
 	/// Called from the client, executed on the server
@@ -389,7 +382,7 @@ public class TankController : NetworkBehaviour {
 	/// </summary>
 	[Command]
 	void CmdFire(float shotPower, ProjectileKind projectiledKind) {
-		Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
+		//Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
 		// controller state-based authorization check
 		if (!hasControl) {
 			Debug.Log("nope");
