@@ -146,7 +146,6 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	int[] GetTurnOrder(Dictionary<int, TankController> tanks) {
-		return new int[] {2, 1};
 		var keys = new List<int>(tanks.Keys);
 		var turnOrder = new List<int>();
 		// randomize turn order based on given set of tanks
