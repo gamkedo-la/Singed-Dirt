@@ -119,7 +119,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   m_deformationDuration: 0
-  m_bumpScale: 6
+  m_bumpScale: 4
   m_bumpHeightWorldUnits: 0.3
   m_bumpBlend:
     serializedVersion: 2
