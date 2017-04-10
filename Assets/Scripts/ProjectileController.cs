@@ -178,6 +178,7 @@ public class ProjectileController : NetworkBehaviour {
 				for(int i = 0; i < numberOfBomblets; i++){
 					GameObject bomblet = GameObject.Instantiate(clusterBomblet, transform.position, transform.rotation);
 					NetworkServer.Spawn(bomblet);
+					// if (TurnManager.singleton != null) TurnManager.singleton.ServerHandleShotFired(bomblet);  # This didn't help
 					Rigidbody bombletRB = bomblet.GetComponent<Rigidbody>();
 					bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
 					

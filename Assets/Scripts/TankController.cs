@@ -92,7 +92,7 @@ public class TankController : NetworkBehaviour {
 		rb.isKinematic = !status;
 		rb.detectCollisions = status;
 	}
-
+	static int spawnOrder = 0;
 	void CreateModel() {
 		// upon start up ... instantiate the model
 		var modelGo = (GameObject) GameObject.Instantiate (
@@ -102,6 +102,8 @@ public class TankController : NetworkBehaviour {
 			this.transform
 		);
 		model = modelGo.GetComponent<TankModel>();
+		spawnOrder ++;
+		gameObject.name = "TankSpawn" + spawnOrder;
 		// add two child network transforms
 		gameObject.SetActive(false);
 

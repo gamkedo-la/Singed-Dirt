@@ -11,9 +11,9 @@ public class TurnManager : NetworkBehaviour {
 	// Public variables
 
 	public static TurnManager singleton;
+	// [SyncVar]
 	public Text hud;
 	public Text gameOverText;
-	public List<TankController> tanks;
 	public InputField powerValue;
 	public Transform healthBar;
 
@@ -86,6 +86,7 @@ public class TurnManager : NetworkBehaviour {
 		if (activeTank.isLocalPlayer) {
 			lastLocalTank = activeTank;
 		}
+		
 		tank.ServerEnableControl();
 	}
 
@@ -94,6 +95,13 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	void GetLocalTankHud(){
+		if (lastLocalTank != null){
+			Debug.Log("Am I being called by network player (or is lastlocaltank a thing): " + lastLocalTank.name);	
+		} else {
+			Debug.Log("Last Local tank is null");
+			lastLocalTank = GameObject.Find("TankSpawn2").GetComponent<TankController>();
+		}
+		
 		if (lastLocalTank != null) {
 			if (lastLocalTank.model != null) {
 				horizontalTurret = lastLocalTank.model.tankRotation;
@@ -115,6 +123,8 @@ public class TurnManager : NetworkBehaviour {
 				var healthScale = (float) health.health/(float)Health.maxHealth;
 				healthBar.localScale = new Vector3(healthScale,1f,1f);
 			}
+		} else {
+			horizontalTurret = -999.9f;
 		}
 	}
 
@@ -131,7 +141,7 @@ public class TurnManager : NetworkBehaviour {
 			"Heading: " + horizontalTurret + "degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + "m/s\n" +
-			"HitPoints: " + tankHitPoints; // + "m/s\n" +
+			"HitPoints: " + tankHitPoints + "\n"; // + "m/s\n" +
 			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;
 
