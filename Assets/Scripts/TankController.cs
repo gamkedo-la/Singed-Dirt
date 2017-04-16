@@ -153,6 +153,49 @@ public class TankController : NetworkBehaviour {
 		}
 	}
 
+	public void DialAdjustElevation(int offset){
+		bool isNegative = offset < 0;
+		float tweakAmt = 0.0f;
+		switch (Mathf.FloorToInt(Mathf.Abs (offset))) {
+		case 1:
+			tweakAmt = 1.0f;
+			break;
+		case 2:
+			tweakAmt = 5.0f;
+			break;
+		case 3:
+			tweakAmt = 10.0f;
+			break;
+		}
+		 
+		if (isNegative) {
+			model.turretElevation -= tweakAmt;
+		} else {
+			model.turretElevation += tweakAmt;
+		}
+	}
+	
+	public void DialAdjustHeading(int offset){
+		bool isNegative = offset < 0;
+		float tweakAmt = 0.0f;
+		switch (Mathf.FloorToInt(Mathf.Abs (offset))) {
+		case 1:
+			tweakAmt = 1.0f;
+			break;
+		case 2:
+			tweakAmt = 5.0f;
+			break;
+		case 3:
+			tweakAmt = 10.0f;
+			break;
+		}
+		if (isNegative) {
+			model.tankRotation -= tweakAmt;
+		} else {
+			model.tankRotation += tweakAmt;
+		}
+	}
+
 	void Register() {
 		// local player handles own registration
 		if (!isLocalPlayer) return;

@@ -70,6 +70,14 @@ public class TurnManager : NetworkBehaviour {
 		activeTank.DialAdjustPower(power);
 	}
 
+	public void TellTankAdjustHeading(int power){
+		activeTank.DialAdjustHeading(power);
+	}
+
+	public void TellTankAdjustElevation(int power){
+		activeTank.DialAdjustElevation(power);
+	}
+
 	public bool GetGameOverState(){
 		return gameOverState;
 	}
