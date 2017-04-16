@@ -54,7 +54,7 @@ public class FormTerrain : NetworkBehaviour {
 		//return perlin.FractalNoise3D(pos.x, pos.y, pos.z, 4, 80.0f, 8.0f);
 		var noise = generator.GetNoise(x, y);
 		//if (x == 0 ) Debug.Log("noise: " + noise.ToString("F4"));
-		return (1.0f + noise) * 0.5f;
+		return (1.0f + noise) * 0.3f;
 	}
 
     // ------------------------------------------------------
