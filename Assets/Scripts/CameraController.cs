@@ -81,12 +81,12 @@ public class CameraController : MonoBehaviour {
 			transform.position += Random.insideUnitSphere * shakeAmount;
 		}
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref moveVelocity, dampTime);
-		//transform.position = chaseCameraSpot; // this is the interrupt the smoothing while aiming
-		//transform.rotation = playerLocation.rotation;
+		// transform.position = desiredPosition;
 	}
 
 	void Rotate() {
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, rotationDampTime);
+		// transform.rotation = desiredRotation;
 	}
 
 
@@ -94,47 +94,7 @@ public class CameraController : MonoBehaviour {
 	void LateUpdate () {
 		Move();
 		Rotate();
-		/*
-		if (player == null || playerLocation == null) {
-			return;
-		}
-		if (player.liveProjectile != null) {
-			// Camera for following projectile
-			if (projectileRB == null){
-				projectileRB = player.liveProjectile.GetComponent<Rigidbody>();
-			}
-			if (projectileRB.velocity.magnitude > 3.0f) {
-				chaseCameraSpot = player.liveProjectile.transform.position - projectileRB.velocity.normalized * 7.0f + Vector3.up * 3.0f;
-				transform.LookAt(player.liveProjectile.transform.position + projectileRB.velocity.normalized * 7.0f);
-			}
-
-			inProjectileMode = true;
-		} else {
-			if (inProjectileMode) {
-				timeInExplosionCam = explosionViewTime;
-				explosionCamVector = transform.position;
-				ShakeCamera (0.8f, 0.8f);
-				inProjectileMode = false;
-			} // end if in projectile mode
-			if (timeInExplosionCam > 0.0f) {
-				transform.position = originalPosition + Random.insideUnitSphere * shakeAmount;
-				timeInExplosionCam -= Time.deltaTime;
-				if (timeInExplosionCam <= 0.0f) {
-					//TurnManager.instance.CycleActiveTank ();
-				}
-//				chaseCameraSpot = transform.position;
-//				chaseCameraSpot = explosionCamVector + Vector3.up * 4.0f - player.transform.forward * 4.0f;
-//				transform.LookAt (explosionCamVector);
-//				chaseCameraRot = Quaternion.LookRotation(explosionCamVector - chaseCameraSpot);
-			} else {  // This is standard aiming view
-				chaseCameraSpot = playerLocation.position;
-				transform.position = chaseCameraSpot; // this is the interrupt the smoothing while aiming
-				transform.rotation = playerLocation.rotation;
-
-			} // end if time in explosion cam greater than 0
-
-		} // end if statement for if live projectile doesn't equal null
-		*/
+		
 	} // end LateUpdate
 
 	void FixedUpdate(){
@@ -200,6 +160,7 @@ public class CameraController : MonoBehaviour {
 	public void WatchProjectile(GameObject projectileGO) {
 		// Debug.Log("WatchProjectile: " + projectileGO);
 		cameraMode = CameraMode.watchProjectile;
+		Debug.Log("watch projectile coroutine looper counter");
 		StartCoroutine(WatchProjectileLoop(projectileGO));
 	}
 

@@ -146,9 +146,9 @@ public class TurnManager : NetworkBehaviour {
 		// FIXME: this should get moved... not really related to turn management
 		GetLocalTankHud ();
 		hud.text =
-			"Heading: " + horizontalTurret + "degrees\n" +
+			"Heading: " + horizontalTurret + " degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
-			"Muzzle Velocity: " + shotPower + "m/s\n" +
+			"Muzzle Velocity: " + shotPower + " m/s\n" +
 			"HitPoints: " + tankHitPoints + "\n"; // + "m/s\n" +
 			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;

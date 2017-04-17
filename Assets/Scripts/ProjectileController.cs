@@ -20,12 +20,15 @@ public class ProjectileController : NetworkBehaviour {
     public float bomletForceKick = 50.0f;
     public int numberOfBomblets = 8;
 
+	private Vector3 startPos;
+
     // Use this for initialization
     void Start () {
 		terrain = Terrain.activeTerrain;
 		manager = TurnManager.GetGameManager();
 		DisableCollisions(0.2f);
 		rb = GetComponent<Rigidbody>();
+		startPos = transform.position;
 	}
 
 	void OnCollisionEnter(Collision collision){
@@ -163,7 +166,8 @@ public class ProjectileController : NetworkBehaviour {
 		if(clusterBomblet != null){
 			float shotHeightAboveTerrain = transform.position.y - terrainY;
 			Debug.Log("shotHeightAboveTerrain is " + shotHeightAboveTerrain);
-			if(shotHeightAboveTerrain > clusterHeight){
+			if(rb.velocity.y < 0.0f && passedClusterHeight == false){
+				clusterHeight = (startPos.y + transform.position.y) / 2.0f - terrainY;
 				passedClusterHeight = true;
 			}
 			if(rb.velocity.y < 0.0f && shotHeightAboveTerrain < clusterHeight && passedClusterHeight){

@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.1
+  m_SendInterval: 0.04
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -198,6 +198,7 @@ MonoBehaviour:
   clusterBomblet: {fileID: 0}
   clusterHeight: 15
   bomletForceKick: 50
+  numberOfBomblets: 8
 --- !u!114 &114746561234128160
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -265,7 +266,7 @@ ParticleSystem:
   m_GameObject: {fileID: 1322739969991168}
   serializedVersion: 5
   lengthInSec: 2
-  simulationSpeed: 1
+  speed: 1
   looping: 1
   prewarm: 0
   playOnAwake: 1
@@ -2902,7 +2903,7 @@ ParticleSystem:
   m_GameObject: {fileID: 1443540995298302}
   serializedVersion: 5
   lengthInSec: 5
-  simulationSpeed: 1
+  speed: 1
   looping: 1
   prewarm: 0
   playOnAwake: 1
