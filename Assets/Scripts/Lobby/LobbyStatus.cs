@@ -17,7 +17,7 @@ public class LobbyStatus : MonoBehaviour {
 
     void Awake() {
         isInGame = false;
-        Debug.Log("LobbyStatus isInGame: " + isInGame);
+        // Debug.Log("LobbyStatus isInGame: " + isInGame);
     }
 
     void Update() {
@@ -26,7 +26,7 @@ public class LobbyStatus : MonoBehaviour {
 
         // if game is playing, and escape is pressed, toggle status panel visibility
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            Debug.Log("isInGame: " + isInGame);
+            // Debug.Log("isInGame: " + isInGame);
             ToggleVisibility(!isDisplayed);
         }
     }
@@ -52,7 +52,7 @@ public class LobbyStatus : MonoBehaviour {
         UnityEngine.Events.UnityAction backCallback
     ) {
         backButton.gameObject.SetActive(isEnabled);
-        Debug.Log("SetBackEnabled: " + isEnabled + " with callback: " + backCallback);
+        // Debug.Log("SetBackEnabled: " + isEnabled + " with callback: " + backCallback);
 
         // setup back button action (if enabled)
         if (isEnabled && backCallback != null) {

@@ -15,13 +15,13 @@ public class Health : NetworkBehaviour {
     public void TakeDamage(int amount)
     {
         if (!isServer) return;
-        Debug.Log("TakeDamage for " + amount);
+        // Debug.Log("TakeDamage for " + amount);
 
         health -= amount;
         if (health <= 0)
         {
             health = 0;
-            Debug.Log("death");
+            // Debug.Log("death");
 
     		var manager = TurnManager.GetGameManager();
             manager.ServerHandleTankDeath(gameObject);

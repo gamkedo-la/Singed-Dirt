@@ -46,7 +46,7 @@ public class LobbyPanelManager : MonoBehaviour {
 
         // update parent and adjust add button row
         player.transform.SetParent(playerListContentTransform, false);
-        Debug.Log("addPlayerRow: " + addPlayerRow);
+        // Debug.Log("addPlayerRow: " + addPlayerRow);
         addPlayerRow.transform.SetAsLastSibling();
 
         // notify players of list modification

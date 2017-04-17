@@ -15,7 +15,7 @@ public class SingedPlayerSetupHook : TankModelHook {
     ) {
         var lobbyController = lobbyPlayer.GetComponent<SingedLobbyPlayer>();
         var gameController = gamePlayer.GetComponent<TankController>();
-        Debug.Log("SetupPlayer called for " + lobbyController.playerName);
+        // Debug.Log("SetupPlayer called for " + lobbyController.playerName);
         if (lobbyController != null && gameController != null) {
             // copy state from lobby -> game
             gameController.playerName = lobbyController.playerName;

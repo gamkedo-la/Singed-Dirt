@@ -65,7 +65,7 @@ public class FormTerrain : NetworkBehaviour {
 	/// </summary>
 	[ClientRpc]
 	void RpcSpawnTerrain (int seed) {
-		Debug.Log("RpcSpawnTerrain with seed: " + seed);
+		// Debug.Log("RpcSpawnTerrain with seed: " + seed);
 
 		// initialize terrain heights
 		if (rollingTerrain) {

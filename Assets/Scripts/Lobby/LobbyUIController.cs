@@ -98,12 +98,12 @@ public class LobbyUIController : MonoBehaviour {
         var numPlayersText = numPlayersDropdownLabel.GetComponent<Text>();
         numPlayers = Int32.Parse(numPlayersText.text);
 
-        Debug.Log(String.Format("gameMode: {0} " +
+        /*Debug.Log(String.Format("gameMode: {0} " +
             "hotSeat: {1} " +
             "host: {2} " +
             "port: {3} " +
             "numPlayers: {4} ",
-            gameMode, hotSeat, host, port, numPlayers));
+            gameMode, hotSeat, host, port, numPlayers));*/
         StartGame();
     }
 
@@ -115,10 +115,10 @@ public class LobbyUIController : MonoBehaviour {
         host = joinMultiHostInput.text;
         port = Int32.Parse(joinMultiPortInput.text);
 
-        Debug.Log(String.Format("gameMode: {0} " +
+        /*Debug.Log(String.Format("gameMode: {0} " +
             "host: {1} " +
             "port: {2} ",
-            gameMode, host, port));
+            gameMode, host, port));*/
         StartGame();
     }
 

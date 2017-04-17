@@ -104,10 +104,16 @@ public class TurnManager : NetworkBehaviour {
 
 	void GetLocalTankHud(){
 		if (lastLocalTank != null){
-			Debug.Log("Am I being called by network player (or is lastlocaltank a thing): " + lastLocalTank.name);	
+			// Debug.Log("Am I being called by network player (or is lastlocaltank a thing): " + lastLocalTank.name);	
 		} else {
-			Debug.Log("Last Local tank is null");
-			lastLocalTank = GameObject.Find("TankSpawn2").GetComponent<TankController>();
+			// Debug.Log("Last Local tank is null");
+			GameObject tank2 = GameObject.Find("TankSpawn2");
+			if (tank2 != null){
+				lastLocalTank = tank2.GetComponent<TankController>();
+			} else {
+				Debug.Log("tank spawn 2 not found, is expected if local play");
+			}
+			
 		}
 		
 		if (lastLocalTank != null) {
@@ -205,18 +211,18 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	public void ServerHandleExplosion(GameObject explosionGO) {
-		Debug.Log("ServerHandleExplosion: " + explosionGO);
+		// Debug.Log("ServerHandleExplosion: " + explosionGO);
 		if (!isServer) return;
 		liveExplosion = explosionGO;
 	}
 
 	public void ServerHandleTankDeath(GameObject playerGO) {
-		Debug.Log("ServerHandleTankDeath: " + playerGO);
+		// Debug.Log("ServerHandleTankDeath: " + playerGO);
 		var player = playerGO.GetComponent<TankController>();
 		if (player != null) {
 			// remove player from set of active tanks
 			activeTanks.Remove(player.playerIndex);
-			Debug.Log("removing index: " + player.playerIndex + " new active tanks -> " + String.Join(",", activeTanks.Select(v=>v.ToString()).ToArray()));
+			// Debug.Log("removing index: " + player.playerIndex + " new active tanks -> " + String.Join(",", activeTanks.Select(v=>v.ToString()).ToArray()));
 		}
 	}
 
@@ -287,11 +293,11 @@ public class TurnManager : NetworkBehaviour {
 		var spawnPoints = GameObject.FindGameObjectsWithTag(tagName);
 		if (spawnPoints != null) {
 			var tankPosition = GroundPosition(spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform.position);
-			Debug.Log("Placing tank: " + tank.playerName + " @ " + tankPosition);
+			// Debug.Log("Placing tank: " + tank.playerName + " @ " + tankPosition);
 			tank.ServerPlace(tankPosition);
 			//tank.transform.position = tankPosition;
 		} else {
-			Debug.Log("failed to place tank, no spawn points");
+			// Debug.Log("failed to place tank, no spawn points");
 		}
 	}
 
@@ -332,7 +338,7 @@ public class TurnManager : NetworkBehaviour {
 	/// This is the main client loop
 	/// </summary>
 	IEnumerator ClientLoop() {
-		Debug.Log("starting ClientLoop");
+		// Debug.Log("starting ClientLoop");
 		// wait for players to join
         //yield return StartCoroutine(ListenForTanks());
 
@@ -366,7 +372,7 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	IEnumerator PlayRound() {
-		Debug.Log ("Starting the game!!!");
+		// Debug.Log ("Starting the game!!!");
 
 		// add current tanks to the active tank list
 		activeTanks = new List<int>(tankRegistry.Keys);

@@ -95,7 +95,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public Color EvenRowColor = hexToColor("814C00FF");
 
     void Awake() {
-        Debug.Log("SingedLobbyPlayer Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+        // Debug.Log("SingedLobbyPlayer Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
     }
 
     // ------------------------------------------------------
@@ -104,7 +104,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// Called when player enters the lobby
     /// </summary>
     public override void OnClientEnterLobby() {
-        Debug.Log("OnClientEnterLobby: " + this);
+        // Debug.Log("OnClientEnterLobby: " + this);
         base.OnClientEnterLobby();
 
         // update lobby manager to indicate new player joined
@@ -182,13 +182,13 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public override void OnStartAuthority() {
-        Debug.Log("OnStartAuthority");
+        // Debug.Log("OnStartAuthority");
         base.OnStartAuthority();
         SetupLocalPlayer();
     }
 
     void SetupOtherPlayer() {
-        Debug.Log("SetupOtherPlayer");
+        // Debug.Log("SetupOtherPlayer");
         // can't set name of other player
         playerNameInput.interactable = false;
 
@@ -203,7 +203,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     void SetupLocalPlayer() {
-        Debug.Log("SetupLocalPlayer");
+        // Debug.Log("SetupLocalPlayer");
         playerNameInput.interactable = true;
         remoteIcon.gameObject.SetActive(false);
         localIcon.gameObject.SetActive(true);
@@ -216,7 +216,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
             var name = "Player" + (LobbyPanelManager.singleton.playerListContentTransform.childCount-1).ToString();
             CmdNameChanged(name);
         } else {
-            Debug.Log("not setting initial name, current player name: " + playerName);
+            // Debug.Log("not setting initial name, current player name: " + playerName);
         }
 
         //we switch from simple name display to name input
@@ -271,7 +271,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnDestroy() {
-        Debug.Log("OnDestroy: " + this);
+        // Debug.Log("OnDestroy: " + this);
         // remove player from lobby panel and update lobby manager
         LobbyPanelManager.singleton.RemovePlayer(this);
         SingedLobbyManager.s_singleton.OnPlayersNumberModified(-1);

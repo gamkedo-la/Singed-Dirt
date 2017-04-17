@@ -37,7 +37,7 @@ public class LobbyGameSelect : MonoBehaviour {
     }
 
     public void OnClickHost() {
-        Debug.Log("OnClickHost");
+        // Debug.Log("OnClickHost");
 
         // change to lobby
         //lobbyManager.ChangeTo(lobbyManager.lobbyPanel.gameObject);
@@ -54,7 +54,7 @@ public class LobbyGameSelect : MonoBehaviour {
     }
 
     public void OnClickJoin() {
-        Debug.Log("OnClickJoin");
+        // Debug.Log("OnClickJoin");
 
         // set connect address/port
         var lobbyManager = SingedLobbyManager.s_singleton;

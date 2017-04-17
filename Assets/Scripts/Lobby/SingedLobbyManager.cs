@@ -74,7 +74,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
     public void AddLocalPlayer() {
         // attempt to set new local player
-        Debug.Log("AddLocalPlayer");
+        // Debug.Log("AddLocalPlayer");
         TryToAddPlayer();
     }
 
@@ -84,14 +84,14 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public override void OnLobbyServerDisconnect(
         NetworkConnection    connection
     ) {
-        Debug.Log("OnLobbyServerDisconnect");
+        // Debug.Log("OnLobbyServerDisconnect");
     }
 
     public override bool OnLobbyServerSceneLoadedForPlayer(
         GameObject lobbyPlayer,
         GameObject gamePlayer
     ) {
-        Debug.Log("OnLobbyServerSceneLoadedForPlayer");
+        // Debug.Log("OnLobbyServerSceneLoadedForPlayer");
 
         var playerSetupHook = GetComponent<TankModelHook>();
         if (playerSetupHook != null) {
@@ -106,7 +106,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
         // scene changed back to lobby
         if (SceneManager.GetSceneAt(0).name == lobbyScene) {
-            Debug.Log("changing to lobby scene");
+            // Debug.Log("changing to lobby scene");
             ChangeTo(gameSelectPanel.gameObject, null);
             statusPanel.ToggleVisibility(true);
             statusPanel.isInGame = false;

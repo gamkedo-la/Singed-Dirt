@@ -13,7 +13,7 @@ public class LobbyLoader : MonoBehaviour {
         if (SingedLobbyManager.singleton != null) return;
 
         // instantiate if not
-        Debug.Log("instantiating lobby");
+        // Debug.Log("instantiating lobby");
         GameObject obj = Instantiate(lobbyPrefab) as GameObject;
     }
 }

@@ -14,26 +14,26 @@ public class CameraController : MonoBehaviour {
 
 	// Public
 	public Transform playerLocation;
-	public float cameraPositionAbovePlayer = 1.5f;
+	// public float cameraPositionAbovePlayer = 1.5f;
 	public float cameraPositionAboveExplosion = 1.5f;
-	public float explosionViewTime = 3.0f;
+	// public float explosionViewTime = 3.0f;
 	public Transform overviewLocation;
 	public Transform centerLocation;
 
 	// Private
 	CameraMode cameraMode = CameraMode.overview;
 	TankController player;
-	Vector3 explosionCamVector;
-	float timeInExplosionCam = 0.0f;
-	bool inProjectileMode = false;
-	Rigidbody projectileRB;
+	// Vector3 explosionCamVector;
+	// float timeInExplosionCam = 0.0f;
+	// bool inProjectileMode = false;
+	// Rigidbody projectileRB;
 	Vector3 chaseCameraSpot;
-	Quaternion chaseCameraRot;
+	// Quaternion chaseCameraRot;
 	float shakeAmount = 0f;
-	Vector3 originalPosition;
+	// Vector3 originalPosition;
 
 	private Camera gameCamera;
-	private float zoomSpeed;                      // Reference speed for the smooth damping of the orthographic size.
+	// private float zoomSpeed;                      // Reference speed for the smooth damping of the orthographic size.
 	public float dampTime = 0.2f;                 // Approximate time for the camera to refocus.
 	public float rotationDampTime = 0.2f;         // Approximate time for the camera to refocus.
 	public Vector3 moveVelocity;
@@ -69,11 +69,9 @@ public class CameraController : MonoBehaviour {
 
 	public void SetPlayerCameraLookAt (TankController _player) {
 		// Camera look at code
-		/*
-		player.playerCameraSpot.position = player.transform.position - player.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
-		player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
-		*/
-
+		
+		// player.playerCameraSpot.position = player.transform.position - player.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
+		// player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
 	}
 
 	void Move() {

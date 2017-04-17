@@ -58,7 +58,7 @@ public class PrefabRegistry {
                     .GetMethod("GetPrefab")
                     .MakeGenericMethod(prefabEnum)
                     .Invoke(this, new object[] { prefabId }) as GameObject;
-        Debug.Log("loaded: " + prefabId);
+        // Debug.Log("loaded: " + prefabId);
         }
     }
 
@@ -80,7 +80,7 @@ public class PrefabRegistry {
         // otherwise... look up in registry and load
         prefabGO = Resources.Load(name) as GameObject;
         if (prefabGO == null) {
-            Debug.Log("failed to load prefab for: " + name);
+            // Debug.Log("failed to load prefab for: " + name);
             return null;
         }
 

@@ -159,9 +159,7 @@ public class ProjectileController : NetworkBehaviour {
 	void Update () {
 		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
 		// adding a little buffer here... the logic isn't correct, and should be handled by collider, but hitting points where it isn't working
-		if (transform.position.y < terrainY - 1f) {
-			NetworkServer.Destroy (gameObject);
-		}
+
 		// Debug.Log("terrainY is " + terrainY);
 		if(clusterBomblet != null){
 			float shotHeightAboveTerrain = transform.position.y - terrainY;
@@ -191,7 +189,9 @@ public class ProjectileController : NetworkBehaviour {
 				clusterBomblet = null;
 			}
     	}
-
+		if (transform.position.y < terrainY - 1f) {  // this used to be before if(clusterBomblet) (testing for cluster bomb issues)
+			NetworkServer.Destroy (gameObject);
+		}
         // Make sure the projectile always points in the direction it travels.
         //Vector3 vel = GetComponent<Rigidbody>().velocity;
         //transform.rotation = Quaternion.LookRotation(vel);
