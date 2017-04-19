@@ -11,6 +11,7 @@ public class LobbyGameSelect : MonoBehaviour {
     [Header("UI Reference")]
     public InputField hostInput;
     public InputField portInput;
+    public InputField matchNameInput;
 
     void Start() {
         //lobbyManager = SingedLobbyManager.s_singleton;
@@ -65,11 +66,46 @@ public class LobbyGameSelect : MonoBehaviour {
         lobbyManager.StartClient();
 
         // display connecting info panel
-        //var cancelCallback = lobbyManager.StopClientCallback;
         lobbyManager.infoPanel.Display("Connecting...", "Cancel", () => { lobbyManager.StopClientCallback(); });
 
         // set status
         lobbyManager.statusPanel.SetStatus("Connecting...", host, port);
+    }
+
+    public void OnClickCreateMatchmakingGame() {
+        var lobbyManager = SingedLobbyManager.s_singleton;
+        lobbyManager.StartMatchMaker();
+        Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
+        lobbyManager.matchMaker.CreateMatch(
+            matchNameInput.text,
+            (uint)lobbyManager.maxPlayers,
+            true,
+            "", "", "", 0, 0,
+            lobbyManager.OnMatchCreate);
+
+        lobbyManager.statusPanel.SetBackEnabled(true, () => { lobbyManager.StopHostCallback(); });
+
+        // display connecting info panel
+        lobbyManager.infoPanel.Display("Connecting...", "Cancel", () => { lobbyManager.StopClientCallback(); });
+
+        // set status
+        lobbyManager.statusPanel.SetStatus("Matchmaker Connecting...", host, port);
+    }
+
+    public void OnClickOpenServerList() {
+        var lobbyManager = SingedLobbyManager.s_singleton;
+        lobbyManager.StartMatchMaker();
+        // FIXME: validate this is the right callback
+        lobbyManager.ChangeTo(lobbyManager.matchmakerServerPanel.gameObject,
+                              () => { lobbyManager.StopClientCallback(); });
+    }
+
+    public void onEndEditGameName(
+        string text
+    ) {
+        if (Input.GetKeyDown(KeyCode.Return)) {
+            OnClickCreateMatchmakingGame();
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking.Types;
+using UnityEngine.Networking.Match;
 
 /// <summary>
 /// Class representing the lobby overal lobby manager, derived from NetworkLobbyManager
@@ -19,8 +21,15 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public LobbyPanelManager lobbyPanel;
     public LobbyInfoPanelController infoPanel;
     public TankModelPanel playerSetupPanel;
+    public MatchmakerServerController matchmakerServerPanel;
 
     GameObject currentPanel;
+    protected ulong _currentMatchID;
+    protected bool _disconnectServer = false;
+
+    //used to disconnect a client properly when exiting the matchmaker
+    [HideInInspector]
+    public bool _isMatchmaking = false;
 
     //Client numPlayers from NetworkManager is always 0, so we count (throught connect/destroy in LobbyPlayer) the number
     //of players, so that even client know how many player there is.
@@ -68,7 +77,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
         } else {
             statusPanel.SetBackEnabled(false, null);
             statusPanel.SetStatus("Offline", gameSelectPanel.host, gameSelectPanel.port);
-            //_isMatchmaking = false;
         }
     }
 
@@ -78,8 +86,42 @@ public class SingedLobbyManager : NetworkLobbyManager {
         TryToAddPlayer();
     }
 
+    public void JoinMatch(
+        NetworkID networkID
+    ) {
+        // join the match
+        matchMaker.JoinMatch(networkID, "", "", "", 0, 0, OnMatchJoined);
+
+        // set the back button to stop the client
+        statusPanel.SetBackEnabled(true, () => { StopClientCallback(); });
+
+        // Display
+        infoPanel.Display("Connecting...", "Cancel", () => { StopClientCallback(); });
+    }
+
     // ------------------------------------------------------
     // EVENT HANDLER METHODS
+
+    public override void OnMatchCreate(
+        bool success,
+        string extendedInfo,
+        MatchInfo matchInfo
+    ) {
+        Debug.Log("OnMatchCreate, success: " + success);
+        base.OnMatchCreate(success, extendedInfo, matchInfo);
+        _currentMatchID = (System.UInt64) matchInfo.networkId;
+    }
+
+    public override void OnDestroyMatch(
+        bool success,
+        string extendedInfo
+    ) {
+        base.OnDestroyMatch(success, extendedInfo);
+        if (_disconnectServer) {
+            StopMatchMaker();
+            StopHost();
+        }
+    }
 
     public override void OnLobbyServerDisconnect(
         NetworkConnection    connection
@@ -178,12 +220,10 @@ public class SingedLobbyManager : NetworkLobbyManager {
         // stop the client session
         StopClient();
 
-        /*
-        // FIXME: matchmaking not supported yet
-        if (_isMatchmaking) {
+        // if using matchMaker, stop the matchmaker service
+        if (matchMaker != null) {
             StopMatchMaker();
         }
-        */
 
         // switch view back to main game select panel
         ChangeTo(gameSelectPanel.gameObject, null);
@@ -195,16 +235,19 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
     public void StopHostCallback() {
         Debug.Log("StopHostCallback");
-        //if (_isMatchmaking) {
-			//matchMaker.DestroyMatch((NetworkID)_currentMatchID, 0, OnDestroyMatch);
-			//_disconnectServer = true;
-        //} else {
+
+        // if we are hosting a matchmaker game, handle teardown of match
+        if (matchMaker != null) {
+			matchMaker.DestroyMatch((NetworkID)_currentMatchID, 0, OnDestroyMatch);
+			_disconnectServer = true;
+
+        // otherwise, just stop the host
+        } else {
             StopHost();
-        //}
+        }
+
         // switch view back to main game select panel
         ChangeTo(gameSelectPanel.gameObject, null);
-        //Debug.Log("trying to destroy self: " + this);
-        //Destroy(gameObject);
     }
 
     public void StopGameCallback() {
