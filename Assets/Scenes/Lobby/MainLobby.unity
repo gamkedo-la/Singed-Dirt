@@ -1237,7 +1237,7 @@ Prefab:
       propertyPath: m_SizeDelta.x
       value: 65.19685
       objectReference: {fileID: 0}
-    - target: {fileID: 224926351044186208, guid: 85492331ae1074dd69d4aeb3736aafb9,
+    - target: {fileID: 224633083379393768, guid: 85492331ae1074dd69d4aeb3736aafb9,
         type: 2}
       propertyPath: m_SizeDelta.x
       value: 58.110237

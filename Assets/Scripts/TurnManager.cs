@@ -94,7 +94,7 @@ public class TurnManager : NetworkBehaviour {
 		if (activeTank.isLocalPlayer) {
 			lastLocalTank = activeTank;
 		}
-		
+
 		tank.ServerEnableControl();
 	}
 
@@ -104,7 +104,7 @@ public class TurnManager : NetworkBehaviour {
 
 	void GetLocalTankHud(){
 		if (lastLocalTank != null){
-			// Debug.Log("Am I being called by network player (or is lastlocaltank a thing): " + lastLocalTank.name);	
+			// Debug.Log("Am I being called by network player (or is lastlocaltank a thing): " + lastLocalTank.name);
 		} else {
 			// Debug.Log("Last Local tank is null");
 			GameObject tank2 = GameObject.Find("TankSpawn2");
@@ -113,9 +113,9 @@ public class TurnManager : NetworkBehaviour {
 			} else {
 				Debug.Log("tank spawn 2 not found, is expected if local play");
 			}
-			
+
 		}
-		
+
 		if (lastLocalTank != null) {
 			if (lastLocalTank.model != null) {
 				horizontalTurret = lastLocalTank.model.tankRotation;
@@ -288,17 +288,10 @@ public class TurnManager : NetworkBehaviour {
 		return groundPosition;
 	}
 
-	void PlaceTank(TankController tank) {
-		var tagName = String.Format("p{0}spawn", tank.playerIndex);
-		var spawnPoints = GameObject.FindGameObjectsWithTag(tagName);
-		if (spawnPoints != null) {
-			var tankPosition = GroundPosition(spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform.position);
-			// Debug.Log("Placing tank: " + tank.playerName + " @ " + tankPosition);
-			tank.ServerPlace(tankPosition);
-			//tank.transform.position = tankPosition;
-		} else {
-			// Debug.Log("failed to place tank, no spawn points");
-		}
+	void PlaceTank(TankController tank, Vector3 spawnPoint) {
+		var tankPosition = GroundPosition(spawnPoint);
+		// Debug.Log("Placing tank: " + tank.playerName + " @ " + tankPosition);
+		tank.ServerPlace(tankPosition);
 	}
 
     // ------------------------------------------------------
@@ -314,9 +307,15 @@ public class TurnManager : NetworkBehaviour {
 		// build world
 		yield return StartCoroutine(BuildWorld());
 
+		// create spawn points
+		ISpawnGenerator spawnGenerator = new FixedSpawnGenerator();
+		var spawnPoints = spawnGenerator.Generate(tankRegistry.Count);
+
 		// place tanks
-		foreach (var tank in tankRegistry.Values) {
-			PlaceTank(tank);
+		foreach (var tankId in tankRegistry.Keys) {
+			var spawnPoint = spawnPoints[tankId-1];
+			var tank = tankRegistry[tankId];
+			PlaceTank(tank, spawnPoint);
 			tank.ServerActivate();
 		}
 		yield return null;

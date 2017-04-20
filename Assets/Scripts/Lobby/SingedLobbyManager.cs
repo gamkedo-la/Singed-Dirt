@@ -129,6 +129,14 @@ public class SingedLobbyManager : NetworkLobbyManager {
         // Debug.Log("OnLobbyServerDisconnect");
     }
 
+    public override void OnLobbyServerSceneChanged(string sceneName) {
+        // if we are changing to the play scene... copy state into the turn manager
+        if (sceneName == playScene) {
+            var turnManager = TurnManager.singleton;
+            turnManager.expectedPlayers = playerCount;
+        }
+    }
+
     public override bool OnLobbyServerSceneLoadedForPlayer(
         GameObject lobbyPlayer,
         GameObject gamePlayer
