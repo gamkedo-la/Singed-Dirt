@@ -8,17 +8,14 @@ using UnityEngine.Networking;
 
 public class TurnManager : NetworkBehaviour {
 
+
+    // ------------------------------------------------------
+    // UI REFERENCE VARIABLES
+    [Header("UI Reference")]
+	public HudController hudController;
+
 	// Public variables
-
 	public static TurnManager singleton;
-	// [SyncVar]
-	public Text hud;
-	public Text gameOverText;
-	public InputField powerValue;
-	public Transform healthBar;
-
-	public GameObject[] selectedProjectileModels;
-	public ProjectileKind selectedProjectile;
 
 	// the list of all tanks, mapping their tank ID to tank controller
 	// NOTE: this mapping is maintained on both client and server
@@ -54,28 +51,13 @@ public class TurnManager : NetworkBehaviour {
 	void Awake(){
         // Debug.Log("TurnManager Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		singleton = this;
-		gameOverText.enabled = false;
 		tankRegistry = new Dictionary<int, TankController>();
 		activeTanks = new List<int>();
-		selectedProjectile = ProjectileKind.acorn;
 		camController = Camera.main.GetComponent<CameraController> ();
 	}
 
 	public void GameOverMan(bool isGameOver){
 		gameOverState = isGameOver;
-	}
-
-	// function for use with buttons in HUD to increase/decrease tank powerValue
-	public void TellTankAdjustPower(int power){
-		activeTank.DialAdjustPower(power);
-	}
-
-	public void TellTankAdjustHeading(int power){
-		activeTank.DialAdjustHeading(power);
-	}
-
-	public void TellTankAdjustElevation(int power){
-		activeTank.DialAdjustElevation(power);
 	}
 
 	public bool GetGameOverState(){
@@ -102,33 +84,6 @@ public class TurnManager : NetworkBehaviour {
 		return activeTank;
 	}
 
-	void GetLocalTankHud(){
-		if (lastLocalTank != null) {
-			if (lastLocalTank.model != null) {
-				horizontalTurret = lastLocalTank.model.tankRotation;
-				verticalTurret = lastLocalTank.model.turretElevation;
-				shotPower = lastLocalTank.shotPower;
-				if(selectedProjectile != lastLocalTank.selectedShot){
-					selectedProjectile = lastLocalTank.selectedShot;
-					for(int i =0; i < selectedProjectileModels.Length;i++){
-						selectedProjectileModels[i].SetActive((int)selectedProjectile == i);
-					}
-
-				}
-			}
-
-			// calculate health
-			var health = lastLocalTank.GetComponent<Health>();
-			if (health != null) {
-				tankHitPoints = health.health;
-				var healthScale = (float) health.health/(float)Health.maxHealth;
-				healthBar.localScale = new Vector3(healthScale,1f,1f);
-			}
-		} else {
-			horizontalTurret = -999.9f;
-		}
-	}
-
 	// Update is called once per frame
 	void Update () {
 		if (!gameStarted && isServer) {
@@ -136,21 +91,7 @@ public class TurnManager : NetworkBehaviour {
 			StartCoroutine(ServerLoop());
 		}
 
-		// FIXME: this should get moved... not really related to turn management
-		GetLocalTankHud ();
-		hud.text =
-			"Heading: " + horizontalTurret + " degrees\n" +
-			"Elevation: " + verticalTurret + " degrees\n" +
-			"Muzzle Velocity: " + shotPower + " m/s\n" +
-			"HitPoints: " + tankHitPoints + "\n"; // + "m/s\n" +
-			// "projectile: " + selectedProjectile;
-		powerValue.text = "" + shotPower;
-
-		if (gameOverState == true) {
-			gameOverText.enabled = true;
-		} else {
-			gameOverText.enabled = false;
-		}
+		hudController.SetGameOverStatus(gameOverState);
 		if (Input.GetKeyDown (KeyCode.N)) {
 			gameOverState = true;
 		}
@@ -237,6 +178,7 @@ public class TurnManager : NetworkBehaviour {
 			Debug.Log(String.Format("RpcSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
 			activeTank = tank;
 			if (activeTank.isLocalPlayer) {
+				hudController.AssignTank(activeTank);
 				lastLocalTank = activeTank;
 			}
 		}

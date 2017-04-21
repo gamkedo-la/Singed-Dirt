@@ -258,8 +258,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustPower
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustPower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -453,8 +453,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustPower
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustPower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -575,8 +575,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustHeading
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustHeading
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1079,8 +1079,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustHeading
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustHeading
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1307,8 +1307,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustHeading
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustHeading
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1646,8 +1646,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustPower
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustPower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1768,8 +1768,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustPower
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustPower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2134,8 +2134,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustElevation
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustElevation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2256,8 +2256,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustHeading
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustHeading
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2612,8 +2612,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustPower
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustPower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2796,8 +2796,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustElevation
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustElevation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3590,8 +3590,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustElevation
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustElevation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3665,16 +3665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62608f5a18c8d46f8a8ee76a55fdfac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hud: {fileID: 1612904949}
-  gameOverText: {fileID: 1301218022}
-  powerValue: {fileID: 1576695441}
-  healthBar: {fileID: 148360205}
-  selectedProjectileModels:
-  - {fileID: 1390705399}
-  - {fileID: 2005280238}
-  - {fileID: 1485158352}
-  - {fileID: 1613748466}
-  selectedProjectile: 0
+  hudController: {fileID: 1894649620}
   expectedPlayers: 2
   activeTanks: 
 --- !u!4 &1068027976
@@ -3828,8 +3819,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustPower
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustPower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4271,8 +4262,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustHeading
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustHeading
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4713,8 +4704,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustElevation
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustElevation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5019,8 +5010,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustElevation
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustElevation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5646,8 +5637,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustElevation
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustElevation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6186,6 +6177,7 @@ GameObject:
   - component: {fileID: 1894649618}
   - component: {fileID: 1894649617}
   - component: {fileID: 1894649616}
+  - component: {fileID: 1894649620}
   m_Layer: 5
   m_Name: HUD Canvas
   m_TagString: Untagged
@@ -6277,6 +6269,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1894649620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1894649615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dcc7863863134dbba7e04c7a06b6d97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hudStatus: {fileID: 1612904949}
+  gameOverText: {fileID: 1301218022}
+  healthBar: {fileID: 148360205}
+  powerValue: {fileID: 1576695441}
+  selectedProjectileModels:
+  - {fileID: 1390705399}
+  - {fileID: 2005280238}
+  - {fileID: 1485158352}
+  - {fileID: 1613748466}
 --- !u!1 &1904128742
 GameObject:
   m_ObjectHideFlags: 0
@@ -9945,8 +9957,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068027975}
-        m_MethodName: TellTankAdjustHeading
+      - m_Target: {fileID: 1894649620}
+        m_MethodName: OnClickAdjustHeading
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
