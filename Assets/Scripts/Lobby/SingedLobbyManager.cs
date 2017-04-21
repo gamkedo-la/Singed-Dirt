@@ -30,6 +30,10 @@ public class SingedLobbyManager : NetworkLobbyManager {
     //used to disconnect a client properly when exiting the matchmaker
     [HideInInspector]
     public bool _isMatchmaking = false;
+    [HideInInspector]
+    public bool isHosting = false;
+    [HideInInspector]
+    public bool doAutoStart = true;
 
     //Client numPlayers from NetworkManager is always 0, so we count (throught connect/destroy in LobbyPlayer) the number
     //of players, so that even client know how many player there is.
@@ -38,6 +42,8 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
     void Awake() {
         s_singleton = this;
+        isHosting = false;
+        doAutoStart = true;
     }
 
     void Start() {
@@ -60,7 +66,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
         GameObject newPanel,
         UnityEngine.Events.UnityAction backCallback
     ) {
-        Debug.Log("ChangeTo");
         if (currentPanel != null) {
             currentPanel.SetActive(false);
         }
@@ -72,7 +77,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
         currentPanel = newPanel;
 
         if (currentPanel != gameSelectPanel.gameObject) {
-            Debug.Log("setting back enabled true");
             statusPanel.SetBackEnabled(true, backCallback);
         } else {
             statusPanel.SetBackEnabled(false, null);
@@ -198,7 +202,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public void OnPlayersNumberModified(
         int count
     ) {
-        Debug.Log("OnPlayersNumberModified");
         playerCount += count;
 
         // count number of local players in scene
@@ -212,6 +215,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     }
 
     public override void OnStartHost() {
+        isHosting = true;
         base.OnStartHost();
 
         // change to lobby view
@@ -219,6 +223,23 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
         // update main status
         statusPanel.SetStatus("Hosting", gameSelectPanel.host, gameSelectPanel.port);
+    }
+
+    public override void OnStopHost() {
+        isHosting = false;
+        base.OnStopHost();
+    }
+
+    public override void OnLobbyServerPlayersReady() {
+        if (doAutoStart) {
+            base.OnLobbyServerPlayersReady();
+        } else {
+            lobbyPanel.startGameButton.interactable = true;
+        }
+    }
+
+    public void StartGame() {
+        base.OnLobbyServerPlayersReady();
     }
 
     // ------------------------------------------------------
@@ -237,13 +258,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
         ChangeTo(gameSelectPanel.gameObject, null);
     }
 
-    public void OnDestroy() {
-        Debug.Log("OnDestroy: " + this);
-    }
-
     public void StopHostCallback() {
-        Debug.Log("StopHostCallback");
-
         // if we are hosting a matchmaker game, handle teardown of match
         if (matchMaker != null) {
 			matchMaker.DestroyMatch((NetworkID)_currentMatchID, 0, OnDestroyMatch);
@@ -259,7 +274,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
     }
 
     public void StopGameCallback() {
-        Debug.Log("StopGameCallback");
         // FIXME:
         StopHost();
         StopClient();
@@ -281,7 +295,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public override void OnClientConnect(
         NetworkConnection connection
     ) {
-        Debug.Log("OnClientConnect");
         base.OnClientConnect(connection);
 
         // disable info panel

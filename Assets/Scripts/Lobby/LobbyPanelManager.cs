@@ -17,6 +17,7 @@ public class LobbyPanelManager : MonoBehaviour {
     // ------------------------------------------------------
     // UI REFERENCE VARIABLES
     [Header("UI Reference")]
+    public Text minPlayersLabel;
     public Dropdown minPlayersDropdown;
     public Toggle autoJoinToggle;
     public Button startGameButton;
@@ -38,11 +39,11 @@ public class LobbyPanelManager : MonoBehaviour {
         lobbyManager.minPlayers = int.Parse(minPlayersDropdown.options[index].text);
 
         // disable minPlayers, autoJoin, and startGame if not on server
-        /*
-        minPlayersDropdown.gameObject.SetActive(NetworkServer.active);
-        autoJoinToggle.gameObject.SetActive(NetworkServer.active);
-        startGameButton.gameObject.SetActive(NetworkServer.active);
-        */
+        minPlayersLabel.gameObject.SetActive(lobbyManager.isHosting);
+        minPlayersDropdown.gameObject.SetActive(lobbyManager.isHosting);
+        autoJoinToggle.gameObject.SetActive(lobbyManager.isHosting);
+        startGameButton.gameObject.SetActive(lobbyManager.isHosting);
+        startGameButton.interactable = false;
     }
 
     public void OnMinPlayersValueChanged() {
@@ -50,6 +51,22 @@ public class LobbyPanelManager : MonoBehaviour {
         var index = minPlayersDropdown.value;
         // lobby manager minPlayers determines the minimal number of players before a game can start
         lobbyManager.minPlayers = int.Parse(minPlayersDropdown.options[index].text);
+
+        // recheck if we are ready to begin
+        lobbyManager.CheckReadyToBegin();
+    }
+
+    public void OnAutoStartValueChanged() {
+        var lobbyManager = SingedLobbyManager.s_singleton;
+        lobbyManager.doAutoStart = autoJoinToggle.isOn;
+        if (lobbyManager.doAutoStart) {
+            lobbyManager.CheckReadyToBegin();
+        }
+    }
+
+    public void OnClickStartGame() {
+        var lobbyManager = SingedLobbyManager.s_singleton;
+        lobbyManager.StartGame();
     }
 
     void Update() {
@@ -70,7 +87,6 @@ public class LobbyPanelManager : MonoBehaviour {
 
         // update parent and adjust add button row
         player.transform.SetParent(playerListContentTransform, false);
-        // Debug.Log("addPlayerRow: " + addPlayerRow);
         addPlayerRow.transform.SetAsLastSibling();
 
         // notify players of list modification

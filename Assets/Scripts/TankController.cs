@@ -167,14 +167,14 @@ public class TankController : NetworkBehaviour {
 			tweakAmt = 10.0f;
 			break;
 		}
-		 
+
 		if (isNegative) {
 			model.turretElevation -= tweakAmt;
 		} else {
 			model.turretElevation += tweakAmt;
 		}
 	}
-	
+
 	public void DialAdjustHeading(int offset){
 		bool isNegative = offset < 0;
 		float tweakAmt = 0.0f;
