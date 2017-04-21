@@ -273,8 +273,12 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public void OnDestroy() {
         // Debug.Log("OnDestroy: " + this);
         // remove player from lobby panel and update lobby manager
-        LobbyPanelManager.singleton.RemovePlayer(this);
-        SingedLobbyManager.s_singleton.OnPlayersNumberModified(-1);
+        if (LobbyPanelManager.singleton != null) {
+            LobbyPanelManager.singleton.RemovePlayer(this);
+        }
+        if (SingedLobbyManager.s_singleton != null) {
+            SingedLobbyManager.s_singleton.OnPlayersNumberModified(-1);
+        }
     }
 
     // ------------------------------------------------------

@@ -88,14 +88,14 @@ public class TurnManager : NetworkBehaviour {
 		isReady = true;
 	}
 
-	void SetActiveTank(TankController tank){
-		// Debug.Log("Activating " + tank.name);
+	void ServerSetActiveTank(TankController tank){
+		Debug.Log(String.Format("ServerSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
 		activeTank = tank;
 		if (activeTank.isLocalPlayer) {
 			lastLocalTank = activeTank;
 		}
-
 		tank.ServerEnableControl();
+		RpcSetActiveTank(tank.gameObject);
 	}
 
 	public TankController GetActiveTank(){
@@ -103,19 +103,6 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	void GetLocalTankHud(){
-		if (lastLocalTank != null){
-			// Debug.Log("Am I being called by network player (or is lastlocaltank a thing): " + lastLocalTank.name);
-		} else {
-			// Debug.Log("Last Local tank is null");
-			GameObject tank2 = GameObject.Find("TankSpawn2");
-			if (tank2 != null){
-				lastLocalTank = tank2.GetComponent<TankController>();
-			} else {
-				Debug.Log("tank spawn 2 not found, is expected if local play");
-			}
-
-		}
-
 		if (lastLocalTank != null) {
 			if (lastLocalTank.model != null) {
 				horizontalTurret = lastLocalTank.model.tankRotation;
@@ -237,6 +224,22 @@ public class TurnManager : NetworkBehaviour {
 	void RpcStart() {
 		// Debug.Log("starting game on client");
 		StartCoroutine(ClientLoop());
+	}
+
+	/// <summary>
+	/// Called from the server, executed on the client
+	/// Set the current active tank in the client-side turn manager
+	/// </summary>
+	[ClientRpc]
+	void RpcSetActiveTank(GameObject tankGo) {
+		var tank = tankGo.GetComponent<TankController>();
+		if (tank != null) {
+			Debug.Log(String.Format("RpcSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
+			activeTank = tank;
+			if (activeTank.isLocalPlayer) {
+				lastLocalTank = activeTank;
+			}
+		}
 	}
 
 	/// <summary>
@@ -407,7 +410,7 @@ public class TurnManager : NetworkBehaviour {
 	IEnumerator TakeTankTurn(TankController tank) {
 		// Debug.Log("taking turn for " + tank.name);
 		// activate the tank
-		SetActiveTank(tank);
+		ServerSetActiveTank(tank);
 
 		// set starting camera positions for each player (this is done client side)
 		RpcViewLocalTank(tank.gameObject);
