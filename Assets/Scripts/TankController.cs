@@ -41,6 +41,8 @@ public class TankController : NetworkBehaviour {
 	public Rigidbody rb;
 	public ProjectileKind selectedShot;
 
+	public List<int> ammoCounts = new List<int>();
+
 	bool togglePowerInputAmount = false;
 	float savedPowerModifier;
 
@@ -78,6 +80,17 @@ public class TankController : NetworkBehaviour {
 
 		// create underlying model
 		CreateModel();
+
+		for(int i = 0; i < System.Enum.GetValues(typeof(ProjectileKind)).Length; i++){
+			switch((ProjectileKind)i){
+				case ProjectileKind.cannonBall:
+					ammoCounts.Add(-1);
+					break;
+				default:
+					ammoCounts.Add(1);
+					break;
+			}
+		}
 	}
 
 	public void ServerActivate() {
@@ -173,6 +186,15 @@ public class TankController : NetworkBehaviour {
 		} else {
 			model.turretElevation += tweakAmt;
 		}
+	}
+
+	public string AmmoDisplayCountText(){
+		if(ammoCounts[(int)selectedShot] == -1){
+			return "Unlimited";
+		} else{
+			return "" + ammoCounts[(int)selectedShot];
+		}
+
 	}
 
 	public void DialAdjustHeading(int offset){
@@ -369,26 +391,36 @@ public class TankController : NetworkBehaviour {
 				}
 				selectedShot = (ProjectileKind)shotInt;
 				if(selectedShot == ProjectileKind.sharkToothBomblet){
-					selectedShot = ProjectileKind.sharkToothCluster;
+					shotInt--;
 				}
+				selectedShot = (ProjectileKind)shotInt;
 				Debug.Log ("now using shot: " + selectedShot);
 			}
 			if (Input.GetKeyDown (KeyCode.Period)) {
 				shotInt++;
+				selectedShot = (ProjectileKind)shotInt;
+				if(selectedShot == ProjectileKind.sharkToothBomblet){
+					shotInt++;
+				}
 				if (shotInt >= numShots) {
 					shotInt = 0;
 				}
 				selectedShot = (ProjectileKind)shotInt;
-				if(selectedShot == ProjectileKind.sharkToothBomblet){
-					selectedShot = ProjectileKind.sharkToothCluster;
-				}
 				Debug.Log ("now using shot: " + selectedShot);
 			}
 
 			// Shoot already ... when shot is fired, finish this coroutine;
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				Debug.Log("space is down, calling CmdFire");
-				CmdFire(shotPower, selectedShot);
+				if(ammoCounts[(int)selectedShot] != 0){  // This allows -1 to be infinite.
+					CmdFire(shotPower, selectedShot);
+					if(ammoCounts[(int)selectedShot] > 0){
+						ammoCounts[(int)selectedShot]--;
+					}
+				} else {
+					Debug.Log("out of ammo for shottype " + selectedShot);
+				}
+				
 				yield break;
 			}
 

@@ -246,6 +246,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     // CALLBACK METHODS
 
     public void StopClientCallback() {
+        Debug.Log("pressed back!");
         // stop the client session
         StopClient();
 
@@ -259,6 +260,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     }
 
     public void StopHostCallback() {
+        Debug.Log("being called when clicking back!");
         // if we are hosting a matchmaker game, handle teardown of match
         if (matchMaker != null) {
 			matchMaker.DestroyMatch((NetworkID)_currentMatchID, 0, OnDestroyMatch);

@@ -175,21 +175,28 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void WatchExplosion(GameObject explosionGO) {
-		// Debug.Log("WatchExplosion: " + explosionGO);
+		Debug.Log("WatchExplosion: " + explosionGO);
 		cameraMode = CameraMode.watchExplosion;
 		StartCoroutine(WatchExplosionLoop(explosionGO));
 	}
 
 	IEnumerator WatchExplosionLoop(GameObject explosionGO) {
-		while (cameraMode == CameraMode.watchProjectile && explosionGO != null) {
+		float blastStartTime = Time.time;
+		Quaternion startRotation = transform.rotation;
+		Vector3 rollbackVector = -transform.forward;
+		while (cameraMode == CameraMode.watchExplosion && explosionGO != null) {
 			Vector3 planarExplosionForward = explosionGO.transform.forward;
 			planarExplosionForward.y = 0.0f;
 			planarExplosionForward.Normalize();
+			float timeSinceStartedShowing = Time.time - blastStartTime;
+			
 			desiredPosition = explosionGO.transform.position - planarExplosionForward + Vector3.up * cameraPositionAboveExplosion + Vector3.right * 0.5f;
 			float groundHeightAtDesiredPosition = Terrain.activeTerrain.SampleHeight(desiredPosition);
 			desiredPosition.y = Mathf.Max(desiredPosition.y, groundHeightAtDesiredPosition + minExplosionCamHeight);
-			Vector3 relativePosition = desiredPosition - transform.position;
-			desiredRotation = Quaternion.LookRotation(relativePosition);
+			desiredPosition += rollbackVector * timeSinceStartedShowing * 2.0f;
+			desiredRotation = startRotation * Quaternion.AngleAxis(timeSinceStartedShowing * 5.0f, Vector3.right);
+			// Vector3 relativePosition = desiredPosition - transform.position;
+			// desiredRotation = Quaternion.LookRotation(relativePosition);
 
 			yield return null;
 		}

@@ -66,12 +66,13 @@ public class HudController: MonoBehaviour {
 		var shotPower = activeTank.shotPower;
         var health = activeTank.GetComponent<Health>();
         var tankHitPoints =  (health != null) ? health.health : 100;
-
+        string ammoCount = activeTank.AmmoDisplayCountText();
 		hudStatus.text =
 			"Heading: " + horizontalTurret + " degrees\n" +
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + " m/s\n" +
-			"HitPoints: " + tankHitPoints + "\n"; // + "m/s\n" +
+			"HitPoints: " + tankHitPoints + "\n" +
+            "Ammo remaining for selected shot type: " + ammoCount; // + "m/s\n" +
 			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;
     }
