@@ -6,7 +6,6 @@ public class HudController: MonoBehaviour {
     // UI REFERENCE VARIABLES
     [Header("UI Reference")]
     public Text hudStatus;
-	public Text gameOverText;
 	public Transform healthBar;
 	public InputField powerValue;
     public GameObject[] selectedProjectileModels;
@@ -16,17 +15,12 @@ public class HudController: MonoBehaviour {
 
     void Awake() {
 		selectedProjectile = ProjectileKind.acorn;
-        gameOverText.enabled = false;
     }
 
     public void AssignTank(TankController tank) {
         if (tank.isLocalPlayer) {
             activeTank = tank;
         }
-    }
-
-    public void SetGameOverStatus(bool status) {
-        gameOverText.enabled = status;
     }
 
     // function for use with buttons in HUD to increase/decrease tank powerValue

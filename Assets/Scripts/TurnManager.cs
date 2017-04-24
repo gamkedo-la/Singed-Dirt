@@ -13,6 +13,7 @@ public class TurnManager : NetworkBehaviour {
     // UI REFERENCE VARIABLES
     [Header("UI Reference")]
 	public HudController hudController;
+	public GameOverController gameOverController;
 
 	// Public variables
 	public static TurnManager singleton;
@@ -56,8 +57,15 @@ public class TurnManager : NetworkBehaviour {
 		camController = Camera.main.GetComponent<CameraController> ();
 	}
 
-	public void GameOverMan(bool isGameOver){
-		gameOverState = isGameOver;
+	public void ServerGameOver() {
+		// winning tank should be the only tank left in the registry...
+		var winner = tankRegistry[activeTanks[0]];
+		gameOverState = true;
+
+		// declare winner on each client
+		RpcGameOver(winner.gameObject);
+
+
 	}
 
 	public bool GetGameOverState(){
@@ -91,9 +99,8 @@ public class TurnManager : NetworkBehaviour {
 			StartCoroutine(ServerLoop());
 		}
 
-		hudController.SetGameOverStatus(gameOverState);
 		if (Input.GetKeyDown (KeyCode.N)) {
-			gameOverState = true;
+			ServerGameOver();
 		}
 	}
 
@@ -165,6 +172,19 @@ public class TurnManager : NetworkBehaviour {
 	void RpcStart() {
 		// Debug.Log("starting game on client");
 		StartCoroutine(ClientLoop());
+	}
+
+	/// <summary>
+	/// Called from the server, executed on the client
+	/// Start the main client loop
+	/// </summary>
+	[ClientRpc]
+	void RpcGameOver(GameObject winnerGo) {
+		var winner = winnerGo.GetComponent<TankController>();
+		if (winner != null) {
+			gameOverController.SetWinner(winner.playerName);
+	        gameOverController.gameObject.SetActive(true);
+		}
 	}
 
 	/// <summary>
@@ -274,7 +294,7 @@ public class TurnManager : NetworkBehaviour {
 		// start the game
         yield return StartCoroutine(PlayRound());
 		// FIXME: need to rework game win/loss logic
-		gameOverState = true;
+		ServerGameOver();
 		// Debug.Log("finishing ServerLoop");
 	}
 

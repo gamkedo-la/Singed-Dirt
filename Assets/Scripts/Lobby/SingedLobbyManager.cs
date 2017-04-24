@@ -66,15 +66,20 @@ public class SingedLobbyManager : NetworkLobbyManager {
         GameObject newPanel,
         UnityEngine.Events.UnityAction backCallback
     ) {
+
+        // disable current panel (if any)
         if (currentPanel != null) {
             currentPanel.SetActive(false);
         }
 
+        // enable new panel (if any)
         if (newPanel != null) {
             newPanel.SetActive(true);
         }
-
         currentPanel = newPanel;
+
+        // ensure status panel is enabled
+        statusPanel.ToggleVisibility(true);
 
         if (currentPanel != gameSelectPanel.gameObject) {
             statusPanel.SetBackEnabled(true, backCallback);
