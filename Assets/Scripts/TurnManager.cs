@@ -144,6 +144,19 @@ public class TurnManager : NetworkBehaviour {
 
 	}
 
+	public void ServerDeletePlayer(TankController player) {
+		if (!isServer) return;
+		Debug.Log("ServerDeletePlayer: " + player.playerName);
+
+		// remove player from active tank list and registry
+		if (activeTanks.Contains(player.playerIndex)) {
+			activeTanks.Remove(player.playerIndex);
+		}
+		if (tankRegistry.ContainsKey(player.playerIndex)) {
+			tankRegistry.Remove(player.playerIndex);
+		}
+	}
+
 	public void ServerHandleShotFired(TankController player, GameObject projectileGO) {
 		// Debug.Log("ServerHandleShotFired: " + projectileGO);
 		if (!isServer) return;
@@ -382,12 +395,12 @@ public class TurnManager : NetworkBehaviour {
 		RpcViewLocalTank(tank.gameObject);
 
 		// wait for shot fired by this tank
-		while (tank.hasControl) {
+		while (tank != null && tank.hasControl) {
 			yield return null;
 		}
 
 		// follow tank projectile
-		if (liveProjectile != null) {
+		if (tank != null && liveProjectile != null) {
 			// Debug.Log("live projectile detected");
 			// update local camera to watch live projectile
 			RpcViewShot(tank.gameObject, liveProjectile, true);
@@ -398,7 +411,7 @@ public class TurnManager : NetworkBehaviour {
 		}
 
 		// wait for explosion
-		if (liveExplosion != null) {
+		if (tank != null && liveExplosion != null) {
 			// Debug.Log("live explosion detected");
 			// update local camera to watch live explosion
 			RpcViewExplosion(tank.gameObject, liveExplosion, true);
@@ -409,7 +422,9 @@ public class TurnManager : NetworkBehaviour {
 		}
 
 		// reset view to local tank view
-		RpcViewLocalTank(tank.gameObject);
+		if (tank != null) {
+			RpcViewLocalTank(tank.gameObject);
+		}
 	}
 
 

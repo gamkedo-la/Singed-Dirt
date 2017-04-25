@@ -130,7 +130,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public override void OnLobbyServerDisconnect(
         NetworkConnection    connection
     ) {
-        // Debug.Log("OnLobbyServerDisconnect");
+        Debug.Log("OnLobbyServerDisconnect");
     }
 
     public override void OnLobbyServerSceneChanged(string sceneName) {

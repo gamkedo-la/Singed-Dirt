@@ -104,6 +104,13 @@ public class TankController : NetworkBehaviour {
 		RpcPlace(position);
 	}
 
+	void OnDestroy() {
+		Debug.Log("TankController.OnDestroy, isServer: " + isServer);
+		if (TurnManager.singleton != null) {
+			TurnManager.singleton.ServerDeletePlayer(this);
+		}
+	}
+
 	void SetPhysicsActive(bool status) {
 		rb.isKinematic = !status;
 		rb.detectCollisions = status;
