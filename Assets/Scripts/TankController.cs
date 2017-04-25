@@ -86,6 +86,9 @@ public class TankController : NetworkBehaviour {
 				case ProjectileKind.cannonBall:
 					ammoCounts.Add(-1);
 					break;
+				case ProjectileKind.sharkToothCluster:
+					ammoCounts.Add(-1);
+					break;
 				default:
 					ammoCounts.Add(1);
 					break;
@@ -420,7 +423,7 @@ public class TankController : NetworkBehaviour {
 				} else {
 					Debug.Log("out of ammo for shottype " + selectedShot);
 				}
-				
+
 				yield break;
 			}
 

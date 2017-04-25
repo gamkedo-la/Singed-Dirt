@@ -32,7 +32,7 @@ public class ProjectileController : NetworkBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision){
-		Debug.Log("ProjectileController OnCollisionEnter with: " + collision.collider.name);
+		//Debug.Log("ProjectileController OnCollisionEnter with: " + collision.collider.name);
 		// only trigger explosion (spawn) if we currently have authority
 		// run collisions on server only
 		if (isServer && !hasCollided) {
@@ -49,7 +49,7 @@ public class ProjectileController : NetworkBehaviour {
 	/// Generate explosion and apply damage for projectile
 	/// </summary>
 	void ServerExplode(Collision collision) {
-		Debug.Log("ServerExplode: " + this);
+		//Debug.Log("ServerExplode: " + this);
 		// Get list of colliders in range of this explosion
 		// FIXME: range of projectile shouldn't be hard-coded
 		Collider[] flakReceivers = Physics.OverlapSphere(transform.position, 10.0f);
@@ -64,18 +64,18 @@ public class ProjectileController : NetworkBehaviour {
 				hitList.Add(rootObject);
 
 				GameObject gameObjRef = flakReceiver.gameObject;
-				Debug.Log("hit gameObject: " + rootObject.name);
+				//Debug.Log("hit gameObject: " + rootObject.name);
 				var health = rootObject.GetComponent<Health>();
 				var tankCtrlRef = rootObject.GetComponent<TankController>();
 				if (health != null && tankCtrlRef != null) {
-					Debug.Log (tankCtrlRef.playerName + " received splash damage");
+					//Debug.Log (tankCtrlRef.playerName + " received splash damage");
 
 					Vector3 cannonballCenterToTankCenter = transform.position - gameObjRef.transform.position;
-					Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
-					Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
+					//Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
+					//Debug.Log (string.Format ("cannonballCenterToTankCenter: {0}", cannonballCenterToTankCenter));
 
 					float hitDistToTankCenter = cannonballCenterToTankCenter.magnitude;
-					Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
+					//Debug.Log ("Distance to tank center: " + hitDistToTankCenter);
 
 					// NOTE: The damagePoints formula below is taken from an online quadratic regression calculator. The idea
 					// was to plug in some values and come up with a damage computation formula.  The above formula yields:
@@ -86,11 +86,11 @@ public class ProjectileController : NetworkBehaviour {
 					int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
 					if (damagePoints > 0) {
 						health.TakeDamage(damagePoints);
-						Debug.Log ("Damage done to " + tankCtrlRef.name + ": " + damagePoints + ". Remaining: " + health.health);
+						//Debug.Log ("Damage done to " + tankCtrlRef.name + ": " + damagePoints + ". Remaining: " + health.health);
 
 						// Do shock displacement
 						Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
-						Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
+						//Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
 						tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
 
 					}
@@ -102,7 +102,7 @@ public class ProjectileController : NetworkBehaviour {
 		var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
 		if (terrainManager != null) {
 			var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
-			Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
+			//Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
 			GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 			NetworkServer.Spawn(deformation);
 			// determine deformation seed
@@ -113,7 +113,7 @@ public class ProjectileController : NetworkBehaviour {
 
 		// instantiate explosion
 		var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
-		Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
+		//Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
 		GameObject explosion = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(explosion);
 
@@ -132,7 +132,7 @@ public class ProjectileController : NetworkBehaviour {
 	}
 
 	public void DisableCollisions(float timer) {
-		Debug.Log("Collisions Disabled");
+		//Debug.Log("Collisions Disabled");
 		// disable collisions
 		var rb = GetComponent<Rigidbody>();
 		if (rb != null) {
@@ -151,44 +151,62 @@ public class ProjectileController : NetworkBehaviour {
 		}
 
 		// enable collisions
-		Debug.Log("Collisions Enabled");
+		//Debug.Log("Collisions Enabled");
 		GetComponent<Rigidbody>().detectCollisions = true;
+
+		if (clusterBomblet != null) {
+			if (isServer) {
+				//Debug.Log("enabling cluster split coroutine");
+				yield return StartCoroutine(ServerClusterSplit());
+			}
+		}
+	}
+
+	IEnumerator ServerClusterSplit() {
+		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
+		// adding a little buffer here... the logic isn't correct, and should be handled by collider, but hitting points where it isn't working
+
+		// Debug.Log("terrainY is " + terrainY);
+		var isAscending = true;
+		while (isAscending) {
+			isAscending = (rb.velocity.y >= 0.0f);
+			// wait for next frame
+			yield return null;
+		}
+		//Debug.Log("descending");
+
+		// intantiate explosion for cluster split
+		// NOTE: do not notify turn manager of this explosion, as it is not the final explosion for the cluster
+		var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
+		GameObject explosion = Instantiate(explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
+		NetworkServer.Spawn(explosion);
+		var explosionController = explosion.GetComponent<ExplosionController>();
+		var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
+		Destroy(explosion, explosionDuration);
+
+		for(int i = 0; i < numberOfBomblets; i++){
+			// instantiate cluster bomblet ...
+			GameObject bomblet = GameObject.Instantiate(clusterBomblet, transform.position, transform.rotation);
+			NetworkServer.Spawn(bomblet);
+			// register first bomblet w/ turn manager
+			TurnManager.singleton.ServerHandleShotFired(null, bomblet.gameObject);
+
+			// assign initial velocity equal to parent
+			Rigidbody bombletRB = bomblet.GetComponent<Rigidbody>();
+			bombletRB.velocity = rb.velocity;
+
+			// add random bomblet spread
+			bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
+		}
+
+		// destroy original projectile
+		Destroy(gameObject);
+		yield return null;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		float terrainY = Terrain.activeTerrain.transform.position.y + Terrain.activeTerrain.SampleHeight (transform.position);
-		// adding a little buffer here... the logic isn't correct, and should be handled by collider, but hitting points where it isn't working
-
-		// Debug.Log("terrainY is " + terrainY);
-		if(clusterBomblet != null){
-			float shotHeightAboveTerrain = transform.position.y - terrainY;
-			Debug.Log("shotHeightAboveTerrain is " + shotHeightAboveTerrain);
-			if(rb.velocity.y < 0.0f && passedClusterHeight == false){
-				clusterHeight = (startPos.y + transform.position.y) / 2.0f - terrainY;
-				passedClusterHeight = true;
-			}
-			if(rb.velocity.y < 0.0f && shotHeightAboveTerrain < clusterHeight && passedClusterHeight){
-				var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
-				GameObject explosion = Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
-				NetworkServer.Spawn(explosion);
-				manager.ServerHandleExplosion(explosion);
-				var explosionController = explosion.GetComponent<ExplosionController>();
-				var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
-				Destroy (explosion, explosionDuration);
-				Destroy(gameObject, 0.2f);
-				for(int i = 0; i < numberOfBomblets; i++){
-					GameObject bomblet = GameObject.Instantiate(clusterBomblet, transform.position, transform.rotation);
-					NetworkServer.Spawn(bomblet);
-					// if (TurnManager.singleton != null) TurnManager.singleton.ServerHandleShotFired(bomblet);  # This didn't help
-					Rigidbody bombletRB = bomblet.GetComponent<Rigidbody>();
-					bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
-					
-					// preventing MULTIBOMBS (too many spawn during multiple frames)
-				}
-				clusterBomblet = null;
-			}
-    	}
 		if (transform.position.y < terrainY - 1f) {  // this used to be before if(clusterBomblet) (testing for cluster bomb issues)
 			NetworkServer.Destroy (gameObject);
 		}
