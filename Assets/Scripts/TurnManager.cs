@@ -43,6 +43,9 @@ public class TurnManager : NetworkBehaviour {
 	int tankHitPoints;
 	int tankTurnIndex = 0;
 
+	public GameObject helpUI;
+	bool helpVisible = false;
+
 	[SyncVar]
 	bool gameOverState = false;
 
@@ -101,6 +104,13 @@ public class TurnManager : NetworkBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.N)) {
 			ServerGameOver();
+		}
+		if (Input.GetKeyDown(KeyCode.H) && helpVisible == false){
+			helpUI.SetActive(true);
+			helpVisible = true;
+		} else if (Input.GetKeyDown(KeyCode.H) && helpVisible == true){
+			helpUI.SetActive(false);
+			helpVisible = false;
 		}
 	}
 

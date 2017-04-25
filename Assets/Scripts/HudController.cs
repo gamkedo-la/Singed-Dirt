@@ -66,7 +66,8 @@ public class HudController: MonoBehaviour {
 			"Elevation: " + verticalTurret + " degrees\n" +
 			"Muzzle Velocity: " + shotPower + " m/s\n" +
 			"HitPoints: " + tankHitPoints + "\n" +
-            "Ammo remaining for selected shot type: " + ammoCount; // + "m/s\n" +
+            "Ammo remaining for selected shot type: " + ammoCount + "\n" +
+            "Press H for help!"; // + "m/s\n" +
 			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;
     }
