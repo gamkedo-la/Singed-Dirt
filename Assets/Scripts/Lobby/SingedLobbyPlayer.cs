@@ -12,7 +12,6 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     [Header("UI Reference")]
     public Text playerStatusInfo;
     public InputField playerNameInput;
-    //public Button readyButton;
     public Toggle readyToggle;
     public Button setupButton;
     public Button removeButton;
@@ -104,13 +103,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// Called when player enters the lobby
     /// </summary>
     public override void OnClientEnterLobby() {
-        // Debug.Log("OnClientEnterLobby: " + this);
+        Debug.Log("OnClientEnterLobby: " + this);
         base.OnClientEnterLobby();
-
-        // update lobby manager to indicate new player joined
-        if (SingedLobbyManager.s_singleton != null) {
-            SingedLobbyManager.s_singleton.OnPlayersNumberModified(1);
-        }
 
         // update lobby panel
         LobbyPanelManager.singleton.AddPlayer(this);
@@ -198,6 +192,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
 
         // disable ready button for other player
         readyToggle.interactable = false;
+        readyToggle.isOn = false;
 
         OnClientReady(false);
     }
@@ -210,13 +205,12 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
 
         CheckRemoveButton();
         readyToggle.interactable = true;
+        readyToggle.isOn = false;
 
         //have to use child count of player prefab already setup as "this.slot" is not set yet
         if (playerName == "") {
-            var name = "Player" + (LobbyPanelManager.singleton.playerListContentTransform.childCount-1).ToString();
+            var name = "Player" + LobbyPanelManager.singleton.playerCount.ToString();
             CmdNameChanged(name);
-        } else {
-            // Debug.Log("not setting initial name, current player name: " + playerName);
         }
 
         //we switch from simple name display to name input
@@ -226,17 +220,9 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         playerNameInput.onEndEdit.RemoveAllListeners();
         playerNameInput.onEndEdit.AddListener(OnNameChanged);
 
-        /*
-        setupButton.onClick.RemoveAllListeners();
-        setupButton.onClick.AddListener(OnColorClicked);
-        */
-
         readyToggle.onValueChanged.RemoveAllListeners();
         readyToggle.onValueChanged.AddListener(OnClickReady);
 
-        //when OnClientEnterLobby is called, the loval PlayerController is not yet created, so we need to redo that here to disable
-        //the add button if we reach maxLocalPlayer. We pass 0, as it was already counted on OnClientEnterLobby
-        if (SingedLobbyManager.s_singleton != null) SingedLobbyManager.s_singleton.OnPlayersNumberModified(0);
     }
 
     /// <summary>
@@ -275,9 +261,6 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         // remove player from lobby panel and update lobby manager
         if (LobbyPanelManager.singleton != null) {
             LobbyPanelManager.singleton.RemovePlayer(this);
-        }
-        if (SingedLobbyManager.s_singleton != null) {
-            SingedLobbyManager.s_singleton.OnPlayersNumberModified(-1);
         }
     }
 

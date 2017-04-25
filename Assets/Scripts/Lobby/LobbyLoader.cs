@@ -14,6 +14,6 @@ public class LobbyLoader : MonoBehaviour {
 
         // instantiate if not
         // Debug.Log("instantiating lobby");
-        GameObject obj = Instantiate(lobbyPrefab) as GameObject;
+        Instantiate(lobbyPrefab);
     }
 }

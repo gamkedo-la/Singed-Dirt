@@ -35,11 +35,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
     [HideInInspector]
     public bool doAutoStart = true;
 
-    //Client numPlayers from NetworkManager is always 0, so we count (throught connect/destroy in LobbyPlayer) the number
-    //of players, so that even client know how many player there is.
-    [HideInInspector]
-    public int playerCount = 0;
-
     void Awake() {
         s_singleton = this;
         isHosting = false;
@@ -116,7 +111,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
         string extendedInfo,
         MatchInfo matchInfo
     ) {
-        Debug.Log("OnMatchCreate, success: " + success);
+        //Debug.Log("OnMatchCreate, success: " + success);
         base.OnMatchCreate(success, extendedInfo, matchInfo);
         _currentMatchID = (System.UInt64) matchInfo.networkId;
     }
@@ -142,7 +137,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
         // if we are changing to the play scene... copy state into the turn manager
         if (sceneName == playScene) {
             var turnManager = TurnManager.singleton;
-            turnManager.expectedPlayers = playerCount;
+            turnManager.expectedPlayers = lobbyPanel.playerCount;
         }
     }
 
@@ -165,33 +160,23 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
         // scene changed back to lobby
         if (SceneManager.GetSceneAt(0).name == lobbyScene) {
-            // Debug.Log("changing to lobby scene");
-            ChangeTo(gameSelectPanel.gameObject, null);
+            //Debug.Log("changing to lobby scene");
             statusPanel.ToggleVisibility(true);
-            statusPanel.isInGame = false;
-            /*
+
             if (statusPanel.isInGame) {
-                if (_isMatchmaking) {
-                    if (connection.playerControllers[0].unetView.isServer) {
-                        backDelegate = StopHostClbk;
-                    } else {
-                        backDelegate = StopClientClbk;
-                    }
+                if (isHosting) {
+                    ChangeTo(lobbyPanel.gameObject, () => { StopHostCallback(); });
                 } else {
-                    if (connection.playerControllers[0].unetView.isClient) {
-                        backDelegate = StopHostClbk;
-                    } else {
-                        backDelegate = StopClientClbk;
-                    }
+                    ChangeTo(lobbyPanel.gameObject, () => { StopClientCallback(); });
                 }
+
             } else {
-                ChangeTo(mainMenuPanel);
+                ChangeTo(gameSelectPanel.gameObject, null);
             }
-            */
 
         // otherwise ... game is starting
         } else {
-            Debug.Log("changing to game scene");
+            //Debug.Log("changing to game scene");
             // disable lower panels, set back callback to stop game
             ChangeTo(null, () => { StopGameCallback(); });
 
@@ -199,24 +184,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
             statusPanel.ToggleVisibility(false);
             statusPanel.isInGame = true;
         }
-    }
-
-    /// <summary>
-    /// Update player count
-    /// </summary>
-    public void OnPlayersNumberModified(
-        int count
-    ) {
-        playerCount += count;
-
-        // count number of local players in scene
-        int localPlayerCount = 0;
-        foreach (var player in ClientScene.localPlayers) {
-            localPlayerCount += (player == null || player.playerControllerId == -1) ? 0 : 1;
-        }
-
-        // enable/disable lobby's add player button based on max number of players and max # of local players
-        lobbyPanel.addPlayerRow.SetActive(localPlayerCount < maxPlayersPerConnection && playerCount < maxPlayers);
     }
 
     public override void OnStartHost() {
@@ -251,7 +218,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     // CALLBACK METHODS
 
     public void StopClientCallback() {
-        Debug.Log("pressed back!");
+        //Debug.Log("pressed back!");
         // stop the client session
         StopClient();
 
@@ -265,7 +232,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     }
 
     public void StopHostCallback() {
-        Debug.Log("being called when clicking back!");
+        //Debug.Log("being called when clicking back!");
         // if we are hosting a matchmaker game, handle teardown of match
         if (matchMaker != null) {
 			matchMaker.DestroyMatch((NetworkID)_currentMatchID, 0, OnDestroyMatch);

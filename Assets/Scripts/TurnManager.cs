@@ -36,12 +36,10 @@ public class TurnManager : NetworkBehaviour {
 
 	CameraController camController;
 	TankController activeTank;
-	TankController lastLocalTank;
 	float horizontalTurret;
 	float verticalTurret;
 	float shotPower;
 	int tankHitPoints;
-	int tankTurnIndex = 0;
 
 	public GameObject helpUI;
 	bool helpVisible = false;
@@ -84,9 +82,6 @@ public class TurnManager : NetworkBehaviour {
 	void ServerSetActiveTank(TankController tank){
 		Debug.Log(String.Format("ServerSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
 		activeTank = tank;
-		if (activeTank.isLocalPlayer) {
-			lastLocalTank = activeTank;
-		}
 		tank.ServerEnableControl();
 		RpcSetActiveTank(tank.gameObject);
 	}
@@ -209,7 +204,6 @@ public class TurnManager : NetworkBehaviour {
 			activeTank = tank;
 			if (activeTank.isLocalPlayer) {
 				hudController.AssignTank(activeTank);
-				lastLocalTank = activeTank;
 			}
 		}
 	}

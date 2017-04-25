@@ -29,6 +29,24 @@ public class LobbyPanelManager : MonoBehaviour {
     protected VerticalLayoutGroup layoutGroup;
     protected List<SingedLobbyPlayer> players = new List<SingedLobbyPlayer>();
 
+    public int playerCount {
+        get {
+            return players.Count;
+        }
+    }
+
+    public int localPlayerCount {
+        get {
+            int count = 0;
+            foreach (var player in players) {
+                if (player.isLocalPlayer) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+
     public void OnEnable() {
         var lobbyManager = SingedLobbyManager.s_singleton;
         singleton = this;
@@ -79,6 +97,15 @@ public class LobbyPanelManager : MonoBehaviour {
         }
     }
 
+    void SetAddRowActive() {
+        var lobbyManager = SingedLobbyManager.s_singleton;
+
+        // enable/disable lobby's add player button based on max number of players and max # of local players
+        var maxPlayersPerConnection = lobbyManager.maxPlayersPerConnection;
+        var maxPlayers = lobbyManager.maxPlayers;
+        addPlayerRow.SetActive(localPlayerCount < maxPlayersPerConnection && playerCount < maxPlayers);
+    }
+
     public void AddPlayer(SingedLobbyPlayer player) {
         if (players.Contains(player)) return;
 
@@ -89,12 +116,17 @@ public class LobbyPanelManager : MonoBehaviour {
         player.transform.SetParent(playerListContentTransform, false);
         addPlayerRow.transform.SetAsLastSibling();
 
+        // enable/disable lobby's add player button based on max number of players and max # of local players
+        SetAddRowActive();
+
         // notify players of list modification
         PlayerListModified();
     }
 
     public void RemovePlayer(SingedLobbyPlayer player) {
         players.Remove(player);
+        // enable/disable lobby's add player button based on max number of players and max # of local players
+        SetAddRowActive();
         PlayerListModified();
     }
 

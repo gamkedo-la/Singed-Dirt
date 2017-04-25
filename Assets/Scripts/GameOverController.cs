@@ -26,7 +26,7 @@ public class GameOverController: MonoBehaviour {
 
     public void OnClickLobby() {
         if (SingedLobbyManager.s_singleton != null) {
-            SingedLobbyManager.s_singleton.ServerReturnToLobby();
+            SingedLobbyManager.s_singleton.SendReturnToLobby();
         }
     }
 
