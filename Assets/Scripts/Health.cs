@@ -1,9 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.Events;
 using System.Collections;
 
 public class Health : NetworkBehaviour {
+
+    [System.Serializable]
+    public class OnValueChangeEvent : UnityEvent<int> { };
+
+    public OnValueChangeEvent onValueChangeEvent;
+
+    void Awake() {
+        onValueChangeEvent = new OnValueChangeEvent();
+    }
 
     public const int maxHealth = 100;
 
@@ -22,31 +32,18 @@ public class Health : NetworkBehaviour {
         {
             health = 0;
             // Debug.Log("death");
-
     		var manager = TurnManager.GetGameManager();
             manager.ServerHandleTankDeath(gameObject);
-            //currentHealth = maxHealth;
-            // called on the Server, but invoked on the Clients
-            //RpcRespawn();
         }
     }
 
     void OnChangeHealth (int newHealth) {
         if (healthBar != null) {
-            healthBar.sizeDelta = new Vector2(newHealth , healthBar.sizeDelta.y);
+            var healthScale = (float) newHealth/(float)maxHealth;
+            healthBar.localScale = new Vector3(healthScale,1f,1f);
         }
         health = newHealth;
+        onValueChangeEvent.Invoke(newHealth);
     }
 
-    /*
-    [ClientRpc]
-    void RpcRespawn()
-    {
-        if (isLocalPlayer)
-        {
-            // move back to zero location
-            transform.position = Vector3.zero;
-        }
-    }
-    */
 }

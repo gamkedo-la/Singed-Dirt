@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Terrain deformer
+  - p2spawn
+  - p1spawn
+  - turnpanel
   layers:
   - Default
   - TransparentFX

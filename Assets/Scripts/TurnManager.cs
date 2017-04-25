@@ -245,6 +245,32 @@ public class TurnManager : NetworkBehaviour {
 	}
 
 	[ClientRpc]
+	void RpcRegisterPlayerForTurn(GameObject playerGo) {
+		var player = playerGo.GetComponent<TankController>();
+		if (player == null) return;
+
+		// update game turn order panel
+        var turnPanelGo = GameObject.FindGameObjectWithTag("turnpanel");
+        var turnPanel = (turnPanelGo != null) ? turnPanelGo.GetComponent<PlayerTurnInfoListController>() : null;
+		if (turnPanel != null) {
+			turnPanel.AddPlayer(player);
+		}
+	}
+
+	[ClientRpc]
+	void RpcAssignTurn(GameObject playerGo) {
+		var player = playerGo.GetComponent<TankController>();
+		if (player == null) return;
+
+		// assign turn via turn panel
+        var turnPanelGo = GameObject.FindGameObjectWithTag("turnpanel");
+        var turnPanel = (turnPanelGo != null) ? turnPanelGo.GetComponent<PlayerTurnInfoListController>() : null;
+		if (turnPanel != null) {
+			turnPanel.ActivatePlayer(player);
+		}
+	}
+
+	[ClientRpc]
 	void RpcViewShot(GameObject playerGO, GameObject projectileGO, bool localOnly) {
 		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
 			//camController.ShakeCamera(0.8f, 0.8f);
@@ -367,6 +393,11 @@ public class TurnManager : NetworkBehaviour {
 		var currentIndex = 0;
 		yield return null;
 
+		// update game turn order panel
+		foreach (var index in turnOrder) {
+			RpcRegisterPlayerForTurn(tankRegistry[index].gameObject);
+		}
+
 		// continue to play the round while at least two tanks are active
 		while (activeTanks.Count >= 2) {
 			// determine next tank, advance current Index
@@ -377,6 +408,9 @@ public class TurnManager : NetworkBehaviour {
 				// Debug.Log("skipping inactive tank: " + tankRegistry[nextTankId].name);
 				continue;
 			}
+
+			// show tank is active in turn order panel
+			RpcAssignTurn(tankRegistry[nextTankId].gameObject);
 
 			// select active tank and take turn
 			yield return StartCoroutine(TakeTankTurn(tankRegistry[nextTankId]));
