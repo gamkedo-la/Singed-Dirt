@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 
 
@@ -362,6 +363,12 @@ public class TankController : NetworkBehaviour {
 		// Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
 		// continue while we have control
 		while (hasControl) {
+			if (EventSystem.current.currentSelectedGameObject != null &&
+			    EventSystem.current.currentSelectedGameObject.tag == "inputexclusive") {
+				yield return null;
+				continue;
+			}
+			//Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
 			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
 				togglePowerInputAmount = true;
 			}
@@ -395,6 +402,8 @@ public class TankController : NetworkBehaviour {
 			var numShots = System.Enum.GetValues(typeof(ProjectileKind)).Length;
 			int shotInt = (int) selectedShot;
 			if (Input.GetKeyDown (KeyCode.Comma)) {
+				//Debug.Log("OnComma: focused control is: " + GUI.GetNameOfFocusedControl());
+				Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
 				shotInt--;
 				if (shotInt < 0) {
 					shotInt = numShots - 1;
@@ -463,6 +472,14 @@ public class TankController : NetworkBehaviour {
 
     // ------------------------------------------------------
     // CLIENT->SERVER METHODS
+    public void SendToConsole(string newChat) {
+        CmdSendToConsole(newChat);
+    }
+
+    [Command]
+    public void CmdSendToConsole(string newChat) {
+        TurnManager.singleton.SendToConsole(this, newChat);
+    }
 
 	[Command]
 	void CmdRegister() {

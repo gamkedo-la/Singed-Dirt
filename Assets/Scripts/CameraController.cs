@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 public class CameraController : MonoBehaviour {
@@ -69,7 +70,7 @@ public class CameraController : MonoBehaviour {
 
 	public void SetPlayerCameraLookAt (TankController _player) {
 		// Camera look at code
-		
+
 		// player.playerCameraSpot.position = player.transform.position - player.transform.forward * playerZoom + Vector3.up * cameraPositionAbovePlayer;
 		// player.playerCameraSpot.LookAt (player.transform.position + player.transform.forward * 15.0f);
 	}
@@ -92,7 +93,7 @@ public class CameraController : MonoBehaviour {
 	void LateUpdate () {
 		Move();
 		Rotate();
-		
+
 	} // end LateUpdate
 
 	void FixedUpdate(){
@@ -129,13 +130,16 @@ public class CameraController : MonoBehaviour {
 
 	IEnumerator WatchPlayerLoop(TankController tank) {
 		while (cameraMode == CameraMode.watchPlayer && tank != null) {
+			var inputExclusive = EventSystem.current.currentSelectedGameObject != null &&
+			    EventSystem.current.currentSelectedGameObject.tag == "inputexclusive";
 			// allow camera zoom while in player mode;
-			if ((Input.GetKey(KeyCode.LeftShift) && Input.GetKey (KeyCode.Z)) ||
-				(Input.GetKey(KeyCode.RightShift) && Input.GetKey (KeyCode.Z))) {
+			if (!inputExclusive &&
+				((Input.GetKey(KeyCode.LeftShift) && Input.GetKey (KeyCode.Z)) ||
+				 (Input.GetKey(KeyCode.RightShift) && Input.GetKey (KeyCode.Z)))) {
 				playerZoom -= zoomIncrement;
 				if (playerZoom < 0) playerZoom = 0;
 
-			} else if (Input.GetKey (KeyCode.Z)) {
+			} else if (!inputExclusive && Input.GetKey (KeyCode.Z)) {
 				playerZoom += zoomIncrement;
 				if (playerZoom > maxPlayerZoom) playerZoom = maxPlayerZoom;
 			}
@@ -189,7 +193,7 @@ public class CameraController : MonoBehaviour {
 			planarExplosionForward.y = 0.0f;
 			planarExplosionForward.Normalize();
 			float timeSinceStartedShowing = Time.time - blastStartTime;
-			
+
 			desiredPosition = explosionGO.transform.position - planarExplosionForward + Vector3.up * cameraPositionAboveExplosion + Vector3.right * 0.5f;
 			float groundHeightAtDesiredPosition = Terrain.activeTerrain.SampleHeight(desiredPosition);
 			desiredPosition.y = Mathf.Max(desiredPosition.y, groundHeightAtDesiredPosition + minExplosionCamHeight);

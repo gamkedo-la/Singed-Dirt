@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 
 public class TurnManager : NetworkBehaviour {
@@ -36,6 +37,7 @@ public class TurnManager : NetworkBehaviour {
 
 	CameraController camController;
 	TankController activeTank;
+	TankController localActiveTank;
 	float horizontalTurret;
 	float verticalTurret;
 	float shotPower;
@@ -81,13 +83,16 @@ public class TurnManager : NetworkBehaviour {
 
 	void ServerSetActiveTank(TankController tank){
 		Debug.Log(String.Format("ServerSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
-		activeTank = tank;
+		//activeTank = tank;
 		tank.ServerEnableControl();
 		RpcSetActiveTank(tank.gameObject);
 	}
 
 	public TankController GetActiveTank(){
 		return activeTank;
+	}
+	public TankController GetLocalActiveTank(){
+		return localActiveTank;
 	}
 
 	// Update is called once per frame
@@ -97,6 +102,10 @@ public class TurnManager : NetworkBehaviour {
 			StartCoroutine(ServerLoop());
 		}
 
+		if (EventSystem.current.currentSelectedGameObject != null &&
+		    EventSystem.current.currentSelectedGameObject.tag == "inputexclusive") {
+			return;
+		}
 		if (Input.GetKeyDown (KeyCode.N)) {
 			ServerGameOver();
 		}
@@ -217,6 +226,7 @@ public class TurnManager : NetworkBehaviour {
 			activeTank = tank;
 			if (activeTank.isLocalPlayer) {
 				hudController.AssignTank(activeTank);
+				localActiveTank = activeTank;
 			}
 		}
 	}
@@ -241,6 +251,14 @@ public class TurnManager : NetworkBehaviour {
 			// Debug.Log("setting camera view to local: " + tank.name);
 			camController.WatchPlayer(tank);
 			//camController.SetPlayerCameraFocus(localTank);
+		}
+	}
+
+	public void SendToConsole(TankController player, string message) {
+		var consoleGo = GameObject.FindWithTag("console");
+		if (consoleGo != null) {
+			var consoleController = consoleGo.GetComponent<UxChatController>();
+			consoleController.AddMessage(player.playerName, Color.yellow, message);
 		}
 	}
 

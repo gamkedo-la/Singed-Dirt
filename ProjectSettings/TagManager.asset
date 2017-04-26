@@ -8,6 +8,8 @@ TagManager:
   - p2spawn
   - p1spawn
   - turnpanel
+  - console
+  - inputexclusive
   layers:
   - Default
   - TransparentFX
