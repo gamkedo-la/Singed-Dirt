@@ -91,7 +91,7 @@ public class TankController : NetworkBehaviour {
 					ammoCounts.Add(-1);
 					break;
 				default:
-					ammoCounts.Add(1);
+					ammoCounts.Add(-1);
 					break;
 			}
 		}
