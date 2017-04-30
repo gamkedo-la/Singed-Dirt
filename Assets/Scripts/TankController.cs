@@ -60,6 +60,9 @@ public class TankController : NetworkBehaviour {
 	[SyncVar]
 	public string playerName = "";
 
+	public OneLinersKind oneLiner;
+	public AudioClip speech;
+
 	[SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
 	[SyncVar]
@@ -99,6 +102,11 @@ public class TankController : NetworkBehaviour {
 
 	public void ServerActivate() {
 		RpcActivate();
+	}
+
+	void GetRandomOneLiner(){
+		oneLiner = (OneLinersKind)UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(OneLinersKind)).Length);
+		speech = (AudioClip)Resources.Load("OneLiners/" + oneLiner);
 	}
 
 	public void ServerPlace(Vector3 position) {
@@ -432,6 +440,8 @@ public class TankController : NetworkBehaviour {
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				Debug.Log("space is down, calling CmdFire");
 				if(ammoCounts[(int)selectedShot] != 0){  // This allows -1 to be infinite.
+					GetRandomOneLiner();
+					TurnManager.singleton.PlaySound(speech);
 					CmdFire(shotPower, selectedShot);
 					if(ammoCounts[(int)selectedShot] > 0){
 						ammoCounts[(int)selectedShot]--;
@@ -441,6 +451,9 @@ public class TankController : NetworkBehaviour {
 				}
 
 				yield break;
+			}
+			if (Input.GetKeyDown(KeyCode.O)){
+				GetRandomOneLiner();
 			}
 
 			if (model != null) {

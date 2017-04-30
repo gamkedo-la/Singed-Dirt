@@ -11,7 +11,8 @@ public class NetRegistry: NetworkBehaviour {
     static Type[] spawnableEnums = new Type[] {
         typeof(ProjectileKind),
         typeof(ExplosionKind),
-        typeof(DeformationKind)
+        typeof(DeformationKind),
+        typeof(OneLinersKind)
     };
 
     // singleton instance
