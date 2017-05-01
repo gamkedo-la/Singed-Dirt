@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour {
 	public enum CameraMode {
 		overview,
 		watchPlayer,
+		watchLaunch,
 		watchProjectile,
 		watchExplosion
 	}
@@ -35,8 +36,8 @@ public class CameraController : MonoBehaviour {
 
 	private Camera gameCamera;
 	// private float zoomSpeed;                      // Reference speed for the smooth damping of the orthographic size.
-	public float dampTime = 0.2f;                 // Approximate time for the camera to refocus.
-	public float rotationDampTime = 0.2f;         // Approximate time for the camera to refocus.
+	private float dampTime = 0.075f;                 // Approximate time for the camera to refocus.
+	private float rotationDampTime = 0.075f;         // Approximate time for the camera to refocus.
 	public Vector3 moveVelocity;
 
 	// indicates the desired position and rotation of the camera
@@ -48,6 +49,8 @@ public class CameraController : MonoBehaviour {
 	float playerZoom = 2f;
 	float maxPlayerZoom = 4.5f;
     private float minExplosionCamHeight = 5.0f;
+
+	private bool isLaunchViewFalling = false;
 
     // Use this for initialization
     void Start () {
@@ -159,10 +162,36 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
+	// #TODO need to make the shot watch smoother
+	public void WatchLaunch(GameObject projectileGO, GameObject playerGO){
+		cameraMode = CameraMode.watchLaunch;
+		// Debug.Log("Starting watch launch");
+		isLaunchViewFalling = false;
+		StartCoroutine(WatchLaunchLoop(projectileGO, playerGO.transform.GetChild(0).gameObject));
+	}
+
+	IEnumerator WatchLaunchLoop(GameObject projectileGO, GameObject playerGO){
+		while(cameraMode == CameraMode.watchLaunch && projectileGO != null){
+			Rigidbody projectileRB = projectileGO.GetComponent<Rigidbody>();
+			if (projectileRB.velocity.y > 0.0f && isLaunchViewFalling == false) {
+				// Debug.Log("PlayerGO inside of WatchLaunchLoop is " + playerGO.name);
+				desiredPosition = projectileGO.transform.position - playerGO.transform.right * 15.0f - playerGO.transform.forward * 8.0f +
+				Vector3.up * 10.0f;
+			} else if (projectileRB.velocity.y < -0.5f){
+				// Debug.Log("Shot began fall");
+				isLaunchViewFalling = true;
+			}
+
+			Vector3 relativePosition = projectileGO.transform.position - desiredPosition;
+			desiredRotation = Quaternion.LookRotation(relativePosition);
+			yield return null;
+		}
+	}
+
 	public void WatchProjectile(GameObject projectileGO) {
 		// Debug.Log("WatchProjectile: " + projectileGO);
 		cameraMode = CameraMode.watchProjectile;
-		Debug.Log("watch projectile coroutine looper counter");
+		// Debug.Log("watch projectile coroutine looper counter");
 		StartCoroutine(WatchProjectileLoop(projectileGO));
 	}
 

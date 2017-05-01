@@ -251,6 +251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyPrefab: {fileID: 1735008120066350, guid: 85492331ae1074dd69d4aeb3736aafb9,
     type: 2}
+  audioPlayer: {fileID: 1146200287}
 --- !u!4 &464060545
 Transform:
   m_ObjectHideFlags: 0
@@ -460,8 +461,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3c675effe18104ce0b346bf99e6cbcdf, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0

@@ -299,7 +299,8 @@ public class TurnManager : NetworkBehaviour {
 	void RpcViewShot(GameObject playerGO, GameObject projectileGO, bool localOnly) {
 		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
 			//camController.ShakeCamera(0.8f, 0.8f);
-			camController.WatchProjectile(projectileGO);
+			Debug.Log("playerGO name is " + playerGO.name);
+			camController.WatchLaunch(projectileGO, playerGO);
 		}
 	}
 
@@ -308,7 +309,7 @@ public class TurnManager : NetworkBehaviour {
 		// Debug.Log("RpcViewExplosion: isLocalPlayer: " + playerGO.GetComponent<TankController>().isLocalPlayer);
 		if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
 			camController.ShakeCamera(2.0f, 0.9f);
-			camController.WatchExplosion(explosionGO);
+			// camController.WatchExplosion(explosionGO);
 		}
 	}
 
