@@ -84,7 +84,7 @@ public class ProjectileController : NetworkBehaviour {
 					// hit dist 10m: about 1 hit point
 					// The formula is based on a max proximity damage distance of 10m
 					int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
-					if (damagePoints > 0) {
+					if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
 						health.TakeDamage(damagePoints);
 						//Debug.Log ("Damage done to " + tankCtrlRef.name + ": " + damagePoints + ". Remaining: " + health.health);
 

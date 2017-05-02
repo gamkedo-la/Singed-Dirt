@@ -18,7 +18,8 @@ public enum ProjectileKind {
     acorn,
     artilleryShell,
     sharkToothCluster,
-    sharkToothBomblet
+    sharkToothBomblet,
+    pillarShot
 }
 
 public enum OneLinersKind {
@@ -91,7 +92,8 @@ public enum ExplosionKind {
 
 public enum DeformationKind {
     shotCrater = 0,
-    bombletCrater
+    bombletCrater,
+    pillarDeformer
 }
 
 public enum TankBaseKind {
