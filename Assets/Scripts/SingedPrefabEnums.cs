@@ -17,11 +17,11 @@ public enum ProjectileKind {
     cannonBall = 0,
     acorn,
     artilleryShell,
-    beetMissile,
-    projectX,
     sharkToothCluster,
     sharkToothBomblet,
-    pillarShot
+    pillarShot,
+    beetMissile,
+    mushboom
 }
 
 public enum OneLinersKind {

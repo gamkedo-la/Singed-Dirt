@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 114724289831809422}
   - component: {fileID: 114913486540608032}
   m_Layer: 13
-  m_Name: projectX
+  m_Name: mushboom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,14 +68,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1595356189682260}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalRotation: {x: 0.32212967, y: 0.8906627, z: 0.30725536, w: -0.09244771}
+  m_LocalPosition: {x: -0.144, y: 0.408, z: 0.236}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children:
   - {fileID: 4176039965645404}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -37.364002, y: 177.60101, z: 40.579002}
 --- !u!23 &23024924098291628
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -89,7 +89,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 2fde3728176a61a448d0315cc8582f83, type: 2}
+  - {fileID: 2100000, guid: 103fdc4e848b7fb4c905e8bafad31f6c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -179,6 +179,7 @@ MonoBehaviour:
   clusterHeight: 15
   bomletForceKick: 50
   numberOfBomblets: 8
+  shooter: {fileID: 0}
 --- !u!114 &114724289831809422
 MonoBehaviour:
   m_ObjectHideFlags: 1
