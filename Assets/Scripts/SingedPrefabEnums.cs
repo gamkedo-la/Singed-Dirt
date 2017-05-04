@@ -125,3 +125,7 @@ public enum TankHatKind {
     sunWhite,
 	horn,
 }
+
+public enum SpawnKind {
+    lootbox = 0,
+}

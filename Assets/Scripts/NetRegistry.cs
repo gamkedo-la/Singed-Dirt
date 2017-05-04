@@ -12,7 +12,8 @@ public class NetRegistry: NetworkBehaviour {
         typeof(ProjectileKind),
         typeof(ExplosionKind),
         typeof(DeformationKind),
-        typeof(OneLinersKind)
+        typeof(OneLinersKind),
+        typeof(SpawnKind),
     };
 
     // singleton instance

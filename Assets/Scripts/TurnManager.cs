@@ -350,9 +350,19 @@ public class TurnManager : NetworkBehaviour {
 			var spawnPoint = spawnPoints[tankId-1];
 			var tank = tankRegistry[tankId];
 			PlaceTank(tank, spawnPoint);
+            // add spawn exclusion
+            if (LootSpawnController.singleton != null) {
+                LootSpawnController.singleton.AddExclusion(spawnPoint, 10f);
+            }
 			tank.ServerActivate();
 		}
 		yield return null;
+
+        // spawn initial lootboxes
+        if (LootSpawnController.singleton != null) {
+            LootSpawnController.singleton.ServerSpawnN(10);
+        }
+
 
 		// adjust camera
 		//RpcViewLocalTank();

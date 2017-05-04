@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114582561200131194}
   - component: {fileID: 114627132602794416}
   m_Layer: 0
-  m_Name: LootBox
+  m_Name: lootbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172,6 +172,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: Health+OnValueChangeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  onDeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   health: 10
   healthBar: {fileID: 0}
