@@ -10,6 +10,7 @@ public class Health : NetworkBehaviour {
     public class OnValueChangeEvent : UnityEvent<int> { };
 
     public OnValueChangeEvent onValueChangeEvent;
+    public UnityEvent onDeathEvent;
 
     void Awake() {
         onValueChangeEvent = new OnValueChangeEvent();
@@ -22,18 +23,17 @@ public class Health : NetworkBehaviour {
 
     public RectTransform healthBar;
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, GameObject from)
     {
         if (!isServer) return;
-        // Debug.Log("TakeDamage for " + amount);
+        Debug.Log("Health.TakeDamage for " + amount + " from : " + from);
 
         health -= amount;
-        if (health <= 0)
-        {
+        if (health <= 0) {
             health = 0;
             // Debug.Log("death");
-    		var manager = TurnManager.GetGameManager();
-            manager.ServerHandleTankDeath(gameObject);
+            // invoke death
+            onDeathEvent.Invoke();
         }
     }
 

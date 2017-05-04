@@ -113,6 +113,14 @@ public class TankController : NetworkBehaviour {
 		RpcPlace(position);
 	}
 
+	void OnDeath() {
+		Debug.Log("OnDeath");
+		var manager = TurnManager.GetGameManager();
+		if (manager != null) {
+	        manager.ServerHandleTankDeath(gameObject);
+		}
+	}
+
 	void OnDestroy() {
 		Debug.Log("TankController.OnDestroy, isServer: " + isServer);
 		if (TurnManager.singleton != null) {
@@ -152,6 +160,11 @@ public class TankController : NetworkBehaviour {
 	}
 
 	void Start() {
+		// link health onDeath event
+		var health = GetComponent<Health>();
+		if (health != null) {
+			health.onDeathEvent.AddListener(OnDeath);
+		}
         // Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 
 		// copy state to model
@@ -521,6 +534,7 @@ public class TankController : NetworkBehaviour {
 		);
 		liveProjectile.name = name + "Projectile";
 		liveProjectile.layer = gameObject.layer;
+		liveProjectile.GetComponent<ProjectileController>().shooter = this;
 
 		// set initial velocity/force
 		liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);

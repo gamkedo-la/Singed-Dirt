@@ -19,6 +19,7 @@ public class ProjectileController : NetworkBehaviour {
 	private Rigidbody rb;
     public float bomletForceKick = 50.0f;
     public int numberOfBomblets = 8;
+	public TankController shooter;
 
 	private Vector3 startPos;
 
@@ -65,10 +66,11 @@ public class ProjectileController : NetworkBehaviour {
 
 				GameObject gameObjRef = flakReceiver.gameObject;
 				//Debug.Log("hit gameObject: " + rootObject.name);
+
+				// potentially apply damage to any object that has health component
 				var health = rootObject.GetComponent<Health>();
-				var tankCtrlRef = rootObject.GetComponent<TankController>();
-				if (health != null && tankCtrlRef != null) {
-					//Debug.Log (tankCtrlRef.playerName + " received splash damage");
+				if (health != null) {
+					//Debug.Log (rootObject.name + " received splash damage");
 
 					Vector3 cannonballCenterToTankCenter = transform.position - gameObjRef.transform.position;
 					//Debug.Log (string.Format ("cannonball position: {0}, tank position: {1}", transform.position, gameObjRef.transform.position));
@@ -85,13 +87,18 @@ public class ProjectileController : NetworkBehaviour {
 					// The formula is based on a max proximity damage distance of 10m
 					int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
 					if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
-						health.TakeDamage(damagePoints);
-						//Debug.Log ("Damage done to " + tankCtrlRef.name + ": " + damagePoints + ". Remaining: " + health.health);
+						health.TakeDamage(damagePoints, shooter.gameObject);
+						//Debug.Log ("Damage done to " + rootObject.name + ": " + damagePoints + ". Remaining: " + health.health);
 
 						// Do shock displacement
-						Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
-						//Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
-						tankCtrlRef.rb.AddForce (tankCtrlRef.rb.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
+						// if target has rigidbody, apply displacement force to rigidbody
+						var rigidbody = rootObject.GetComponent<Rigidbody>();
+						if (rigidbody != null) {
+							Vector3	displacementDirection = cannonballCenterToTankCenter.normalized;
+							//Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
+
+							rigidbody.AddForce(rigidbody.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);	// Force = mass * accel
+						}
 
 					}
 				}
