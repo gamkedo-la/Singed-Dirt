@@ -28,7 +28,6 @@ public class LootSpawnController : NetworkBehaviour {
     public int maxPerSpawn = 5;
 
     ISpawnGenerator locationGenerator;
-    Vector3 origin = Vector3.zero;
     float startWidth = 256f;
     float startHeight = 256f;
 
@@ -44,8 +43,6 @@ public class LootSpawnController : NetworkBehaviour {
         if (terrain != null) {
             startWidth = terrain.terrainData.size.x;
             startHeight = terrain.terrainData.size.z;
-            origin = terrain.gameObject.transform.position;
-            Debug.Log(String.Format("lootspawn: w: {0} h: {1} o: {2}", startWidth, startHeight, origin));
         }
         locationGenerator = new RandomSpawnGenerator(minSpacing, startWidth, startHeight);
     }
@@ -80,12 +77,12 @@ public class LootSpawnController : NetworkBehaviour {
             }
             if (excluded) {
                 // too close
-                Debug.Log("spawn excluded");
+                Debug.Log("spawn excluded, too close to player");
                 continue;
             }
 
             // get final ground position
-            var finalPosition = GroundPosition(location+origin) + new Vector3(0,.5f,0);
+            var finalPosition = GroundPosition(location) + new Vector3(0,1,0);
 
             // spawn lootbox
             var lootboxPrefab = PrefabRegistry.singleton.GetPrefab<SpawnKind>(SpawnKind.lootbox);

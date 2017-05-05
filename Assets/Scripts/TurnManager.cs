@@ -328,6 +328,7 @@ public class TurnManager : NetworkBehaviour {
 		tank.ServerPlace(tankPosition);
 	}
 
+
     // ------------------------------------------------------
     // STATE ENGINES
 	/// <summary>
@@ -359,10 +360,7 @@ public class TurnManager : NetworkBehaviour {
 		yield return null;
 
         // spawn initial lootboxes
-        if (LootSpawnController.singleton != null) {
-            LootSpawnController.singleton.ServerSpawnN(10);
-        }
-
+        StartCoroutine(DelayLootSpawn());
 
 		// adjust camera
 		//RpcViewLocalTank();
@@ -389,6 +387,21 @@ public class TurnManager : NetworkBehaviour {
 		//camController.SetPlayerCameraFocus(localTank);
 		yield return null;
 	}
+
+	/// <summary>
+	/// Delay loot box spawn until after terrain deformation is done.
+    /// NOTE: this is a hack... it would be better to have this state driven
+    /// but the state hooks aren't there to handle waiting for a multitude of
+    /// terrain deformers to finish...
+    /// So hacking this to just delay for X seconds before spawning loot boxes
+	/// </summary>
+    IEnumerator DelayLootSpawn() {
+        // FIXME: tunable for wait and # of spawn boxes
+        yield return new WaitForSeconds(4);
+        if (LootSpawnController.singleton != null) {
+            LootSpawnController.singleton.ServerSpawnN(10);
+        }
+    }
 
 	/// <summary>
 	/// Build out the world
