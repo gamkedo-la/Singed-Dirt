@@ -9,11 +9,15 @@ public class Health : NetworkBehaviour {
     [System.Serializable]
     public class OnValueChangeEvent : UnityEvent<int> { };
 
+    [System.Serializable]
+    public class OnDeathEvent: UnityEvent<GameObject> { };
+
     public OnValueChangeEvent onValueChangeEvent;
-    public UnityEvent onDeathEvent;
+    public OnDeathEvent onDeathEvent;
 
     void Awake() {
         onValueChangeEvent = new OnValueChangeEvent();
+        onDeathEvent = new OnDeathEvent();
     }
 
     public const int maxHealth = 100;
@@ -33,7 +37,7 @@ public class Health : NetworkBehaviour {
             health = 0;
             // Debug.Log("death");
             // invoke death
-            onDeathEvent.Invoke();
+            onDeathEvent.Invoke(from);
         }
     }
 

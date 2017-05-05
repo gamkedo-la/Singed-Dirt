@@ -261,14 +261,6 @@ public class TurnManager : NetworkBehaviour {
 		}
 	}
 
-	public void SendToConsole(TankController player, string message) {
-		var consoleGo = GameObject.FindWithTag("console");
-		if (consoleGo != null) {
-			var consoleController = consoleGo.GetComponent<UxChatController>();
-			consoleController.AddMessage(player.playerName, Color.yellow, message);
-		}
-	}
-
 	[ClientRpc]
 	void RpcRegisterPlayerForTurn(GameObject playerGo) {
 		var player = playerGo.GetComponent<TankController>();
@@ -399,7 +391,7 @@ public class TurnManager : NetworkBehaviour {
         // FIXME: tunable for wait and # of spawn boxes
         yield return new WaitForSeconds(4);
         if (LootSpawnController.singleton != null) {
-            LootSpawnController.singleton.ServerSpawnN(10);
+            LootSpawnController.singleton.ServerSpawnInit();
         }
     }
 
@@ -463,6 +455,13 @@ public class TurnManager : NetworkBehaviour {
 
 			// select active tank and take turn
 			yield return StartCoroutine(TakeTankTurn(tankRegistry[nextTankId]));
+
+            // end of round
+            if (currentIndex%turnOrder.Length == turnOrder.Length-1) {
+                if (LootSpawnController.singleton != null) {
+                    LootSpawnController.singleton.ServerSpawnRound();
+                }
+            }
 
 		}
 

@@ -1,3 +1,4 @@
+using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,9 @@ using UnityEngine.Networking;
 public class LootBoxController : NetworkBehaviour {
 
 	public float rotationSpeed = 20f;
+
+	ProjectileKind lootKind;
+	int lootCount;
 
     // Use this for initialization
     void Start () {
@@ -22,7 +26,14 @@ public class LootBoxController : NetworkBehaviour {
 		if (UnityEngine.Random.Range(0,2) > 0) {
 			rotationSpeed *= -1f;
 		}
+	}
 
+	public void AssignLoot(
+		ProjectileKind kind,
+		int count
+	) {
+		this.lootKind = kind;
+		this.lootCount = count;
 	}
 
 	void Update() {
@@ -30,8 +41,18 @@ public class LootBoxController : NetworkBehaviour {
 		transform.Rotate(0, rotationSpeed*Time.deltaTime, 0);
 	}
 
-	void OnDeath() {
-		Debug.Log("loot destroyed");
+	void OnDeath(GameObject from) {
+		if (from.GetComponent<TankController>() != null) {
+			UxChatController.SendToConsole(
+				String.Format("{0} acquired {1} {2}",
+					from.GetComponent<TankController>().playerName,
+					lootCount,
+					lootKind.ToString()));
+		}
+		var inventory = from.GetComponent<ProjectileInventory>();
+		if (inventory != null) {
+			inventory.ServerModify(lootKind, lootCount);
+		}
 		Destroy(gameObject);
 	}
 }

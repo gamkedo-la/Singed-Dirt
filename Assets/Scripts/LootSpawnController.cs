@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -24,14 +25,28 @@ struct Exclusion {
 public class LootSpawnController : NetworkBehaviour {
 	public static LootSpawnController singleton;
 
+    [Range (5f,25f)]
     public float minSpacing = 10f;
-    public int maxPerSpawn = 5;
+    [Range (5,30)]
+    public int numInitialSpawn = 10;
+    [Range (1,10)]
+    public int maxPerRound = 5;
+    [Range (10,50)]
+    public int maxLootBoxes = 30;
+    [Range (1,5)]
+    public int minAmmoCount = 1;
+    [Range (1,25)]
+    public int maxAmmoCount = 5;
+
+    public ProjectileKind[] excludedProjectiles = new ProjectileKind[] {
+        ProjectileKind.sharkToothBomblet
+    };
 
     ISpawnGenerator locationGenerator;
     float startWidth = 256f;
     float startHeight = 256f;
-
     List<Exclusion> exclusions;
+    int activeLootBoxes;
 
     void Awake() {
         singleton = this;
@@ -47,6 +62,7 @@ public class LootSpawnController : NetworkBehaviour {
         locationGenerator = new RandomSpawnGenerator(minSpacing, startWidth, startHeight);
     }
 
+
     Vector3 GroundPosition(Vector3 position) {
 		var groundPosition = new Vector3(
 			position.x,
@@ -61,7 +77,21 @@ public class LootSpawnController : NetworkBehaviour {
         exclusions.Add(new Exclusion(new Vector3(position.x, 0, position.z), range));
     }
 
+    public void ServerSpawnInit() {
+        ServerSpawnN(numInitialSpawn);
+    }
+
+    public void ServerSpawnRound() {
+        var num = UnityEngine.Random.Range(0, maxPerRound);
+        Debug.Log("loot spawn round, spawning: " + num);
+        ServerSpawnN(num);
+    }
+
     public void ServerSpawnN(int n) {
+        // only spawn up to max loot boxes
+        n = Mathf.Min(maxLootBoxes - activeLootBoxes, n);
+        if (n <= 0) return;
+
         // generate spawn locations
         var locations = locationGenerator.Generate(n);
 
@@ -88,8 +118,30 @@ public class LootSpawnController : NetworkBehaviour {
             var lootboxPrefab = PrefabRegistry.singleton.GetPrefab<SpawnKind>(SpawnKind.lootbox);
     		GameObject lootboxGo = Instantiate(lootboxPrefab, finalPosition, Quaternion.identity) as GameObject;
     		NetworkServer.Spawn(lootboxGo);
-        }
 
+            // actually assign loot
+            ProjectileKind ammoKind;
+            while (true) {
+                ammoKind = (ProjectileKind) UnityEngine.Random.Range(1, System.Enum.GetValues(typeof(ProjectileKind)).Length);
+                if (!excludedProjectiles.Contains(ammoKind)) {
+                    break;
+                }
+            }
+            var ammoAmount = UnityEngine.Random.Range(minAmmoCount,maxAmmoCount+1);
+            lootboxGo.GetComponent<LootBoxController>().AssignLoot(ammoKind, ammoAmount);
+    		var health = lootboxGo.GetComponent<Health>();
+    		if (health != null) {
+    			health.onDeathEvent.AddListener(OnLootBoxDestroy);
+    		}
+
+            // increment # of active loot boxes that are tracked
+            activeLootBoxes++;
+        }
+    }
+
+    void OnLootBoxDestroy(GameObject from) {
+        // decr # of active loot boxes that are tracked
+        activeLootBoxes--;
     }
 
 }

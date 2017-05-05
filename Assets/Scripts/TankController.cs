@@ -41,8 +41,7 @@ public class TankController : NetworkBehaviour {
 
 	public Rigidbody rb;
 	public ProjectileKind selectedShot;
-
-	public List<int> ammoCounts = new List<int>();
+	public ProjectileInventory shotInventory;
 
 	bool togglePowerInputAmount = false;
 	float savedPowerModifier;
@@ -78,26 +77,13 @@ public class TankController : NetworkBehaviour {
         //Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 		// lookup/cache required components
 		rb = GetComponent<Rigidbody> ();
+		shotInventory = GetComponent<ProjectileInventory>();
 
 		// disable rigidbody physics until activated by turn manager
 		SetPhysicsActive(false);
 
 		// create underlying model
 		CreateModel();
-
-		for(int i = 0; i < System.Enum.GetValues(typeof(ProjectileKind)).Length; i++){
-			switch((ProjectileKind)i){
-				case ProjectileKind.cannonBall:
-					ammoCounts.Add(-1);
-					break;
-				case ProjectileKind.sharkToothCluster:
-					ammoCounts.Add(-1);
-					break;
-				default:
-					ammoCounts.Add(-1);
-					break;
-			}
-		}
 	}
 
 	public void ServerActivate() {
@@ -113,7 +99,7 @@ public class TankController : NetworkBehaviour {
 		RpcPlace(position);
 	}
 
-	void OnDeath() {
+	void OnDeath(GameObject from) {
 		Debug.Log("OnDeath");
 		var manager = TurnManager.GetGameManager();
 		if (manager != null) {
@@ -160,6 +146,15 @@ public class TankController : NetworkBehaviour {
 	}
 
 	void Start() {
+		// cheater!!!
+		// following loop gives max ammo for each shot type
+		// disable to allow lootbox system to be worthwile
+		/*
+		for(int i = 0; i < System.Enum.GetValues(typeof(ProjectileKind)).Length; i++){
+			shotInventory.Modify((ProjectileKind) i, int.MaxValue);
+		}
+		*/
+
 		// link health onDeath event
 		var health = GetComponent<Health>();
 		if (health != null) {
@@ -221,10 +216,11 @@ public class TankController : NetworkBehaviour {
 	}
 
 	public string AmmoDisplayCountText(){
-		if(ammoCounts[(int)selectedShot] == -1){
+		var available = shotInventory.GetAvailable(selectedShot);
+		if(available == int.MaxValue) {
 			return "Unlimited";
 		} else{
-			return "" + ammoCounts[(int)selectedShot];
+			return available.ToString();
 		}
 
 	}
@@ -420,44 +416,30 @@ public class TankController : NetworkBehaviour {
 					shotPower += shotPowerModifier;
 				}
 			}
-			var numShots = System.Enum.GetValues(typeof(ProjectileKind)).Length;
-			int shotInt = (int) selectedShot;
+
 			if (Input.GetKeyDown (KeyCode.Comma)) {
-				//Debug.Log("OnComma: focused control is: " + GUI.GetNameOfFocusedControl());
-				Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
-				shotInt--;
-				if (shotInt < 0) {
-					shotInt = numShots - 1;
-				}
-				selectedShot = (ProjectileKind)shotInt;
-				if(selectedShot == ProjectileKind.sharkToothBomblet){
-					shotInt--;
-				}
-				selectedShot = (ProjectileKind)shotInt;
+				selectedShot = shotInventory.PrevAvailableShot(selectedShot);
 				Debug.Log ("now using shot: " + selectedShot);
 			}
 			if (Input.GetKeyDown (KeyCode.Period)) {
-				shotInt++;
-				selectedShot = (ProjectileKind)shotInt;
-				if(selectedShot == ProjectileKind.sharkToothBomblet){
-					shotInt++;
-				}
-				if (shotInt >= numShots) {
-					shotInt = 0;
-				}
-				selectedShot = (ProjectileKind)shotInt;
+				selectedShot = shotInventory.NextAvailableShot(selectedShot);
 				Debug.Log ("now using shot: " + selectedShot);
 			}
 
 			// Shoot already ... when shot is fired, finish this coroutine;
 			if (Input.GetKeyDown (KeyCode.Space)) {
-				Debug.Log("space is down, calling CmdFire");
-				if(ammoCounts[(int)selectedShot] != 0){  // This allows -1 to be infinite.
+				//Debug.Log("space is down, calling CmdFire");
+				// sanity check for ammo
+				if (shotInventory.GetAvailable(selectedShot) > 0) {
 					GetRandomOneLiner();
 					TurnManager.singleton.PlaySound(speech);
 					CmdFire(shotPower, selectedShot);
-					if(ammoCounts[(int)selectedShot] > 0){
-						ammoCounts[(int)selectedShot]--;
+					// decrease ammo count
+					shotInventory.ServerModify(selectedShot, -1);
+					// check to see if we still have availability for selected shot
+					if (shotInventory.GetAvailable(selectedShot) <= 0) {
+						selectedShot = shotInventory.NextAvailableShot(selectedShot);
+						Debug.Log ("now using shot: " + selectedShot);
 					}
 				} else {
 					Debug.Log("out of ammo for shottype " + selectedShot);
@@ -504,7 +486,7 @@ public class TankController : NetworkBehaviour {
 
     [Command]
     public void CmdSendToConsole(string newChat) {
-        TurnManager.singleton.SendToConsole(this, newChat);
+        UxChatController.SendToConsole(this, newChat);
     }
 
 	[Command]

@@ -90,6 +90,22 @@ public class UxChatController : NetworkBehaviour {
         RpcAddMessage(color, finalMessage);
     }
 
+    // ------------------------------------------------------
+    // STATIC FUNCTIONS
+    public static void SendToConsole(string message) {
+		var consoleGo = GameObject.FindWithTag("console");
+		if (consoleGo != null) {
+			var consoleController = consoleGo.GetComponent<UxChatController>();
+			consoleController.AddMessage(message);
+		}
+    }
 
+	public static void SendToConsole(TankController player, string message) {
+		var consoleGo = GameObject.FindWithTag("console");
+		if (consoleGo != null) {
+			var consoleController = consoleGo.GetComponent<UxChatController>();
+			consoleController.AddMessage(player.playerName, Color.yellow, message);
+		}
+    }
 
 }

@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 114468445223577626}
   - component: {fileID: 114615427782632318}
   - component: {fileID: 114341407367086358}
+  - component: {fileID: 114441653300830778}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -71,8 +72,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597b681782030524a9137635fb3dcdca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onValueChangeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Health+OnValueChangeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  onDeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Health+OnDeathEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   health: 100
   healthBar: {fileID: 0}
+--- !u!114 &114441653300830778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1919247578536796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0406e262a2c4222b28696abdf3dd36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114468445223577626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -136,9 +158,12 @@ MonoBehaviour:
   rotationSpeedHorizontal: 70
   rb: {fileID: 0}
   selectedShot: 0
+  shotInventory: {fileID: 0}
   hasControl: 0
   playerIndex: -1
   playerName: 
+  oneLiner: 0
+  speech: {fileID: 0}
   tankBaseKind: 0
   turretBaseKind: 0
   turretKind: 0
@@ -160,6 +185,7 @@ MonoBehaviour:
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
   m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
