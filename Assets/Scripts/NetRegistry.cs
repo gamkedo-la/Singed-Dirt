@@ -14,6 +14,9 @@ public class NetRegistry: NetworkBehaviour {
         typeof(DeformationKind),
         typeof(OneLinersKind),
         typeof(SpawnKind),
+        typeof(MenuSoundKind),
+        typeof(TankSoundKind),
+        typeof(ProjectileSoundKind)
     };
 
     // singleton instance

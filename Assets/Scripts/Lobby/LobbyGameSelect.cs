@@ -13,6 +13,9 @@ public class LobbyGameSelect : MonoBehaviour {
     public InputField portInput;
     public InputField matchNameInput;
 
+    private AudioClip menuSound;
+    private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
+
     void Start() {
         //lobbyManager = SingedLobbyManager.s_singleton;
     }
@@ -37,14 +40,21 @@ public class LobbyGameSelect : MonoBehaviour {
         }
     }
 
+    void GetAudioClipFile(MenuSoundKind sound) {
+        menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+    }
+
     public void OnClickHost() {
         // Debug.Log("OnClickHost");
 
         // change to lobby
         //lobbyManager.ChangeTo(lobbyManager.lobbyPanel.gameObject);
 
-        // set hosting address/port
         var lobbyManager = SingedLobbyManager.s_singleton;
+        GetAudioClipFile(MenuSoundKind.menuSelect);
+        lobbyManager.PlaySound(menuSound);
+
+        // set hosting address/port
         lobbyManager.networkPort = port;
         lobbyManager.serverBindToIP = true;
         lobbyManager.serverBindAddress = host;
@@ -57,8 +67,11 @@ public class LobbyGameSelect : MonoBehaviour {
     public void OnClickJoin() {
         // Debug.Log("OnClickJoin");
 
-        // set connect address/port
         var lobbyManager = SingedLobbyManager.s_singleton;
+        GetAudioClipFile(MenuSoundKind.menuSelect);
+        lobbyManager.PlaySound(menuSound);
+
+        // set connect address/port
         lobbyManager.networkAddress = host;
         lobbyManager.networkPort = port;
 
@@ -74,6 +87,8 @@ public class LobbyGameSelect : MonoBehaviour {
 
     public void OnClickCreateMatchmakingGame() {
         var lobbyManager = SingedLobbyManager.s_singleton;
+        GetAudioClipFile(MenuSoundKind.menuSelect);
+        lobbyManager.PlaySound(menuSound);
         lobbyManager.StartMatchMaker();
         Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
         lobbyManager.matchMaker.CreateMatch(

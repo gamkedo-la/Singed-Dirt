@@ -24,6 +24,21 @@ public enum ProjectileKind {
     mushboom
 }
 
+public enum MenuSoundKind {
+    menuSelect = 0,
+    menuBack,
+    playerConnect
+}
+
+public enum TankSoundKind {
+    canonFire1 = 0,
+    canonFire2
+}
+
+public enum ProjectileSoundKind {
+    groundHit = 0
+}
+
 public enum OneLinersKind {
     voice_grumpy01 = 0,
     voice_grumpy02,
