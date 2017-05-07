@@ -86,8 +86,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_delayLodUpdate: 1
   m_instantScar: 1
-  m_radiusWorldUnits: 7
-  m_heightWorldUnits: 3
+  m_radiusWorldUnits: 10
+  m_heightWorldUnits: 2
   m_profile:
     serializedVersion: 2
     m_Curve:
@@ -119,8 +119,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   m_deformationDuration: 0
-  m_bumpScale: 6
-  m_bumpHeightWorldUnits: 0.3
+  m_bumpScale: 2
+  m_bumpHeightWorldUnits: 0.1
   m_bumpBlend:
     serializedVersion: 2
     m_Curve:
