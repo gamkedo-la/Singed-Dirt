@@ -108,13 +108,15 @@ public enum ExplosionKind {
     fire = 0,
 	virus,
     cluster,
-    bomblet
+    bomblet,
+    molasses
 }
 
 public enum DeformationKind {
     shotCrater = 0,
     bombletCrater,
-    pillarDeformer
+    pillarDeformer,
+    molPuddle
 }
 
 public enum TankBaseKind {
