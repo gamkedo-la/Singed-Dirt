@@ -145,7 +145,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  m_scarTextureIndex: 4
+  m_scarTextureIndex: 5
   m_scarBlend:
     serializedVersion: 2
     m_Curve:
