@@ -16,7 +16,8 @@ public class NetRegistry: NetworkBehaviour {
         typeof(SpawnKind),
         typeof(MenuSoundKind),
         typeof(TankSoundKind),
-        typeof(ProjectileSoundKind)
+        typeof(ProjectileSoundKind),
+        typeof(MusicKind)
     };
 
     // singleton instance

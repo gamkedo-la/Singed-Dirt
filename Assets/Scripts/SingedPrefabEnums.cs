@@ -30,6 +30,10 @@ public enum MenuSoundKind {
     playerConnect
 }
 
+public enum MusicKind {
+    mainMenuMusic = 0
+}
+
 public enum TankSoundKind {
     canonFire1 = 0,
     canonFire2

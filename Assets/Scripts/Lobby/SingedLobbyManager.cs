@@ -36,7 +36,8 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public bool doAutoStart = true;
 
     // coopting the lobby manager for sound too!
-    private AudioSource audioPlayer;
+    private AudioSource soundEffectPlayer;
+    private AudioSource musicPlayer;
 
     void Awake() {
         s_singleton = this;
@@ -55,13 +56,19 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
         // set initial panel to main game select
         ChangeTo(gameSelectPanel.gameObject, null);
-        audioPlayer = GameObject.Find("MenuSoundEffectsPlayer").GetComponent<AudioSource>();
+        soundEffectPlayer = GameObject.Find("SoundEffectsPlayer").GetComponent<AudioSource>();
+        musicPlayer = GameObject.Find("MusicPlayer").GetComponent<AudioSource>();
     }
 
-    public void PlaySound(AudioClip clip){
-		audioPlayer.clip = clip;
-		audioPlayer.PlayOneShot(clip);
+    public void PlaySound(AudioClip clip) {
+		soundEffectPlayer.clip = clip;
+		soundEffectPlayer.PlayOneShot(clip);
 	}
+
+    public void PlayMusic(AudioClip clip) {
+        musicPlayer.clip = clip;
+        musicPlayer.Play();
+    }
 
     /// <summary>
     /// Change the current view to selected panel

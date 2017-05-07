@@ -14,10 +14,14 @@ public class LobbyGameSelect : MonoBehaviour {
     public InputField matchNameInput;
 
     private AudioClip menuSound;
+    private AudioClip music;
     private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
+    private MusicKind musicKind = MusicKind.mainMenuMusic;
 
     void Start() {
         //lobbyManager = SingedLobbyManager.s_singleton;
+        GetMusicClipFile(musicKind);
+        SingedLobbyManager.s_singleton.PlayMusic(music);
     }
 
     public string host {
@@ -42,6 +46,10 @@ public class LobbyGameSelect : MonoBehaviour {
 
     void GetAudioClipFile(MenuSoundKind sound) {
         menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+    }
+
+    void GetMusicClipFile(MusicKind sound) {
+        music = (AudioClip)Resources.Load("Music/" + sound);
     }
 
     public void OnClickHost() {
@@ -87,8 +95,10 @@ public class LobbyGameSelect : MonoBehaviour {
 
     public void OnClickCreateMatchmakingGame() {
         var lobbyManager = SingedLobbyManager.s_singleton;
+
         GetAudioClipFile(MenuSoundKind.menuSelect);
         lobbyManager.PlaySound(menuSound);
+
         lobbyManager.StartMatchMaker();
         Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
         lobbyManager.matchMaker.CreateMatch(
@@ -109,6 +119,8 @@ public class LobbyGameSelect : MonoBehaviour {
 
     public void OnClickOpenServerList() {
         var lobbyManager = SingedLobbyManager.s_singleton;
+        GetAudioClipFile(MenuSoundKind.menuSelect);
+        lobbyManager.PlaySound(menuSound);
         lobbyManager.StartMatchMaker();
         // FIXME: validate this is the right callback
         lobbyManager.ChangeTo(lobbyManager.matchmakerServerPanel.gameObject,
