@@ -62,6 +62,9 @@ public class TankController : NetworkBehaviour {
 	public OneLinersKind oneLiner;
 	public AudioClip speech;
 
+	private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
+	private AudioClip tankSound;
+
 	[SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
 	[SyncVar]
@@ -84,6 +87,7 @@ public class TankController : NetworkBehaviour {
 
 		// create underlying model
 		CreateModel();
+		tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
 	}
 
 	public void ServerActivate() {
@@ -432,7 +436,8 @@ public class TankController : NetworkBehaviour {
 				// sanity check for ammo
 				if (shotInventory.GetAvailable(selectedShot) > 0) {
 					GetRandomOneLiner();
-					TurnManager.singleton.PlaySound(speech);
+					SingedLobbyManager.s_singleton.PlayAudioClip(tankSound);
+					SingedLobbyManager.s_singleton.PlayClipDelayed(tankSound.length/2, speech);
 					CmdFire(shotPower, selectedShot);
 					// decrease ammo count
 					shotInventory.ServerModify(selectedShot, -1);

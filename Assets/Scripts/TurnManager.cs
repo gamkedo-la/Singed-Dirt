@@ -29,8 +29,6 @@ public class TurnManager : NetworkBehaviour {
 	// the list of tanks currently active in the round... as tanks die, they are removed from this list
 	public List<int> activeTanks;
 
-	public AudioSource audioPlayer;
-
 	// Private variables
 	bool isReady = false;
 	bool gameStarted = false;
@@ -60,7 +58,6 @@ public class TurnManager : NetworkBehaviour {
 		tankRegistry = new Dictionary<int, TankController>();
 		activeTanks = new List<int>();
 		camController = Camera.main.GetComponent<CameraController> ();
-		audioPlayer = Camera.main.GetComponent<AudioSource>();
 	}
 
 	public void ServerGameOver() {
@@ -71,11 +68,6 @@ public class TurnManager : NetworkBehaviour {
 		// declare winner on each client
 		RpcGameOver(winner.gameObject);
 
-	}
-
-	public void PlaySound(AudioClip clip){
-		audioPlayer.clip = clip;
-		audioPlayer.PlayOneShot(clip);
 	}
 
 	public bool GetGameOverState(){

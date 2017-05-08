@@ -129,7 +129,7 @@ public class ProjectileController : NetworkBehaviour {
 
 		// set explosion duration (destroy after duration)
 		var explosionController = explosion.GetComponent<ExplosionController>();
-		var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
+		var explosionDuration = (explosionController != null) ? explosionController.duration : 3.0f;
 		Destroy (explosion, explosionDuration);
 
 		// destroy the projectile on collision
@@ -188,7 +188,7 @@ public class ProjectileController : NetworkBehaviour {
 		GameObject explosion = Instantiate(explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(explosion);
 		var explosionController = explosion.GetComponent<ExplosionController>();
-		var explosionDuration = (explosionController != null) ? explosionController.duration : 3f;
+		var explosionDuration = (explosionController != null) ? explosionController.duration : 3.0f;
 		Destroy(explosion, explosionDuration);
 
 		for(int i = 0; i < numberOfBomblets; i++){

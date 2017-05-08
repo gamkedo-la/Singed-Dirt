@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking.Types;
 using UnityEngine.Networking.Match;
+using System.Collections;
 
 /// <summary>
 /// Class representing the lobby overal lobby manager, derived from NetworkLobbyManager
@@ -60,14 +61,34 @@ public class SingedLobbyManager : NetworkLobbyManager {
         musicPlayer = GameObject.Find("MusicPlayer").GetComponent<AudioSource>();
     }
 
-    public void PlaySound(AudioClip clip) {
-		soundEffectPlayer.clip = clip;
-		soundEffectPlayer.PlayOneShot(clip);
-	}
-
     public void PlayMusic(AudioClip clip) {
         musicPlayer.clip = clip;
         musicPlayer.Play();
+    }
+
+    public void PlayAudioClip(AudioClip clip, float atVol = 1.0f, bool pitchModulation = false) {
+		GameObject tempGO = new GameObject("TempAudio"); // create the temp object
+		
+        tempGO.transform.SetParent(Camera.main.transform);
+
+		AudioSource aSource = tempGO.AddComponent<AudioSource>() as AudioSource; // add an audio source
+		aSource.clip = clip; // define the clip
+		aSource.volume = atVol;
+        if(pitchModulation != false){  // e.g. we don't want to modulate voices
+            aSource.pitch = Random.Range(0.7f,1.4f);
+        }
+		// set other aSource properties here, if desired
+		aSource.Play(); // start the sound
+		Destroy(tempGO, clip.length/aSource.pitch); // destroy object after clip duration
+	}
+
+    public void PlayClipDelayed(float delay, AudioClip clip, float atVol = 1.0f, bool pitchModulation = false) {
+		StartCoroutine(WaitThenPlaySound(delay, clip, atVol, pitchModulation));
+	}
+
+    IEnumerator WaitThenPlaySound(float waitSec, AudioClip clip, float atVol, bool pitchModulation) {
+        yield return new WaitForSeconds(waitSec);
+        PlayAudioClip(clip, atVol, pitchModulation);
     }
 
     /// <summary>

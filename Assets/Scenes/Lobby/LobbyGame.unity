@@ -1508,8 +1508,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 27.559082, y: 0, z: 1.9685059}
-    m_Extent: {x: 216.53532, y: 79.41345, z: 28.899235}
+    m_Center: {x: 27.559204, y: 0, z: 1.9685059}
+    m_Extent: {x: 216.53548, y: 79.41345, z: 28.899235}
   m_DirtyAABB: 0
 --- !u!183 &226157138
 Cloth:
@@ -2589,7 +2589,7 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 1829175733}
   m_AABB:
-    m_Center: {x: 27.55957, y: 0, z: 1.9682617}
+    m_Center: {x: 27.55957, y: 0, z: 1.96875}
     m_Extent: {x: 216.53543, y: 78.740166, z: 1.9686337}
   m_DirtyAABB: 0
 --- !u!1 &271876774
@@ -4527,7 +4527,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 8b83c1be4e52b45c4a65c044f399d5d8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 100
+      value: 97.9
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 8b83c1be4e52b45c4a65c044f399d5d8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5861,8 +5861,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 27.559082, y: 0, z: 1.9685059}
-    m_Extent: {x: 216.53528, y: 79.413445, z: 28.899265}
+    m_Center: {x: 27.55896, y: 0, z: 1.9685059}
+    m_Extent: {x: 216.53543, y: 79.4136, z: 28.899292}
   m_DirtyAABB: 0
 --- !u!183 &975823916
 Cloth:
@@ -7078,7 +7078,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minSpacing: 10
-  maxPerSpawn: 5
+  numInitialSpawn: 10
+  maxPerRound: 5
+  maxLootBoxes: 30
+  minAmmoCount: 1
+  maxAmmoCount: 5
+  excludedProjectiles: 04000000
 --- !u!1 &1087678495
 GameObject:
   m_ObjectHideFlags: 0
@@ -8219,7 +8224,7 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 27.559082, y: -0.00012207031, z: 1.9685059}
+    m_Center: {x: 27.559204, y: -0.00012207031, z: 1.9685059}
     m_Extent: {x: 216.53534, y: 79.41348, z: 28.899284}
   m_DirtyAABB: 0
 --- !u!65 &1127635440
@@ -10185,8 +10190,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 27.559082, y: 0, z: 1.9685059}
-    m_Extent: {x: 216.5352, y: 79.41347, z: 28.899242}
+    m_Center: {x: 27.559082, y: 0, z: 1.9684753}
+    m_Extent: {x: 216.53549, y: 79.41363, z: 28.899303}
   m_DirtyAABB: 0
 --- !u!183 &1520195017
 Cloth:
@@ -11806,31 +11811,31 @@ Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 669478926}
     m_Modifications:
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_LocalRotation.w
@@ -11838,7 +11843,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4206735559300642, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_RootOrder
@@ -11931,6 +11936,18 @@ Prefab:
     - target: {fileID: 1415751895449812, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4401823896985878, guid: fc53d59fe037161439e2b912a01f898f, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 23598107761465072, guid: fc53d59fe037161439e2b912a01f898f, type: 2}

@@ -60,7 +60,7 @@ public class LobbyGameSelect : MonoBehaviour {
 
         var lobbyManager = SingedLobbyManager.s_singleton;
         GetAudioClipFile(MenuSoundKind.menuSelect);
-        lobbyManager.PlaySound(menuSound);
+        lobbyManager.PlayAudioClip(menuSound);
 
         // set hosting address/port
         lobbyManager.networkPort = port;
@@ -77,7 +77,7 @@ public class LobbyGameSelect : MonoBehaviour {
 
         var lobbyManager = SingedLobbyManager.s_singleton;
         GetAudioClipFile(MenuSoundKind.menuSelect);
-        lobbyManager.PlaySound(menuSound);
+        lobbyManager.PlayAudioClip(menuSound);
 
         // set connect address/port
         lobbyManager.networkAddress = host;
@@ -97,7 +97,7 @@ public class LobbyGameSelect : MonoBehaviour {
         var lobbyManager = SingedLobbyManager.s_singleton;
 
         GetAudioClipFile(MenuSoundKind.menuSelect);
-        lobbyManager.PlaySound(menuSound);
+        lobbyManager.PlayAudioClip(menuSound);
 
         lobbyManager.StartMatchMaker();
         Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
@@ -120,7 +120,7 @@ public class LobbyGameSelect : MonoBehaviour {
     public void OnClickOpenServerList() {
         var lobbyManager = SingedLobbyManager.s_singleton;
         GetAudioClipFile(MenuSoundKind.menuSelect);
-        lobbyManager.PlaySound(menuSound);
+        lobbyManager.PlayAudioClip(menuSound);
         lobbyManager.StartMatchMaker();
         // FIXME: validate this is the right callback
         lobbyManager.ChangeTo(lobbyManager.matchmakerServerPanel.gameObject,

@@ -35,7 +35,7 @@ public class LobbyStatus : MonoBehaviour {
     }
 
     void PlaySound(){
-        SingedLobbyManager.s_singleton.PlaySound(menuSound);
+        SingedLobbyManager.s_singleton.PlayAudioClip(menuSound);
     }
 
     /// <summary>
