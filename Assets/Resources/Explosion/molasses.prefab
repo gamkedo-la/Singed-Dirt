@@ -224,7 +224,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 964905283
+  randomSeed: 980769396
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -257,7 +257,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSpeed:
       minMaxState: 3
-      scalar: 10
+      scalar: 12
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -560,7 +560,7 @@ ParticleSystem:
     boxY: 1
     boxZ: 1
     radius:
-      value: 0.75
+      value: 3
       mode: 0
       spread: 0
       speed:
@@ -3101,7 +3101,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 568202558
+  randomSeed: 406259252
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3134,7 +3134,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSpeed:
       minMaxState: 3
-      scalar: 14
+      scalar: 16
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3152,7 +3152,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.071428575
+          value: 0.0625
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3385,7 +3385,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 0
     randomizeRotationDirection: 1
-    maxNumParticles: 200
+    maxNumParticles: 500
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -3437,7 +3437,7 @@ ParticleSystem:
     boxY: 1
     boxZ: 1
     radius:
-      value: 0.75
+      value: 2
       mode: 0
       spread: 0
       speed:
@@ -3618,9 +3618,9 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - time: 0
-      minCount: 200
-      maxCount: 200
-      cycleCount: 1
+      minCount: 250
+      maxCount: 250
+      cycleCount: 2
       repeatInterval: 0.01
   SizeModule:
     enabled: 1
