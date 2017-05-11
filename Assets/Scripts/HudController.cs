@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class HudController: MonoBehaviour {
     // ------------------------------------------------------
@@ -9,12 +10,17 @@ public class HudController: MonoBehaviour {
 	public Transform healthBar;
 	public InputField powerValue;
     public GameObject[] selectedProjectileModels;
+	public Transform projectileModelPosition;
+	private Dictionary<ProjectileKind, GameObject> projetileModels;
 
     TankController activeTank;
 	ProjectileKind selectedProjectile;
 
     void Awake() {
-		selectedProjectile = ProjectileKind.acorn;
+		selectedProjectile = ProjectileKind.cannonBall;
+		projetileModels = new Dictionary<ProjectileKind, GameObject>();
+		projetileModels[selectedProjectile] = getProjectileModel(selectedProjectile);
+		UpdateSelectedShot();
     }
 
     public void AssignTank(TankController tank) {
@@ -37,15 +43,46 @@ public class HudController: MonoBehaviour {
     }
 
     void UpdateSelectedShot() {
-        if(selectedProjectile != activeTank.selectedShot){
-            selectedProjectile = activeTank.selectedShot;
-            for(int i =0; i < selectedProjectileModels.Length;i++){
-                selectedProjectileModels[i].SetActive((int)selectedProjectile == i);
+        if(activeTank != null && selectedProjectile != activeTank.selectedShot) {
+            projetileModels[selectedProjectile].SetActive(false);
+            if(!projetileModels.ContainsKey(activeTank.selectedShot)) {
+							  projetileModels[activeTank.selectedShot] = getProjectileModel(activeTank.selectedShot);
             }
+
+            projetileModels[activeTank.selectedShot].SetActive(true);
+            
+						selectedProjectile = activeTank.selectedShot;
         }
     }
 
-    void UpdateHealthBar() {
+	public GameObject getProjectileModel(ProjectileKind shotToShow) {
+		GameObject prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(shotToShow);
+		GameObject liveProjectile = (GameObject)GameObject.Instantiate(prefab, projectileModelPosition.position, projectileModelPosition.rotation);
+		GameObject shotModel = liveProjectile.transform.Find("Model").gameObject;
+
+		Destroy(liveProjectile);
+
+		shotModel.transform.parent = projectileModelPosition;
+		SetLayer(shotModel.transform, projectileModelPosition.gameObject.layer);
+
+		Vector3 scale = shotModel.transform.localScale;
+		scale.x *= projectileModelPosition.localScale.x;
+		scale.y *= projectileModelPosition.localScale.y;
+		scale.z *= projectileModelPosition.localScale.z;
+		shotModel.transform.localScale = scale;
+
+		return shotModel;
+	}
+
+	//Recursively set the layer of a transform and all children
+	private void SetLayer(Transform root, int layer) {
+		root.gameObject.layer = layer;
+		foreach(Transform child in root) { 
+			SetLayer(child, layer);
+		}
+	}
+
+	void UpdateHealthBar() {
         // calculate health
         var health = activeTank.GetComponent<Health>();
         if (health != null) {
