@@ -9,7 +9,6 @@ public class HudController: MonoBehaviour {
     public Text hudStatus;
 	public Transform healthBar;
 	public InputField powerValue;
-    public GameObject[] selectedProjectileModels;
 	public Transform projectileModelPosition;
 	private Dictionary<ProjectileKind, GameObject> projetileModels;
 
