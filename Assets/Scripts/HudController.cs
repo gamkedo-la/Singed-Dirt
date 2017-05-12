@@ -94,7 +94,7 @@ public class HudController: MonoBehaviour {
     void UpdateHudStatus() {
 		var horizontalTurret = activeTank.model.tankRotation;
 		var verticalTurret = activeTank.model.turretElevation;
-		var shotPower = activeTank.shotPower;
+		float shotPower = activeTank.shotPower;
         var health = activeTank.GetComponent<Health>();
         var tankHitPoints =  (health != null) ? health.health : 100;
         string ammoCount = activeTank.AmmoDisplayCountText();
@@ -108,13 +108,9 @@ public class HudController: MonoBehaviour {
 			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;
 
-		if(shotPowerBar != null)
-		{
-			float power = (float)shotPower / (float)2000.0f;
-			shotPowerBar.localScale = new Vector3(power, 1f, 1f);
-			shotPowerBar.localPosition = new Vector3(power, 0, 0);
-		}
-
+		float power = shotPower / activeTank.maxShotPower;
+		shotPowerBar.localScale = new Vector3(power, 1f, 1f);
+		//shotPowerBar.localPosition = new Vector3(power, 0, 0);
 	}
 
 	void Update() {

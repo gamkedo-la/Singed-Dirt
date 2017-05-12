@@ -15,8 +15,9 @@ public class TankController : NetworkBehaviour {
 
 	public float shotPower = 30.0f;
 	public float shotPowerModifier = 10.0f;
+	public float maxShotPower = 2500f;
 
-	public float rotationSpeedVertical = 5.0f;
+  public float rotationSpeedVertical = 5.0f;
 	public float rotationSpeedHorizontal = 5.0f;
 
 	public Transform passiveCameraSource {
@@ -194,6 +195,10 @@ public class TankController : NetworkBehaviour {
 			shotPower -= tweakAmt;
 		} else {
 			shotPower += tweakAmt;
+		}
+		
+		if(shotPower > maxShotPower) {
+			shotPower = maxShotPower;
 		}
 	}
 
@@ -430,6 +435,10 @@ public class TankController : NetworkBehaviour {
 				Debug.Log ("now using shot: " + selectedShot);
 			}
 
+			if(shotPower > maxShotPower) {
+				shotPower = maxShotPower;
+			}
+			
 			// Shoot already ... when shot is fired, finish this coroutine;
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				//Debug.Log("space is down, calling CmdFire");
