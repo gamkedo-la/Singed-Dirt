@@ -87,7 +87,7 @@ public class ProjectileController : NetworkBehaviour {
 					// The formula is based on a max proximity damage distance of 10m
 					int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
 					if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
-						health.TakeDamage(damagePoints, shooter.gameObject);
+						health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
 						//Debug.Log ("Damage done to " + rootObject.name + ": " + damagePoints + ". Remaining: " + health.health);
 
 						// Do shock displacement
@@ -204,6 +204,12 @@ public class ProjectileController : NetworkBehaviour {
 
 			// add random bomblet spread
 			bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
+
+                        // copy state from original projectile
+                        var newController = bomblet.GetComponent<ProjectileController>();
+                        if (newController != null) {
+                            newController.shooter = shooter;
+                        }
 		}
 
 		// destroy original projectile
