@@ -10,6 +10,7 @@ public class HudController: MonoBehaviour {
 	public Transform healthBar;
 	public InputField powerValue;
 	public Transform projectileModelPosition;
+	public RectTransform shotPowerBar;
 	private Dictionary<ProjectileKind, GameObject> projetileModels;
 
     TankController activeTank;
@@ -106,9 +107,17 @@ public class HudController: MonoBehaviour {
             "Press H for help!"; // + "m/s\n" +
 			// "projectile: " + selectedProjectile;
 		powerValue.text = "" + shotPower;
-    }
 
-    void Update() {
+		if(shotPowerBar != null)
+		{
+			float power = (float)shotPower / (float)2000.0f;
+			shotPowerBar.localScale = new Vector3(power, 1f, 1f);
+			shotPowerBar.localPosition = new Vector3(power, 0, 0);
+		}
+
+	}
+
+	void Update() {
         if (activeTank != null) {
             UpdateSelectedShot();
             UpdateHealthBar();
