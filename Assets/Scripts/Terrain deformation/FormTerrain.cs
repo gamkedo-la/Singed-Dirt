@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+using TyVoronoi;
+
 public class FormTerrain : NetworkBehaviour {
 
 	public TerrainDeformationManager tdManager;
@@ -21,6 +23,10 @@ public class FormTerrain : NetworkBehaviour {
 	public float noiseFrequency = 0.001f;
 	[Range (0.1f,0.25f)]
 	public float noiseAmplitude = 0.1f;
+	[Range (1f,10f)]
+	public float maxDrift = 5f;
+
+	Edge[] edgeList;
 
 	INoiseGenerator noiseGenerator;
 
@@ -31,6 +37,12 @@ public class FormTerrain : NetworkBehaviour {
         generator.SetFractalOctaves(4);
 		generator.SetNoiseType(FastNoise.NoiseType.PerlinFractal);
 		noiseGenerator = generator;
+		// FIXME: remove
+		edgeList = new Edge[] {
+			new Edge(new Vector3(0,0,100), new Vector3(200,0,100))
+		};
+		edgeList[0].vertices[0] = new Vector3(100,0,25);
+		edgeList[0].vertices[1] = new Vector3(100,0,175);
 	}
 
     // ------------------------------------------------------
@@ -129,14 +141,49 @@ public class FormTerrain : NetworkBehaviour {
 	void SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){
 		for (int i = 0; i < terrainCount; i++) {
 			GameObject tempGO = GameObject.Instantiate (terrainShapes [Random.Range(0, terrainShapes.Length)]);
-			Vector3 randInSpawnBox;
-			randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
-			randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
+			//Vector3 randInSpawnBox;
+			//randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
+			//randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
+			// pick spawn location
+			var spawnLocation = GetSpawnLocation(spawnBoxes);
+			//var spawnLocation = GetSpawnLocation(edgeList);
 			// pick seed for each deformation
 			var seed = Random.Range(1, 1<<24);
-			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), randInSpawnBox, seed);
+			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), spawnLocation, seed);
 			//yield return null;
 		}
 	}
+
+	Vector3 GetSpawnLocation(Transform[] spawnBoxes) {
+		Vector3 randInSpawnBox;
+		randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
+		randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
+		return randInSpawnBox;
+	}
+
+	Vector3 GetSpawnLocation(Edge[] edges) {
+		// select edge
+		var edge = edges[Random.Range(0, edges.Length)];
+
+		// select random point on edge, represented by % of length
+		float percent = Random.Range(0f,1f);
+
+		// plot point
+		// point on line
+		var point = edge.vertices[0] + ((edge.vertices[1]-edge.vertices[0]) * percent);
+		Debug.Log("point along edge: " + point);
+
+		// add random point within specified drift
+		Vector2 drift = Random.insideUnitCircle;
+		drift *= maxDrift;
+		point += new Vector3(drift.x, 0, drift.y);
+
+		Debug.Log("terrain spawn location: " + point);
+
+		return point;
+	}
+
+	//Vector3 SpawnTerrainDeformer(GameObject terrainShape, Edge) {
+	//}
 
 }
