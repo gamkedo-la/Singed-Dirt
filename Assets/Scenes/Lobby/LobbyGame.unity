@@ -945,10 +945,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hudController: {fileID: 1894649620}
-  gameOverController: {fileID: 0}
+  gameOverController: {fileID: 1141001981}
   expectedPlayers: 2
   activeTanks: 
-  helpUI: {fileID: 0}
+  helpUI: {fileID: 1141001980}
 --- !u!4 &1068027976
 Transform:
   m_ObjectHideFlags: 0
@@ -1305,6 +1305,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114237598948798960, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1708618172}
     - target: {fileID: 114404288079836296, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
         type: 2}
       propertyPath: projectileModelPosition
@@ -1320,9 +1325,83 @@ Prefab:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: -9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac27fffd133b6af4f9dafaed1bc7b5c4, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1141001979 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114237598948798960, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1141001978}
+  m_Script: {fileID: 575553740, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!1 &1141001980 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1613250152303208, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1141001978}
+--- !u!114 &1141001981 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114806456998486390, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1141001978}
+  m_Script: {fileID: 11500000, guid: 93b201fa356c04a90bd132d310b6d97f, type: 3}
+--- !u!114 &1141001982 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114344904969942622, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1141001978}
+  m_Script: {fileID: -2061169968, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!114 &1141001983 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114381534192699642, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1141001978}
+  m_Script: {fileID: 11500000, guid: 9a8ef50db2c2a40efbd03f339ab8f084, type: 3}
 --- !u!1 &1379103382
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,9 +1611,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chatItemPrefab: {fileID: 1601581581906822, guid: 5758d83e9a46441188e471a75d1ee87a,
     type: 2}
-  uxChatList: {fileID: 0}
-  uxScrollbar: {fileID: 0}
-  uxChatInput: {fileID: 0}
+  uxChatList: {fileID: 1141001983}
+  uxScrollbar: {fileID: 1141001982}
+  uxChatInput: {fileID: 1141001979}
 --- !u!114 &1708618173
 MonoBehaviour:
   m_ObjectHideFlags: 0
