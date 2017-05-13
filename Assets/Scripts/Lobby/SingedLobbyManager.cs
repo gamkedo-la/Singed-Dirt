@@ -39,6 +39,8 @@ public class SingedLobbyManager : NetworkLobbyManager {
     // coopting the lobby manager for sound too!
     private AudioSource soundEffectPlayer;
     private AudioSource musicPlayer;
+    private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
+    private AudioClip menuSound;
 
     void Awake() {
         s_singleton = this;
@@ -59,11 +61,15 @@ public class SingedLobbyManager : NetworkLobbyManager {
         ChangeTo(gameSelectPanel.gameObject, null);
         soundEffectPlayer = GameObject.Find("SoundEffectsPlayer").GetComponent<AudioSource>();
         musicPlayer = GameObject.Find("MusicPlayer").GetComponent<AudioSource>();
+        GetAudioClipFile(MenuSoundKind.menuSelect);
     }
 
     public void PlayMusic(AudioClip clip) {
         musicPlayer.clip = clip;
         musicPlayer.Play();
+    }
+    void GetAudioClipFile(MenuSoundKind sound) {
+        menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
     }
 
     public void PlayAudioClip(AudioClip clip, float atVol = 1.0f, bool pitchModulation = false) {
@@ -124,6 +130,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public void AddLocalPlayer() {
         // attempt to set new local player
         // Debug.Log("AddLocalPlayer");
+        PlayAudioClip(menuSound);
         TryToAddPlayer();
     }
 

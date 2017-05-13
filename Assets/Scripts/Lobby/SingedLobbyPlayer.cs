@@ -17,6 +17,9 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public Button removeButton;
     public GameObject remoteIcon;
     public GameObject localIcon;
+    private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
+    private AudioClip menuSound;
+    SingedLobbyManager lobbyManager;
 
     [Header("Player Variables")]
     [SyncVar]
@@ -67,6 +70,10 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         }
     }
 
+    void GetAudioClipFile(MenuSoundKind sound) {
+        menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+    }
+
     //public TankBaseKind tankBaseKind = TankBaseKind.standard;
     //public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
     //public TankTurretKind turretKind = TankTurretKind.standard;
@@ -95,6 +102,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
 
     void Awake() {
         // Debug.Log("SingedLobbyPlayer Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
+        GetAudioClipFile(MenuSoundKind.menuSelect);
+        lobbyManager = SingedLobbyManager.s_singleton;
     }
 
     // ------------------------------------------------------
@@ -157,6 +166,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickReady(bool value) {
+        lobbyManager.PlayAudioClip(menuSound);
         // send ready or not ready message to lobby manager
         if (readyToggle.isOn) {
             SendReadyToBeginMessage();
@@ -166,6 +176,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickSetup() {
+        lobbyManager.PlayAudioClip(menuSound);
         var manager = SingedLobbyManager.s_singleton;
         if (manager != null) {
             // change to playerSetupPanel

@@ -22,6 +22,7 @@ public class LobbyGameSelect : MonoBehaviour {
         //lobbyManager = SingedLobbyManager.s_singleton;
         GetMusicClipFile(musicKind);
         SingedLobbyManager.s_singleton.PlayMusic(music);
+        GetAudioClipFile(MenuSoundKind.menuSelect);
     }
 
     public string host {
@@ -59,7 +60,6 @@ public class LobbyGameSelect : MonoBehaviour {
         //lobbyManager.ChangeTo(lobbyManager.lobbyPanel.gameObject);
 
         var lobbyManager = SingedLobbyManager.s_singleton;
-        GetAudioClipFile(MenuSoundKind.menuSelect);
         lobbyManager.PlayAudioClip(menuSound);
 
         // set hosting address/port
@@ -76,7 +76,6 @@ public class LobbyGameSelect : MonoBehaviour {
         // Debug.Log("OnClickJoin");
 
         var lobbyManager = SingedLobbyManager.s_singleton;
-        GetAudioClipFile(MenuSoundKind.menuSelect);
         lobbyManager.PlayAudioClip(menuSound);
 
         // set connect address/port
@@ -96,7 +95,7 @@ public class LobbyGameSelect : MonoBehaviour {
     public void OnClickCreateMatchmakingGame() {
         var lobbyManager = SingedLobbyManager.s_singleton;
 
-        GetAudioClipFile(MenuSoundKind.menuSelect);
+        
         lobbyManager.PlayAudioClip(menuSound);
 
         lobbyManager.StartMatchMaker();
