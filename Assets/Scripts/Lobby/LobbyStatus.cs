@@ -15,12 +15,12 @@ public class LobbyStatus : MonoBehaviour {
     public bool isInGame = false;
     bool isDisplayed = true;
 
-    private AudioClip menuSound;
+    private AudioClip menuBackSound;
 
     void Awake() {
         isInGame = false;
         // Debug.Log("LobbyStatus isInGame: " + isInGame);
-        menuSound = (AudioClip)Resources.Load("MenuSound/" + MenuSoundKind.menuBack);
+        menuBackSound = (AudioClip)Resources.Load("MenuSound/" + MenuSoundKind.menuBack);
     }
 
     void Update() {
@@ -35,7 +35,7 @@ public class LobbyStatus : MonoBehaviour {
     }
 
     void PlaySound(){
-        SingedLobbyManager.s_singleton.PlayAudioClip(menuSound);
+        SingedLobbyManager.s_singleton.PlayAudioClip(menuBackSound);
     }
 
     /// <summary>

@@ -40,7 +40,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     private AudioSource soundEffectPlayer;
     private AudioSource musicPlayer;
     private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
-    private AudioClip menuSound;
+    private AudioClip menuOKSound;
 
     void Awake() {
         s_singleton = this;
@@ -130,7 +130,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public void AddLocalPlayer() {
         // attempt to set new local player
         // Debug.Log("AddLocalPlayer");
-        PlayAudioClip(menuSound);
+        PlayAudioClip(menuOKSound);
         TryToAddPlayer();
     }
 

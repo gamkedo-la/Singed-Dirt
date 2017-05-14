@@ -13,7 +13,7 @@ public class LobbyGameSelect : MonoBehaviour {
     public InputField portInput;
     public InputField matchNameInput;
 
-    private AudioClip menuSound;
+    private AudioClip menuOKSound;
     private AudioClip music;
     private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
     private MusicKind musicKind = MusicKind.mainMenuMusic;
@@ -46,7 +46,7 @@ public class LobbyGameSelect : MonoBehaviour {
     }
 
     void GetAudioClipFile(MenuSoundKind sound) {
-        menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+        menuOKSound = (AudioClip)Resources.Load("MenuSound/" + sound);
     }
 
     void GetMusicClipFile(MusicKind sound) {
@@ -60,7 +60,7 @@ public class LobbyGameSelect : MonoBehaviour {
         //lobbyManager.ChangeTo(lobbyManager.lobbyPanel.gameObject);
 
         var lobbyManager = SingedLobbyManager.s_singleton;
-        lobbyManager.PlayAudioClip(menuSound);
+        lobbyManager.PlayAudioClip(menuOKSound);
 
         // set hosting address/port
         lobbyManager.networkPort = port;
@@ -76,7 +76,7 @@ public class LobbyGameSelect : MonoBehaviour {
         // Debug.Log("OnClickJoin");
 
         var lobbyManager = SingedLobbyManager.s_singleton;
-        lobbyManager.PlayAudioClip(menuSound);
+        lobbyManager.PlayAudioClip(menuOKSound);
 
         // set connect address/port
         lobbyManager.networkAddress = host;
@@ -96,7 +96,7 @@ public class LobbyGameSelect : MonoBehaviour {
         var lobbyManager = SingedLobbyManager.s_singleton;
 
         
-        lobbyManager.PlayAudioClip(menuSound);
+        lobbyManager.PlayAudioClip(menuOKSound);
 
         lobbyManager.StartMatchMaker();
         Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
@@ -119,7 +119,7 @@ public class LobbyGameSelect : MonoBehaviour {
     public void OnClickOpenServerList() {
         var lobbyManager = SingedLobbyManager.s_singleton;
         GetAudioClipFile(MenuSoundKind.menuSelect);
-        lobbyManager.PlayAudioClip(menuSound);
+        lobbyManager.PlayAudioClip(menuOKSound);
         lobbyManager.StartMatchMaker();
         // FIXME: validate this is the right callback
         lobbyManager.ChangeTo(lobbyManager.matchmakerServerPanel.gameObject,

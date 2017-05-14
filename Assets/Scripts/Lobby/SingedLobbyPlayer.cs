@@ -18,7 +18,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     public GameObject remoteIcon;
     public GameObject localIcon;
     private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
-    private AudioClip menuSound;
+    private AudioClip menuOKSound;
+    private AudioClip menuBadSound;
     SingedLobbyManager lobbyManager;
 
     [Header("Player Variables")]
@@ -70,8 +71,12 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         }
     }
 
-    void GetAudioClipFile(MenuSoundKind sound) {
-        menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+    void GetAudioClipFile(MenuSoundKind sound, bool isBad) {
+        if (isBad){
+            menuBadSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+        } else {
+            menuOKSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+        }
     }
 
     //public TankBaseKind tankBaseKind = TankBaseKind.standard;
@@ -102,7 +107,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
 
     void Awake() {
         // Debug.Log("SingedLobbyPlayer Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
-        GetAudioClipFile(MenuSoundKind.menuSelect);
+        GetAudioClipFile(MenuSoundKind.menuSelect, false);
+        GetAudioClipFile(MenuSoundKind.menuBack, true);
         lobbyManager = SingedLobbyManager.s_singleton;
     }
 
@@ -166,7 +172,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickReady(bool value) {
-        lobbyManager.PlayAudioClip(menuSound);
+        lobbyManager.PlayAudioClip(menuOKSound);
         // send ready or not ready message to lobby manager
         if (readyToggle.isOn) {
             SendReadyToBeginMessage();
@@ -176,7 +182,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickSetup() {
-        lobbyManager.PlayAudioClip(menuSound);
+        lobbyManager.PlayAudioClip(menuOKSound);
         var manager = SingedLobbyManager.s_singleton;
         if (manager != null) {
             // change to playerSetupPanel
@@ -241,7 +247,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// </summary>
     public void CheckRemoveButton() {
         if (!isLocalPlayer) return;
-
+        
         int localPlayerCount = 0;
         foreach (var player in ClientScene.localPlayers) {
             localPlayerCount += (player == null || player.playerControllerId == -1) ? 0 : 1;
@@ -260,6 +266,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickRemovePlayer() {
+        lobbyManager.PlayAudioClip(menuBadSound);
         if (isLocalPlayer) {
             RemovePlayer();
         } else if (isServer) {
