@@ -17,9 +17,9 @@ public class ProjectileInventory : NetworkBehaviour {
         /*ammoCounts[(int) ProjectileKind.acorn] = int.MaxValue;
         ammoCounts[(int) ProjectileKind.artilleryShell] = int.MaxValue;
         ammoCounts[(int) ProjectileKind.beetMissile] = int.MaxValue;
-        ammoCounts[(int) ProjectileKind.mushboom] = int.MaxValue;
+        ammoCounts[(int) ProjectileKind.mushboom] = int.MaxValue;*/
         ammoCounts[(int) ProjectileKind.pillarShot] = int.MaxValue;
-        ammoCounts[(int) ProjectileKind.sharkToothCluster] = int.MaxValue;*/
+        //ammoCounts[(int) ProjectileKind.sharkToothCluster] = int.MaxValue;*/
     }
 
     public void Modify(ProjectileKind kind, int amount) {

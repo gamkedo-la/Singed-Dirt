@@ -86,8 +86,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_delayLodUpdate: 1
   m_instantScar: 1
-  m_radiusWorldUnits: 3
-  m_heightWorldUnits: 7
+  m_radiusWorldUnits: 7
+  m_heightWorldUnits: 12
   m_profile:
     serializedVersion: 2
     m_Curve:
@@ -133,7 +133,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  m_scarTextureIndex: 4
+  m_scarTextureIndex: 5
   m_scarBlend:
     serializedVersion: 2
     m_Curve:
