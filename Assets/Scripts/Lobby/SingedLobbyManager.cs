@@ -69,7 +69,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
         musicPlayer.Play();
     }
     void GetAudioClipFile(MenuSoundKind sound) {
-        menuSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+        menuOKSound = (AudioClip)Resources.Load("MenuSound/" + sound);
     }
 
     public void PlayAudioClip(AudioClip clip, float atVol = 1.0f, bool pitchModulation = false) {
