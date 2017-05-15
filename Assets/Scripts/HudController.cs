@@ -57,10 +57,8 @@ public class HudController: MonoBehaviour {
 
 	public GameObject getProjectileModel(ProjectileKind shotToShow) {
 		GameObject prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(shotToShow);
-		GameObject liveProjectile = (GameObject)GameObject.Instantiate(prefab, projectileModelPosition.position, projectileModelPosition.rotation);
-		GameObject shotModel = liveProjectile.transform.Find("Model").gameObject;
-
-		Destroy(liveProjectile);
+		GameObject shotModelPrefab = prefab.transform.Find("Model").gameObject;
+		GameObject shotModel = (GameObject)GameObject.Instantiate(shotModelPrefab, projectileModelPosition.position, projectileModelPosition.rotation);
 
 		shotModel.transform.parent = projectileModelPosition;
 		SetLayer(shotModel.transform, projectileModelPosition.gameObject.layer);
