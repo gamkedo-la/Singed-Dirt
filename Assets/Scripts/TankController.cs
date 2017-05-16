@@ -65,6 +65,9 @@ public class TankController : NetworkBehaviour {
 
 	private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
 	private AudioClip tankSound;
+	private AudioClip turretHorizontalMovementSound;
+	private AudioClip turretVerticalMovementSound;
+	private AudioSource tankMovementAudioSource;
 
 	[SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
@@ -89,6 +92,10 @@ public class TankController : NetworkBehaviour {
 		// create underlying model
 		CreateModel();
 		tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
+		turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
+		turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
+		tankMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
+		tankMovementAudioSource.loop = true;
 	}
 
 	public void ServerActivate() {
@@ -469,6 +476,25 @@ public class TankController : NetworkBehaviour {
 				model.tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedVertical;
 				model.turretElevation += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
 				model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
+			}
+			if(Input.GetAxis ("Horizontal") != 0){
+				if(tankMovementAudioSource.clip != turretHorizontalMovementSound){
+					tankMovementAudioSource.clip = turretHorizontalMovementSound;
+				}
+				if(tankMovementAudioSource.isPlaying == false){
+					tankMovementAudioSource.Play();
+				}
+			} else if(Input.GetAxis ("Vertical") != 0){
+				if(tankMovementAudioSource.clip != turretVerticalMovementSound){
+					tankMovementAudioSource.clip = turretVerticalMovementSound;
+				}
+				if(tankMovementAudioSource.isPlaying == false){
+					tankMovementAudioSource.Play();
+				}
+			}
+
+			if(Input.GetAxis ("Horizontal") == 0 && Input.GetAxis ("Vertical") == 0){
+				tankMovementAudioSource.Stop();
 			}
 
 			// continue on next frame
