@@ -42,7 +42,9 @@ public enum TankSoundKind {
 }
 
 public enum ProjectileSoundKind {
-    groundHit = 0
+    groundHit = 0,
+	projectile_explo,
+	tank_hit
 }
 
 public enum OneLinersKind {

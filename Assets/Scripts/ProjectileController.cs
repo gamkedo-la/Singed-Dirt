@@ -20,7 +20,8 @@ public class ProjectileController : NetworkBehaviour {
     public float bomletForceKick = 50.0f;
     public int numberOfBomblets = 8;
 	public TankController shooter;
-
+	private AudioClip projExplo;
+	private AudioClip tankHit;
 	private Vector3 startPos;
 
     // Use this for initialization
@@ -41,6 +42,11 @@ public class ProjectileController : NetworkBehaviour {
 			hasCollided = true;
 			ServerExplode(collision);
 		}
+	}
+
+	void GetAudioClipFile(ProjectileSoundKind sound) {
+		projExplo = (AudioClip)Resources.Load("ProjectileSound/" + sound);
+		tankHit = (AudioClip)Resources.Load("ProjectileSound/" + sound);
 	}
 
     // ------------------------------------------------------
@@ -88,6 +94,8 @@ public class ProjectileController : NetworkBehaviour {
 					int damagePoints = (int) (1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
 					if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
 						health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
+						GetAudioClipFile (ProjectileSoundKind.tank_hit);
+						SingedLobbyManager.s_singleton.PlayAudioClip(tankHit);
 						//Debug.Log ("Damage done to " + rootObject.name + ": " + damagePoints + ". Remaining: " + health.health);
 
 						// Do shock displacement
@@ -109,6 +117,8 @@ public class ProjectileController : NetworkBehaviour {
 		var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
 		if (terrainManager != null) {
 			var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
+			GetAudioClipFile (ProjectileSoundKind.projectile_explo);
+			SingedLobbyManager.s_singleton.PlayAudioClip(projExplo);
 			//Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
 			GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 			NetworkServer.Spawn(deformation);
