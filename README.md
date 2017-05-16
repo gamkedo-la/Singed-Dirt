@@ -27,7 +27,7 @@ In addition to the default components you will need to add the following to your
 * A Network Transform component (which will also add a Network Identity component which is needed, adding this one first will save a step since identity is required for transform but not the other way around).
 * A rigidbody is needed.
 * The Projectile Controller script.  This will allow you to select Explosion Kind and Deformation Kind.  If this is not going to be a cluster style projectile don't worry about the cluster or bomblet stuff, it's ok to leave those blank or default.
-* If your projectile has a distinct front then you will need to add the Look Where Your Going script and add the appropriate prefab and rigidbody to it.  Adjust lerp speed as needed for projectile.
+* If your projectile has a distinct front then you will need to add the LookWhereYoureGoing script and add the appropriate prefab and rigidbody to it.  Adjust lerp speed as needed for projectile.
 
 # Explosion Prefabs
 
