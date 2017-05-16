@@ -27,7 +27,9 @@ public enum ProjectileKind {
 public enum MenuSoundKind {
     menuSelect = 0,
     menuBack,
-    playerConnect
+    playerConnect,
+	ui_tank_option,
+	ui_tank_rotate
 }
 
 public enum MusicKind {

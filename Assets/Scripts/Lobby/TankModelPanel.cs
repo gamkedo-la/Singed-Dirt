@@ -14,6 +14,9 @@ public class TankModelPanel : MonoBehaviour {
 	public float rotationSpeed = 10.0f;
 	public float elevationSpeed = 30.0f;
 
+	private AudioClip tankOption;
+	private AudioClip tankRotate;
+
     public void Awake() {
         Debug.Log("TankModelPanel Awake");
         GameObject modelGo = GameObject.Find("ModelPosition");
@@ -24,6 +27,11 @@ public class TankModelPanel : MonoBehaviour {
         }
 
     }
+
+	void GetAudioClipFile(MenuSoundKind sound) {
+		tankOption = (AudioClip)Resources.Load("MenuSound/" + sound);
+		tankRotate = (AudioClip)Resources.Load("MenuSound/" + sound);
+	}
 
     void Update() {
         tankModel.tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeed;
@@ -53,12 +61,16 @@ public class TankModelPanel : MonoBehaviour {
         if (intSelection >= Enum.GetValues(typeof(TankHatKind)).Length) intSelection = 0;
         tankModel.hatKind = (TankHatKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
     public void OnClickPrevHat() {
         var intSelection = (int) tankModel.hatKind - 1;
         if (intSelection <= 0) intSelection = Enum.GetValues(typeof(TankHatKind)).Length - 1;
         tankModel.hatKind = (TankHatKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
 
     public void OnClickNextTurret() {
@@ -66,12 +78,16 @@ public class TankModelPanel : MonoBehaviour {
         if (intSelection >= Enum.GetValues(typeof(TankTurretKind)).Length) intSelection = 0;
         tankModel.turretKind = (TankTurretKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
     public void OnClickPrevTurret() {
         var intSelection = (int) tankModel.turretKind - 1;
         if (intSelection <= 0) intSelection = Enum.GetValues(typeof(TankTurretKind)).Length - 1;
         tankModel.turretKind = (TankTurretKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
 
     public void OnClickNextTurretBase() {
@@ -79,12 +95,16 @@ public class TankModelPanel : MonoBehaviour {
         if (intSelection >= Enum.GetValues(typeof(TankTurretBaseKind)).Length) intSelection = 0;
         tankModel.turretBaseKind = (TankTurretBaseKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
     public void OnClickPrevTurretBase() {
         var intSelection = (int) tankModel.turretBaseKind - 1;
         if (intSelection <= 0) intSelection = Enum.GetValues(typeof(TankTurretBaseKind)).Length - 1;
         tankModel.turretBaseKind = (TankTurretBaseKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
 
     public void OnClickNextBase() {
@@ -92,19 +112,27 @@ public class TankModelPanel : MonoBehaviour {
         if (intSelection >= Enum.GetValues(typeof(TankBaseKind)).Length) intSelection = 0;
         tankModel.tankBaseKind = (TankBaseKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
     public void OnClickPrevBase() {
         var intSelection = (int) tankModel.tankBaseKind - 1;
         if (intSelection <= 0) intSelection = Enum.GetValues(typeof(TankBaseKind)).Length - 1;
         tankModel.tankBaseKind = (TankBaseKind) intSelection;
         tankModel.UpdateAvatar();
+		GetAudioClipFile (MenuSoundKind.ui_tank_option);
+		SingedLobbyManager.s_singleton.PlayAudioClip (tankOption);
     }
 
     public void OnClickRotateRight() {
         tankModel.tankRotation -= rotationSpeed;
+		GetAudioClipFile (MenuSoundKind.ui_tank_rotate);
+		SingedLobbyManager.s_singleton.PlayAudioClip(tankRotate);
     }
     public void OnClickRotateLeft() {
         tankModel.tankRotation += rotationSpeed;
+		GetAudioClipFile (MenuSoundKind.ui_tank_rotate);
+		SingedLobbyManager.s_singleton.PlayAudioClip(tankRotate);
     }
 
     public void OnClickCancel() {
