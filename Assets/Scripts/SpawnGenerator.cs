@@ -145,12 +145,15 @@ public class RandomSpawnGenerator : ISpawnGenerator{
 /// X/Z values for terrain.
 /// </summary>
 public class VoronoiSpawnGenerator : ISpawnGenerator{
+    Vector3[] playerSpawns;
+    float minSpacing;
     float maxDrift;
     float maxX;
     float maxZ;
     Voronoi voronoi;
 
-    public VoronoiSpawnGenerator(Vector3[] playerSpawns, float maxDrift, float maxX, float maxZ) {
+    public VoronoiSpawnGenerator(Vector3[] playerSpawns, float minSpacing, float maxDrift, float maxX, float maxZ) {
+        this.playerSpawns = playerSpawns;
         this.maxDrift = maxDrift;
         this.maxX = maxX;
         this.maxZ = maxZ;
@@ -201,8 +204,15 @@ public class VoronoiSpawnGenerator : ISpawnGenerator{
         		drift *= maxDrift;
         		candidatePoint = new Vector3(v2point.x + drift.x, 0, v2point.y + drift.y);
 
-                var candidateOk = (candidatePoint - center).magnitude <= maxFromCenter;
-                if (candidateOk) break;
+                var candidateOK = (candidatePoint - center).magnitude <= maxFromCenter;
+                // point is invalid if within minSpacing of player spawn point
+                for (var j=0; j<playerSpawns.Length && candidateOK; j++) {
+                    if ((playerSpawns[j] - candidatePoint).magnitude < minSpacing) {
+                        Debug.Log("terrain spawn too close to player");
+                        candidateOK = false;
+                    }
+                }
+                if (candidateOK) break;
             }
             spawnPoints[i] = candidatePoint;
         }

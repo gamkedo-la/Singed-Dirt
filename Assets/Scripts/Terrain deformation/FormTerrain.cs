@@ -118,7 +118,7 @@ public class FormTerrain : NetworkBehaviour {
 	        }
 			shortGenerator = new VoronoiSpawnGenerator(
 				TurnManager.singleton.spawnPoints.ToArray(),
-				10f, maxX, maxZ);
+				15f, 10f, maxX, maxZ);
 			tallGenerator = shortGenerator;
 			var voronoiBisectorGenerator = new VoronoiBisectorSpawnGenerator(
 				TurnManager.singleton.spawnPoints.ToArray(),
