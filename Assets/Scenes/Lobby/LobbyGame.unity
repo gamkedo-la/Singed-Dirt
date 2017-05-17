@@ -1092,8 +1092,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hudController: {fileID: 1894649620}
   gameOverController: {fileID: 1141001981}
+  useRandomSpawn: 1
   expectedPlayers: 2
   activeTanks: 
+  spawnPoints: []
   helpUI: {fileID: 1141001980}
 --- !u!4 &1068027976
 Transform:
@@ -1122,11 +1124,12 @@ MonoBehaviour:
   tdManager: {fileID: 1939730863}
   shortTerrainShapes:
   - {fileID: 1846039799269750, guid: a597aa3193b8c4d17abd8dd39645edfa, type: 2}
-  midTerrainShapes: []
+  midTerrainShapes:
+  - {fileID: 1846039799269750, guid: c3a43a22aebb54d8491f7ab270d2050f, type: 2}
   tallTerrainShapes:
   - {fileID: 1846039799269750, guid: e3d0164bd28144ef19dc3bab8a8b0914, type: 2}
   - {fileID: 1846039799269750, guid: 355cfeac452f141aab0c172cf1bcff30, type: 2}
-  shortTerrainSpawnCount: 20
+  shortTerrainSpawnCount: 40
   midTerrainSpawnCount: 0
   tallTerrainSpawnCount: 6
   shortSpawnBox:
@@ -1135,6 +1138,7 @@ MonoBehaviour:
   tallSpawnBox:
   - {fileID: 1543892334}
   - {fileID: 2124487735}
+  useVoronoi: 1
   rollingTerrain: 1
   noiseFrequency: 0.001
   noiseAmplitude: 0.1

@@ -119,8 +119,14 @@ public class FormTerrain : NetworkBehaviour {
 			shortGenerator = new VoronoiSpawnGenerator(
 				TurnManager.singleton.spawnPoints.ToArray(),
 				10f, maxX, maxZ);
-			midGenerator = shortGenerator;
 			tallGenerator = shortGenerator;
+			var voronoiBisectorGenerator = new VoronoiBisectorSpawnGenerator(
+				TurnManager.singleton.spawnPoints.ToArray(),
+				maxX, maxZ);
+			midGenerator = voronoiBisectorGenerator;
+			// override midTerrainSpawnCount to equal # of voronoi edges
+			midTerrainSpawnCount = voronoiBisectorGenerator.voronoi.edgeList.Count;
+			Debug.Log("mid count: " + midTerrainSpawnCount);
 		} else {
 			shortGenerator = new SpawnBoxSpawnGenerator(shortSpawnBox);
 			midGenerator = new SpawnBoxSpawnGenerator(midSpawnBox);

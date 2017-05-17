@@ -16,6 +16,7 @@ public class TurnManager : NetworkBehaviour {
 	public HudController hudController;
 	public GameOverController gameOverController;
 
+    public float minPlayerSpacing = 30f;
     public bool useRandomSpawn = true;
 
 	// Public variables
@@ -337,7 +338,14 @@ public class TurnManager : NetworkBehaviour {
 		// create spawn points
         ISpawnGenerator spawnGenerator;
         if (useRandomSpawn) {
-    		spawnGenerator = new RandomSpawnGenerator(20, 200, 200);
+			var maxX = 200f;
+			var maxZ = 200f;
+	        var terrain = Terrain.activeTerrain;
+	        if (terrain != null) {
+	            maxX = terrain.terrainData.size.x;
+	            maxZ = terrain.terrainData.size.z;
+	        }
+    		spawnGenerator = new RandomSpawnGenerator(minPlayerSpacing, maxX, maxZ);
         } else {
     		spawnGenerator = new FixedSpawnGenerator();
         }
