@@ -1696,7 +1696,6 @@ MonoBehaviour:
   _isMatchmaking: 0
   isHosting: 0
   doAutoStart: 1
-  playerCount: 0
 --- !u!114 &492608500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6397,7 +6396,6 @@ MonoBehaviour:
   _isMatchmaking: 0
   isHosting: 0
   doAutoStart: 1
-  playerCount: 0
 --- !u!114 &1854555787
 MonoBehaviour:
   m_ObjectHideFlags: 0

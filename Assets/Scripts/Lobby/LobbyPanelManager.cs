@@ -98,13 +98,20 @@ public class LobbyPanelManager : MonoBehaviour {
         }
     }
 
-    void SetAddRowActive() {
-        var lobbyManager = SingedLobbyManager.s_singleton;
-
+    IEnumerator SetAddActiveRowRoutine() {
+        // wait until next frame to actually do anything
+        yield return null;
         // enable/disable lobby's add player button based on max number of players and max # of local players
+        var lobbyManager = SingedLobbyManager.s_singleton;
         var maxPlayersPerConnection = lobbyManager.maxPlayersPerConnection;
         var maxPlayers = lobbyManager.maxPlayers;
         addPlayerRow.SetActive(localPlayerCount < maxPlayersPerConnection && playerCount < maxPlayers);
+    }
+
+    void SetAddRowActive() {
+        if (gameObject.activeSelf) {
+            StartCoroutine(SetAddActiveRowRoutine());
+        }
     }
 
     public void AddPlayer(SingedLobbyPlayer player) {

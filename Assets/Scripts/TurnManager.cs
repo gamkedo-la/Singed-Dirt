@@ -349,8 +349,9 @@ public class TurnManager : NetworkBehaviour {
         } else {
     		spawnGenerator = new FixedSpawnGenerator();
         }
-        // add two extra spawn points to break up the map into more chunks
-		var spawnPoints = spawnGenerator.Generate(tankRegistry.Count + 2);
+        // add two extra spawn points to break up the map into more chunks (if player count is low)
+        var numToSpawn = (tankRegistry.Count <= 4) ? tankRegistry.Count + 2 : tankRegistry.Count;
+		var spawnPoints = spawnGenerator.Generate(numToSpawn);
 
         // register spawn points over network
         foreach (var spawnPoint in spawnPoints) {

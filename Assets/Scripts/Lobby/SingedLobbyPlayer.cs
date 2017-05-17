@@ -121,15 +121,15 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         Debug.Log("OnClientEnterLobby: " + this);
         base.OnClientEnterLobby();
 
-        // update lobby panel
-        LobbyPanelManager.singleton.AddPlayer(this);
-
         // setup local/other player
         if (isLocalPlayer) {
             SetupLocalPlayer();
         } else {
             SetupOtherPlayer();
         }
+
+        // update lobby panel
+        LobbyPanelManager.singleton.AddPlayer(this);
 
         //setup the player data on UI. The value are SyncVar so the player
         //will be created with the right value currently on server
