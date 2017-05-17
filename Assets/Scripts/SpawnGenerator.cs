@@ -153,6 +153,7 @@ public class VoronoiSpawnGenerator : ISpawnGenerator{
     Voronoi voronoi;
 
     public VoronoiSpawnGenerator(Vector3[] playerSpawns, float minSpacing, float maxDrift, float maxX, float maxZ) {
+        this.minSpacing = minSpacing;
         this.playerSpawns = playerSpawns;
         this.maxDrift = maxDrift;
         this.maxX = maxX;
@@ -226,14 +227,9 @@ public class VoronoiSpawnGenerator : ISpawnGenerator{
 /// spawn locations.  Used specifically to find bisectors between each nearest neighbor.
 /// </summary>
 public class VoronoiBisectorSpawnGenerator : ISpawnGenerator{
-    float maxX;
-    float maxZ;
     public Voronoi voronoi;
 
     public VoronoiBisectorSpawnGenerator(Vector3[] playerSpawns, float maxX, float maxZ) {
-        this.maxX = maxX;
-        this.maxZ = maxZ;
-
         // build site list, translating x,z to x,y
         var sites = new Vector2[playerSpawns.Length];
         for (var i=0; i<playerSpawns.Length; i++) {

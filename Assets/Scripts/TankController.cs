@@ -99,7 +99,7 @@ public class TankController : NetworkBehaviour {
 		tankHorizontalMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
 		tankHorizontalMovementAudioSource.loop = true;
 		tankHorizontalMovementAudioSource.clip = turretHorizontalMovementSound;
-		
+
 		secondaryAudioSource = new GameObject("secondaryAudioSource");
 		secondaryAudioSource.transform.SetParent(transform);
 		tankVerticalMovementAudioSource = secondaryAudioSource.AddComponent<AudioSource>() as AudioSource;
@@ -212,7 +212,7 @@ public class TankController : NetworkBehaviour {
 		} else {
 			shotPower += tweakAmt;
 		}
-		
+
 		if(shotPower > maxShotPower) {
 			shotPower = maxShotPower;
 		}
@@ -402,6 +402,12 @@ public class TankController : NetworkBehaviour {
 	/// NOTE: ensure that all yield calls are using next of frame (yield return null) to ensure proper input handling
 	/// </summary>
 	IEnumerator AimStateEngine() {
+		// check to see if we still have availability for selected shot
+		if (shotInventory.GetAvailable(selectedShot) <= 0) {
+			selectedShot = shotInventory.NextAvailableShot(selectedShot);
+			Debug.Log ("now using shot: " + selectedShot);
+		}
+
 		// Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
 		// continue while we have control
 		while (hasControl) {
@@ -454,7 +460,7 @@ public class TankController : NetworkBehaviour {
 			if(shotPower > maxShotPower) {
 				shotPower = maxShotPower;
 			}
-			
+
 			// Shoot already ... when shot is fired, finish this coroutine;
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				//Debug.Log("space is down, calling CmdFire");
@@ -492,7 +498,7 @@ public class TankController : NetworkBehaviour {
 				if(tankHorizontalMovementAudioSource.isPlaying == false){
 					tankHorizontalMovementAudioSource.Play();
 				}
-			} 
+			}
 			if(Input.GetAxis ("Vertical") != 0){
 				if(tankVerticalMovementAudioSource.isPlaying == false){
 					tankVerticalMovementAudioSource.Play();
