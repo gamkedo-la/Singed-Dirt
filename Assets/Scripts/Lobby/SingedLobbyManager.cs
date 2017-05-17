@@ -104,6 +104,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
         tempGO.transform.SetParent(transform);
         battleMusicPlayer = tempGO.AddComponent<AudioSource>() as AudioSource;
         battleMusicPlayer.volume = 0.2f;
+        battleMusicPlayer.loop = true;
     }
 
     public void PlayAudioClip(AudioClip clip, float atVol = 1.0f, bool pitchModulation = false) {
