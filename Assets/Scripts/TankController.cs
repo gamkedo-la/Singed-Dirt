@@ -60,8 +60,19 @@ public class TankController : NetworkBehaviour {
 	[SyncVar]
 	public string playerName = "";
 
-	public OneLinersKind oneLiner;
-	public AudioClip speech;
+    [SyncVar]
+    public int charVoice = 2;
+
+    public AnyOneLinersKind anyOneLiner;
+    public AcornOneLinersKind acornOneLiner;
+    public BeetOneLinersKind beetOneLiner;
+    public CannonOneLinersKind cannonOneLiner;
+    public MissileOneLinersKind missileOneLiner;
+    public MushboomOneLinersKind mushboomOneLiner;
+    public PillarOneLinersKind pillarOneLiner;
+    public SharktoothOneLinersKind sharktoothOneLiner;
+    public TeleportOneLinersKind teleportOneLiner;
+    public AudioClip speech;
 
 	private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
 	private AudioClip tankSound;
@@ -105,16 +116,81 @@ public class TankController : NetworkBehaviour {
 		tankVerticalMovementAudioSource = secondaryAudioSource.AddComponent<AudioSource>() as AudioSource;
 		tankVerticalMovementAudioSource.loop = true;
 		tankVerticalMovementAudioSource.clip = turretVerticalMovementSound;
-	}
+        charVoice = UnityEngine.Random.Range(0, 4);
+    }
 
-	public void ServerActivate() {
+    public void ServerActivate() {
 		RpcActivate();
 	}
 
-	void GetRandomOneLiner(){
-		oneLiner = (OneLinersKind)UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(OneLinersKind)).Length);
-		speech = (AudioClip)Resources.Load("OneLiners/" + oneLiner);
-	}
+    void GetTheShotOneLiner() {
+        int anyNumber = UnityEngine.Random.Range(0, 10),
+            numberOfLines,
+            voiceIndex,
+            lineIndex;
+
+        if (anyNumber > 5) {
+            switch (selectedShot) {
+                case (ProjectileKind)1:
+                    numberOfLines = System.Enum.GetValues(typeof(AcornOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    acornOneLiner = (AcornOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + acornOneLiner);
+                    return;
+                case (ProjectileKind)2:
+                    numberOfLines = System.Enum.GetValues(typeof(MissileOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    missileOneLiner = (MissileOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + missileOneLiner);
+                    return;
+                case (ProjectileKind)3:
+                    numberOfLines = System.Enum.GetValues(typeof(SharktoothOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    sharktoothOneLiner = (SharktoothOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + sharktoothOneLiner);
+                    return;
+                case (ProjectileKind)5:
+                    numberOfLines = System.Enum.GetValues(typeof(PillarOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    pillarOneLiner = (PillarOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + pillarOneLiner);
+                    return;
+                case (ProjectileKind)6:
+                    numberOfLines = System.Enum.GetValues(typeof(BeetOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    beetOneLiner = (BeetOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + beetOneLiner);
+                    return;
+                case (ProjectileKind)7:
+                    numberOfLines = System.Enum.GetValues(typeof(MushboomOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    mushboomOneLiner = (MushboomOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + mushboomOneLiner);
+                    return;
+                default:
+                    numberOfLines = System.Enum.GetValues(typeof(CannonOneLinersKind)).Length / 4;
+                    voiceIndex = numberOfLines * charVoice;
+                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+                    cannonOneLiner = (CannonOneLinersKind)(voiceIndex + lineIndex);
+                    speech = (AudioClip)Resources.Load("OneLiners/" + cannonOneLiner);
+                    return;
+            }
+        }
+        else {
+            numberOfLines = System.Enum.GetValues(typeof(AnyOneLinersKind)).Length / 4;
+            voiceIndex = numberOfLines * charVoice;
+            lineIndex = UnityEngine.Random.Range(0, numberOfLines);
+            anyOneLiner = (AnyOneLinersKind)(voiceIndex + lineIndex);
+            speech = (AudioClip)Resources.Load("OneLiners/" + anyOneLiner);
+            return;
+        }
+    }
 
 	public void ServerPlace(Vector3 position) {
 		RpcPlace(position);
@@ -468,7 +544,7 @@ public class TankController : NetworkBehaviour {
 				tankVerticalMovementAudioSource.Stop();
 				tankHorizontalMovementAudioSource.Stop();
 				if (shotInventory.GetAvailable(selectedShot) > 0) {
-					GetRandomOneLiner();
+					GetTheShotOneLiner();
 					SingedLobbyManager.s_singleton.PlayAudioClip(tankSound);
 					SingedLobbyManager.s_singleton.PlayClipDelayed(tankSound.length/2, speech);
 					CmdFire(shotPower, selectedShot);
@@ -486,7 +562,7 @@ public class TankController : NetworkBehaviour {
 				yield break;
 			}
 			if (Input.GetKeyDown(KeyCode.O)){
-				GetRandomOneLiner();
+				GetTheShotOneLiner();
 			}
 
 			if (model != null) {
