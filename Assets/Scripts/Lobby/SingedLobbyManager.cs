@@ -39,13 +39,16 @@ public class SingedLobbyManager : NetworkLobbyManager {
     // coopting the lobby manager for sound too!
     private AudioSource soundEffectPlayer;
     private AudioSource musicPlayer;
+    private AudioSource battleMusicPlayer;
     private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
     private AudioClip menuOKSound;
+    private AudioClip gameplayMusic;
 
     void Awake() {
         s_singleton = this;
         isHosting = false;
         doAutoStart = true;
+        CreateMusicGameObject();
     }
 
     void Start() {
@@ -62,14 +65,45 @@ public class SingedLobbyManager : NetworkLobbyManager {
         soundEffectPlayer = GameObject.Find("SoundEffectsPlayer").GetComponent<AudioSource>();
         musicPlayer = GameObject.Find("MusicPlayer").GetComponent<AudioSource>();
         GetAudioClipFile(MenuSoundKind.menuSelect);
+        gameplayMusic = (AudioClip)Resources.Load("Music/" + MusicKind.gameplayMusic);
     }
 
     public void PlayMusic(AudioClip clip) {
         musicPlayer.clip = clip;
-        musicPlayer.Play();
+        StartCoroutine(FadeIntoNewSong(battleMusicPlayer, musicPlayer));
     }
     void GetAudioClipFile(MenuSoundKind sound) {
         menuOKSound = (AudioClip)Resources.Load("MenuSound/" + sound);
+    }
+
+    public void PlayBattleMusic() {
+        StartCoroutine(FadeIntoNewSong(musicPlayer, battleMusicPlayer));
+    }
+
+    public IEnumerator FadeIntoNewSong(AudioSource fadeFromMe, AudioSource startMe){
+        
+        if(fadeFromMe.volume > 0){
+            float startVolume = fadeFromMe.volume;
+                    while (fadeFromMe.volume > 0){
+            fadeFromMe.volume -= startVolume * Time.deltaTime / 1.0f;
+
+            yield return null;
+        }
+            fadeFromMe.Stop();
+            fadeFromMe.volume = startVolume;
+            startMe.Play();
+        } else {
+            fadeFromMe.Stop();
+            startMe.Play();
+        }
+
+    }
+
+    void CreateMusicGameObject(){
+        GameObject tempGO = new GameObject("battleMusicPlayer");
+        tempGO.transform.SetParent(transform);
+        battleMusicPlayer = tempGO.AddComponent<AudioSource>() as AudioSource;
+        battleMusicPlayer.volume = 0.2f;
     }
 
     public void PlayAudioClip(AudioClip clip, float atVol = 1.0f, bool pitchModulation = false) {
@@ -248,6 +282,8 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
     public override void OnLobbyServerPlayersReady() {
         if (doAutoStart) {
+            battleMusicPlayer.clip = gameplayMusic;
+            PlayBattleMusic();            
             base.OnLobbyServerPlayersReady();
         } else {
             lobbyPanel.startGameButton.interactable = true;

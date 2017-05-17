@@ -27,11 +27,14 @@ public enum ProjectileKind {
 public enum MenuSoundKind {
     menuSelect = 0,
     menuBack,
-    playerConnect
+    playerConnect,
+	ui_tank_option,
+	ui_tank_rotate
 }
 
 public enum MusicKind {
-    mainMenuMusic = 0
+    mainMenuMusic = 0,
+    gameplayMusic
 }
 
 public enum TankSoundKind {
@@ -42,7 +45,9 @@ public enum TankSoundKind {
 }
 
 public enum ProjectileSoundKind {
-    groundHit = 0
+    groundHit = 0,
+	projectile_explo,
+	tank_hit
 }
 
 public enum OneLinersKind {

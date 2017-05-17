@@ -64,10 +64,18 @@ public class HudController: MonoBehaviour {
 		SetLayer(shotModel.transform, projectileModelPosition.gameObject.layer);
 
 		Vector3 scale = shotModel.transform.localScale;
+
+		scale.x *= prefab.transform.localScale.x;
+		scale.y *= prefab.transform.localScale.y;
+		scale.z *= prefab.transform.localScale.z;
+
 		scale.x *= projectileModelPosition.localScale.x;
 		scale.y *= projectileModelPosition.localScale.y;
 		scale.z *= projectileModelPosition.localScale.z;
+		
 		shotModel.transform.localScale = scale;
+
+		shotModel.transform.localRotation = shotModelPrefab.transform.localRotation;
 
 		return shotModel;
 	}

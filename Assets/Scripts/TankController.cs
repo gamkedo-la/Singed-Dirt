@@ -67,7 +67,9 @@ public class TankController : NetworkBehaviour {
 	private AudioClip tankSound;
 	private AudioClip turretHorizontalMovementSound;
 	private AudioClip turretVerticalMovementSound;
-	private AudioSource tankMovementAudioSource;
+	private AudioSource tankHorizontalMovementAudioSource;
+	private AudioSource tankVerticalMovementAudioSource;
+	private GameObject secondaryAudioSource;
 
 	[SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
@@ -94,8 +96,15 @@ public class TankController : NetworkBehaviour {
 		tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
 		turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
 		turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
-		tankMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
-		tankMovementAudioSource.loop = true;
+		tankHorizontalMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
+		tankHorizontalMovementAudioSource.loop = true;
+		tankHorizontalMovementAudioSource.clip = turretHorizontalMovementSound;
+		
+		secondaryAudioSource = new GameObject("secondaryAudioSource");
+		secondaryAudioSource.transform.SetParent(transform);
+		tankVerticalMovementAudioSource = secondaryAudioSource.AddComponent<AudioSource>() as AudioSource;
+		tankVerticalMovementAudioSource.loop = true;
+		tankVerticalMovementAudioSource.clip = turretVerticalMovementSound;
 	}
 
 	public void ServerActivate() {
@@ -450,6 +459,8 @@ public class TankController : NetworkBehaviour {
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				//Debug.Log("space is down, calling CmdFire");
 				// sanity check for ammo
+				tankVerticalMovementAudioSource.Stop();
+				tankHorizontalMovementAudioSource.Stop();
 				if (shotInventory.GetAvailable(selectedShot) > 0) {
 					GetRandomOneLiner();
 					SingedLobbyManager.s_singleton.PlayAudioClip(tankSound);
@@ -478,23 +489,21 @@ public class TankController : NetworkBehaviour {
 				model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
 			}
 			if(Input.GetAxis ("Horizontal") != 0){
-				if(tankMovementAudioSource.clip != turretHorizontalMovementSound){
-					tankMovementAudioSource.clip = turretHorizontalMovementSound;
+				if(tankHorizontalMovementAudioSource.isPlaying == false){
+					tankHorizontalMovementAudioSource.Play();
 				}
-				if(tankMovementAudioSource.isPlaying == false){
-					tankMovementAudioSource.Play();
-				}
-			} else if(Input.GetAxis ("Vertical") != 0){
-				if(tankMovementAudioSource.clip != turretVerticalMovementSound){
-					tankMovementAudioSource.clip = turretVerticalMovementSound;
-				}
-				if(tankMovementAudioSource.isPlaying == false){
-					tankMovementAudioSource.Play();
+			} 
+			if(Input.GetAxis ("Vertical") != 0){
+				if(tankVerticalMovementAudioSource.isPlaying == false){
+					tankVerticalMovementAudioSource.Play();
 				}
 			}
 
-			if(Input.GetAxis ("Horizontal") == 0 && Input.GetAxis ("Vertical") == 0){
-				tankMovementAudioSource.Stop();
+			if(Input.GetAxis ("Vertical") == 0){
+				tankVerticalMovementAudioSource.Stop();
+			}
+			if(Input.GetAxis ("Horizontal") == 0){
+				tankHorizontalMovementAudioSource.Stop();
 			}
 
 			// continue on next frame
