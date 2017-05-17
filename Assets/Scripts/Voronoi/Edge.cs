@@ -10,20 +10,20 @@ namespace TyVoronoi {
     public class Edge {
         public float slope;
         public float intercept;
-        public Vector3[] vertices;
+        public Vector2[] vertices;
         public bool done;
-        public Vector3 upperSite;
-        public Vector3 lowerSite;
+        public Vector2 upperSite;
+        public Vector2 lowerSite;
         int vertexCount;
 
-        public Vector3 bisector {
+        public Vector2 bisector {
             get {
                 return lowerSite + (upperSite-lowerSite)/2f;
             }
         }
 
-        public Edge(Vector3 lowerSite, Vector3 upperSite) {
-            this.vertices = new Vector3[2];
+        public Edge(Vector2 lowerSite, Vector2 upperSite) {
+            this.vertices = new Vector2[2];
             this.upperSite = upperSite;
             this.lowerSite = lowerSite;
             this.done = false;
@@ -44,16 +44,15 @@ namespace TyVoronoi {
             }
         }
 
-        public void AssignVertex(Vector3 vertex, int vertexIndex) {
+        public void AssignVertex(Vector2 vertex, int vertexIndex) {
             vertices[vertexIndex] = vertex;
             vertexCount++;
-            done = vertices[0] != default(Vector3) && vertices[1] != default(Vector3);
-            Debug.Log(String.Format("edge: {0} AssignVertex[{1}]: {2}: done: {3}",
-                this, vertexIndex, vertex, done));
+            done = vertices[0] != default(Vector2) && vertices[1] != default(Vector2);
+            //Debug.Log(String.Format("edge: {0} AssignVertex[{1}]: {2}: done: {3}",
+                //this, vertexIndex, vertex, done));
         }
 
         public override string ToString() {
-            //return String.Format("us: {0} ls: {1}", upperSite, lowerSite);
             return String.Format("E({0},{1})({2},{3})",
                 (int)lowerSite.x, (int)lowerSite.y,
                 (int)upperSite.x, (int)upperSite.y);

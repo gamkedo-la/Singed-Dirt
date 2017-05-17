@@ -16,6 +16,8 @@ public class TurnManager : NetworkBehaviour {
 	public HudController hudController;
 	public GameOverController gameOverController;
 
+    public bool useRandomSpawn = true;
+
 	// Public variables
 	public static TurnManager singleton;
 
@@ -32,6 +34,9 @@ public class TurnManager : NetworkBehaviour {
 	// Private variables
 	bool isReady = false;
 	bool gameStarted = false;
+
+    // list of spawn points
+    public List<Vector3> spawnPoints;
 
 	int nextTankId = 1;
 
@@ -58,6 +63,7 @@ public class TurnManager : NetworkBehaviour {
 		tankRegistry = new Dictionary<int, TankController>();
 		activeTanks = new List<int>();
 		camController = Camera.main.GetComponent<CameraController> ();
+        spawnPoints = new List<Vector3>();
 	}
 
 	public void ServerGameOver() {
@@ -297,6 +303,11 @@ public class TurnManager : NetworkBehaviour {
 		}
 	}
 
+	[ClientRpc]
+	void RpcAddSpawn(Vector3 spawnLocation) {
+        spawnPoints.Add(spawnLocation);
+    }
+
 	Vector3 GroundPosition(Vector3 position) {
 		var groundPosition = new Vector3(
 			position.x,
@@ -323,12 +334,23 @@ public class TurnManager : NetworkBehaviour {
 		// wait for players to join
         yield return StartCoroutine(ListenForTanks());
 
+		// create spawn points
+        ISpawnGenerator spawnGenerator;
+        if (useRandomSpawn) {
+    		spawnGenerator = new RandomSpawnGenerator(20, 200, 200);
+        } else {
+    		spawnGenerator = new FixedSpawnGenerator();
+        }
+        // add two extra spawn points to break up the map into more chunks
+		var spawnPoints = spawnGenerator.Generate(tankRegistry.Count + 2);
+
+        // register spawn points over network
+        foreach (var spawnPoint in spawnPoints) {
+            RpcAddSpawn(spawnPoint);
+        }
+
 		// build world
 		yield return StartCoroutine(BuildWorld());
-
-		// create spawn points
-		ISpawnGenerator spawnGenerator = new FixedSpawnGenerator();
-		var spawnPoints = spawnGenerator.Generate(tankRegistry.Count);
 
 		// place tanks
 		foreach (var tankId in tankRegistry.Keys) {
