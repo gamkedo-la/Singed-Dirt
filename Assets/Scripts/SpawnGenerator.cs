@@ -1,6 +1,9 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+
+using TyVoronoi;
 
 public interface ISpawnGenerator {
     Vector3[] Generate(int numSpawns);
@@ -64,6 +67,13 @@ public class FixedSpawnGenerator : ISpawnGenerator {
 /// X/Z values for terrain.
 /// </summary>
 public class RandomSpawnGenerator : ISpawnGenerator{
+    static Vector2[] quadOffsets = {
+        Vector2.zero,
+        Vector2.up,
+        Vector2.up + Vector2.right,
+        Vector2.right,
+    };
+    int[] quadOrder;
     float minSpacing;
     float maxX;
     float maxZ;
@@ -72,7 +82,98 @@ public class RandomSpawnGenerator : ISpawnGenerator{
         this.minSpacing = minSpacing;
         this.maxX = maxX;
         this.maxZ = maxZ;
+        // generate random quad order
+        var quadList = new List<int>();
+        for (var i=0; i<4; i++) {
+            quadList.Add(i);
+        }
+        quadOrder = new int[4];
+        for (var i=0; i<4; i++) {
+            quadOrder[i] = quadList[UnityEngine.Random.Range(0,quadList.Count)];
+            quadList.Remove(quadOrder[i]);
+        }
+        //Debug.Log("quadOrder: " + String.Join(",", quadOrder.Select(v=>v.ToString()).ToArray()));
     }
+    public Vector3[] Generate(int numSpawns) {
+        var center = new Vector3(maxX/2f, 0, maxZ/2);
+        var maxFromCenter = maxX/2f - 20f;
+        var spawnPoints = new Vector3[numSpawns];
+
+        var quadIndex = UnityEngine.Random.Range(0,quadOrder.Length);
+
+        for (var i=0; i<numSpawns; i++) {
+            // attempt to find a candidate point within maxFromCenter distance from center of map
+            // and not within minSpacing from another point
+            // try 20 times before giving up
+            var candidatePoint = Vector3.zero;
+            for (var attempts=0; attempts<20; attempts++) {
+                // start w/ random 2d point inside 0,0 to center
+                var candidate2D = new Vector2(
+                    UnityEngine.Random.Range(0f, center.x),
+                    UnityEngine.Random.Range(0f, center.z)
+                );
+                // offset to put point in current quadrant
+                var offset = quadOffsets[quadOrder[quadIndex]];
+                candidate2D += new Vector2(center.x*offset.x, center.z*offset.y);
+                candidatePoint = new Vector3(candidate2D.x, 0, candidate2D.y);
+                // point is invalid if greater than maxFromCenter away from center
+                var candidateOK = (center-candidatePoint).magnitude < maxFromCenter;
+                // point is invalid if within minSpacing of another spawn point
+                for (var j=0; j<i && candidateOK; j++) {
+                    if ((spawnPoints[j] - candidatePoint).magnitude < minSpacing) {
+                        candidateOK = false;
+                    }
+                }
+                if (candidateOK) break;
+            }
+            spawnPoints[i] = candidatePoint;
+            //Debug.Log("quadIndex: " + quadOrder[quadIndex] + " spawnPoint: " + candidatePoint);
+            quadIndex++;
+            if (quadIndex >= 4) quadIndex = 0;
+        }
+
+        return spawnPoints;
+    }
+}
+
+/// <summary>
+/// Class used to create terrain spawn points by finding voronoi graph edges around player
+/// spawn locations.
+/// This implementation randomizes the spawn locations but guarantees that:
+/// * each spawn is within maxDrift of a voronoi edge between players.
+/// * each player is within a computed max distance from the center of the map, based on passed
+/// X/Z values for terrain.
+/// </summary>
+public class VoronoiSpawnGenerator : ISpawnGenerator{
+    float maxDrift;
+    float maxX;
+    float maxZ;
+    Voronoi voronoi;
+
+    public VoronoiSpawnGenerator(Vector3[] playerSpawns, float maxDrift, float maxX, float maxZ) {
+        this.maxDrift = maxDrift;
+        this.maxX = maxX;
+        this.maxZ = maxZ;
+
+        // build site list, translating x,z to x,y
+        var sites = new Vector2[playerSpawns.Length];
+        for (var i=0; i<playerSpawns.Length; i++) {
+            sites[i] = new Vector2(playerSpawns[i].x, playerSpawns[i].z);
+        }
+
+		var size = new Vector3(maxX, maxZ, 0);
+		var bounds = new Bounds(size/2f, size);
+        this.voronoi = new Voronoi(bounds, sites);
+        voronoi.Compute();
+        for (var i=0; i<voronoi.edgeList.Count; i++) {
+            var edge = voronoi.edgeList[i];
+            Debug.DrawLine(
+                new Vector3(edge.vertices[0].x, 100, edge.vertices[0].y),
+                new Vector3(edge.vertices[1].x, 100, edge.vertices[1].y),
+                Color.red, 300);
+        }
+    }
+
     public Vector3[] Generate(int numSpawns) {
         var center = new Vector3(maxX/2f, 0, maxZ/2);
         var maxFromCenter = maxX/2f - 10f;
@@ -84,20 +185,92 @@ public class RandomSpawnGenerator : ISpawnGenerator{
             // try 20 times before giving up
             var candidatePoint = Vector3.zero;
             for (var attempts=0; attempts<20; attempts++) {
-                var candidate2D = UnityEngine.Random.insideUnitCircle * maxFromCenter;
-                candidatePoint = center + new Vector3(candidate2D.x, 0, candidate2D.y);
-                var candidateOK = true;
-                for (var j=0; j<i && candidateOK; j++) {
-                    if ((spawnPoints[j] - candidatePoint).magnitude < minSpacing) {
-                        candidateOK = false;
-                    }
-                }
-                if (candidateOK) break;
+        		// select edge
+        		var edge = voronoi.edgeList[UnityEngine.Random.Range(0, voronoi.edgeList.Count)];
+
+        		// select random point on edge, represented by % of length
+        		float percent = UnityEngine.Random.Range(0f,1f);
+
+        		// plot point
+        		// point on line
+        		var v2point = edge.vertices[0] + ((edge.vertices[1]-edge.vertices[0]) * percent);
+        		//Debug.Log("point along edge: " + v2point);
+
+        		// add random point within specified drift
+        		Vector2 drift = UnityEngine.Random.insideUnitCircle;
+        		drift *= maxDrift;
+        		candidatePoint = new Vector3(v2point.x + drift.x, 0, v2point.y + drift.y);
+
+                var candidateOk = (candidatePoint - center).magnitude <= maxFromCenter;
+                if (candidateOk) break;
             }
             spawnPoints[i] = candidatePoint;
         }
 
         return spawnPoints;
     }
+}
 
+/// <summary>
+/// Class used to create terrain spawn points by finding voronoi graph edges around player
+/// spawn locations.  Used specifically to find bisectors between each nearest neighbor.
+/// </summary>
+public class VoronoiBisectorSpawnGenerator : ISpawnGenerator{
+    float maxX;
+    float maxZ;
+    public Voronoi voronoi;
+
+    public VoronoiBisectorSpawnGenerator(Vector3[] playerSpawns, float maxX, float maxZ) {
+        this.maxX = maxX;
+        this.maxZ = maxZ;
+
+        // build site list, translating x,z to x,y
+        var sites = new Vector2[playerSpawns.Length];
+        for (var i=0; i<playerSpawns.Length; i++) {
+            sites[i] = new Vector2(playerSpawns[i].x, playerSpawns[i].z);
+        }
+
+		var size = new Vector3(maxX, maxZ, 0);
+		var bounds = new Bounds(size/2f, size);
+        this.voronoi = new Voronoi(bounds, sites);
+        voronoi.Compute();
+    }
+
+    public Vector3[] Generate(int numSpawns) {
+        var spawnPoints = new Vector3[numSpawns];
+        for (var i=0; i<numSpawns; i++) {
+            var edgeIndex = i % voronoi.edgeList.Count;
+            var bisector = voronoi.edgeList[edgeIndex].bisector;
+            spawnPoints[i] = new Vector3(bisector.x, 0, bisector.y);
+        }
+        return spawnPoints;
+    }
+}
+
+/// <summary>
+/// Class used to create terrain spawn points within a specified set of spawn boxes
+/// This implementation randomizes the spawn locations but guarantees that:
+/// * each spawn is within maxDrift of a voronoi edge between players.
+/// </summary>
+public class SpawnBoxSpawnGenerator: ISpawnGenerator {
+    Transform[] spawnBoxes;
+    float maxDrift;
+
+    public SpawnBoxSpawnGenerator(Transform[] spawnBoxes) {
+        this.spawnBoxes = spawnBoxes;
+    }
+
+    public Vector3[] Generate(int numSpawns) {
+        var spawnPoints = new Vector3[numSpawns];
+        for (var i=0; i<numSpawns; i++) {
+    		Vector3 randInSpawnBox;
+    		randInSpawnBox = new Vector3(
+                UnityEngine.Random.Range (-1.0f, 1.0f),
+                UnityEngine.Random.Range (-1.0f, 1.0f),
+                UnityEngine.Random.Range (-1.0f, 1.0f));
+    		randInSpawnBox = spawnBoxes[UnityEngine.Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
+    		spawnPoints[i] = randInSpawnBox;
+        }
+        return spawnPoints;
+    }
 }

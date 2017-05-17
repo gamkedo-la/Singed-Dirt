@@ -18,6 +18,7 @@ public class FormTerrain : NetworkBehaviour {
 	public Transform[] midSpawnBox;
 	public Transform[] tallSpawnBox;
 
+	public bool useVoronoi = true;
 	public bool rollingTerrain = false;
 	[Range (0.0001f,0.001f)]
 	public float noiseFrequency = 0.001f;
@@ -27,7 +28,6 @@ public class FormTerrain : NetworkBehaviour {
 	public float maxDrift = 5f;
 
 	Edge[] edgeList;
-
 	INoiseGenerator noiseGenerator;
 
 	// Use this for initialization
@@ -37,12 +37,6 @@ public class FormTerrain : NetworkBehaviour {
         generator.SetFractalOctaves(4);
 		generator.SetNoiseType(FastNoise.NoiseType.PerlinFractal);
 		noiseGenerator = generator;
-		// FIXME: remove
-		edgeList = new Edge[] {
-			new Edge(new Vector3(0,0,100), new Vector3(200,0,100))
-		};
-		edgeList[0].vertices[0] = new Vector3(100,0,25);
-		edgeList[0].vertices[1] = new Vector3(100,0,175);
 	}
 
     // ------------------------------------------------------
@@ -65,7 +59,6 @@ public class FormTerrain : NetworkBehaviour {
 		//and minimum vaule the ground varies from the surface level
 		//return perlin.FractalNoise3D(pos.x, pos.y, pos.z, 4, 80.0f, 8.0f);
 		var noise = generator.GetNoise(x, y);
-		//if (x == 0 ) Debug.Log("noise: " + noise.ToString("F4"));
 		return (1.0f + noise) * 0.3f;
 	}
 
@@ -100,17 +93,6 @@ public class FormTerrain : NetworkBehaviour {
 		// start spawns
 		StartCoroutine(SpawnTerrainTypes());
 
-		/*
-		if (shortTerrainSpawnCount > 0) {
-			StartCoroutine (SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortSpawnBox));
-		}
-		if (midTerrainSpawnCount > 0) {
-			StartCoroutine (SpawnTerrainType (midTerrainSpawnCount, midTerrainShapes, midSpawnBox));
-		}
-		if (tallTerrainSpawnCount > 0) {
-			StartCoroutine (SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallSpawnBox));
-		}
-		*/
 		Debug.Log("RpcSpawnTerrain done");
 	}
 
@@ -121,69 +103,55 @@ public class FormTerrain : NetworkBehaviour {
 	/// handle terrain deformation spawning
 	/// </summary>
 	IEnumerator SpawnTerrainTypes(){
+		// determine spawn generator(s) to use
+		ISpawnGenerator shortGenerator;
+		ISpawnGenerator midGenerator;
+		ISpawnGenerator tallGenerator;
+		if (useVoronoi) {
+			// compute voronoi graph around spawn points
+			var maxX = 200f;
+			var maxZ = 200f;
+	        var terrain = Terrain.activeTerrain;
+	        if (terrain != null) {
+	            maxX = terrain.terrainData.size.x;
+	            maxZ = terrain.terrainData.size.z;
+	        }
+			shortGenerator = new VoronoiSpawnGenerator(
+				TurnManager.singleton.spawnPoints.ToArray(),
+				10f, maxX, maxZ);
+			midGenerator = shortGenerator;
+			tallGenerator = shortGenerator;
+		} else {
+			shortGenerator = new SpawnBoxSpawnGenerator(shortSpawnBox);
+			midGenerator = new SpawnBoxSpawnGenerator(midSpawnBox);
+			tallGenerator = new SpawnBoxSpawnGenerator(tallSpawnBox);
+		}
+
 		if (shortTerrainSpawnCount > 0) {
-			//yield return SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortSpawnBox);
-			SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortSpawnBox);
+			SpawnTerrainType (shortTerrainSpawnCount, shortTerrainShapes, shortGenerator);
 		}
 		if (midTerrainSpawnCount > 0) {
-			//yield return SpawnTerrainType (midTerrainSpawnCount, midTerrainShapes, midSpawnBox);
-			SpawnTerrainType (midTerrainSpawnCount, midTerrainShapes, midSpawnBox);
+			SpawnTerrainType (midTerrainSpawnCount, midTerrainShapes, midGenerator);
 		}
 		if (tallTerrainSpawnCount > 0) {
-			//yield return SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallSpawnBox);
-			SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallSpawnBox);
+			SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallGenerator);
 		}
 		yield return null;
 		Debug.Log("SpawnTerrainTypes done");
 	}
 
 	//IEnumerator SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){
-	void SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){
+	void SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, ISpawnGenerator spawnGenerator){
+		// generate spawn points
+		var spawnPoints = spawnGenerator.Generate(terrainCount);
+
 		for (int i = 0; i < terrainCount; i++) {
 			GameObject tempGO = GameObject.Instantiate (terrainShapes [Random.Range(0, terrainShapes.Length)]);
-			//Vector3 randInSpawnBox;
-			//randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
-			//randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
-			// pick spawn location
-			var spawnLocation = GetSpawnLocation(spawnBoxes);
-			//var spawnLocation = GetSpawnLocation(edgeList);
+			var spawnLocation = spawnPoints[i];
 			// pick seed for each deformation
 			var seed = Random.Range(1, 1<<24);
 			tdManager.ApplyDeform (tempGO.GetComponent<TerrainDeformer>(), spawnLocation, seed);
-			//yield return null;
 		}
 	}
-
-	Vector3 GetSpawnLocation(Transform[] spawnBoxes) {
-		Vector3 randInSpawnBox;
-		randInSpawnBox = new Vector3 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
-		randInSpawnBox = spawnBoxes[Random.Range(0, spawnBoxes.Length)].TransformPoint (randInSpawnBox * 0.5f);
-		return randInSpawnBox;
-	}
-
-	Vector3 GetSpawnLocation(Edge[] edges) {
-		// select edge
-		var edge = edges[Random.Range(0, edges.Length)];
-
-		// select random point on edge, represented by % of length
-		float percent = Random.Range(0f,1f);
-
-		// plot point
-		// point on line
-		var point = edge.vertices[0] + ((edge.vertices[1]-edge.vertices[0]) * percent);
-		Debug.Log("point along edge: " + point);
-
-		// add random point within specified drift
-		Vector2 drift = Random.insideUnitCircle;
-		drift *= maxDrift;
-		point += new Vector3(drift.x, 0, drift.y);
-
-		Debug.Log("terrain spawn location: " + point);
-
-		return point;
-	}
-
-	//Vector3 SpawnTerrainDeformer(GameObject terrainShape, Edge) {
-	//}
 
 }
