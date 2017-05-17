@@ -84,6 +84,7 @@ public class LobbyPanelManager : MonoBehaviour {
 
     public void OnClickStartGame() {
         var lobbyManager = SingedLobbyManager.s_singleton;
+        
         lobbyManager.StartGame();
     }
 

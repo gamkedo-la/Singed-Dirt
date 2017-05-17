@@ -33,7 +33,8 @@ public enum MenuSoundKind {
 }
 
 public enum MusicKind {
-    mainMenuMusic = 0
+    mainMenuMusic = 0,
+    gameplayMusic
 }
 
 public enum TankSoundKind {

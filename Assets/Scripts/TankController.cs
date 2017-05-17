@@ -459,6 +459,8 @@ public class TankController : NetworkBehaviour {
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				//Debug.Log("space is down, calling CmdFire");
 				// sanity check for ammo
+				tankVerticalMovementAudioSource.Stop();
+				tankHorizontalMovementAudioSource.Stop();
 				if (shotInventory.GetAvailable(selectedShot) > 0) {
 					GetRandomOneLiner();
 					SingedLobbyManager.s_singleton.PlayAudioClip(tankSound);
