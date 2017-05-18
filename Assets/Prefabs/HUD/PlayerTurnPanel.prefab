@@ -153,7 +153,7 @@ MonoBehaviour:
   maxEntries: 25
   purge: 1
   uxListContentTransform: {fileID: 224193649805034866}
-  turnInfoPrefab: {fileID: 1634363820726478, guid: cdeae33a004954a6d9ceb6845011a933,
+  turnInfoPrefab: {fileID: 1710036171128866, guid: cdeae33a004954a6d9ceb6845011a933,
     type: 2}
 --- !u!114 &114948791461024658
 MonoBehaviour:

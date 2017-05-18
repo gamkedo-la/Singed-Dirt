@@ -8,7 +8,6 @@ public class PlayerTurnInfoController: UxListElement {
     [Header("UI Reference")]
     public Text playerNameText;
     public RectTransform healthBar;
-    public Image turnIndicatorIcon;
 
     int maxHealth;
 
@@ -32,7 +31,13 @@ public class PlayerTurnInfoController: UxListElement {
     }
 
     public void SetPlayerIsActive(bool isActive) {
-        turnIndicatorIcon.enabled = isActive;
+        if (isActive) {
+            transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            GetComponent<Image>().color = ParseHex.ToColor("AF4202FF");
+        } else {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            GetComponent<Image>().color = ParseHex.ToColor("6B4E29FF");
+        }
     }
 
 }
