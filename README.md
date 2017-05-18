@@ -73,5 +73,11 @@ Key things to know about the options (and while these are handy to know, it's a 
 2. Always add your voice group at the same position within each Enum. 
 ..* (Example: If the new character's lines are put 2nd in one Enum, it should be 2nd in all the other Enums.) 
 3. Increase the totalVoices property by the number of new character voices added.
+4. Declare a currentIndex property and totalLines property for your the bark type.
+5. Add an indexQueue for your new bark type.
+6. Declare a kind variable for the bark type. (Example: deathOneLinersKind deathOneLiner)
+7. Assign the totalLines value in Awake.
+8. Assign the reset value for currentIndex and build the indexQueue in the Reset method.
+9. Add the appropriate condition and triggered code in GetTheShotOneLiner method, or write a new method specific to your bark.
 
 If you have any questions ask in the #team-singed-dirt channel on Slack. (this obviously only works if you are part of the Gamkedo club, if you would care to join and make games with us go to http://gamkedo.club for more info)
