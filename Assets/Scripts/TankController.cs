@@ -1,5 +1,5 @@
 using System;
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,367 +9,298 @@ using UnityEngine.Networking;
 
 public class TankController : NetworkBehaviour {
 
-	// Public
-	public GameObject modelPrefab;
-	public TankModel model;
+    // Public
+    public GameObject modelPrefab;
+    public TankModel model;
 
-	public float shotPower = 30.0f;
-	public float shotPowerModifier = 10.0f;
-	public float maxShotPower = 2500f;
+    public float shotPower = 30.0f;
+    public float shotPowerModifier = 10.0f;
+    public float maxShotPower = 2500f;
 
-  public float rotationSpeedVertical = 5.0f;
-	public float rotationSpeedHorizontal = 5.0f;
+    public float rotationSpeedVertical = 5.0f;
+    public float rotationSpeedHorizontal = 5.0f;
 
-	public Transform passiveCameraSource {
-		get {
-			if (model != null) {
-				return model.passiveCameraSource;
-			} else {
-				return transform;
-			}
-		}
-	}
+    public Transform passiveCameraSource
+    {
+        get
+        {
+            if (model != null) {
+                return model.passiveCameraSource;
+            }
+            else {
+                return transform;
+            }
+        }
+    }
 
-	public Transform chaseCameraSource {
-		get {
-			if (model != null) {
-				return model.chaseCameraSource;
-			} else {
-				return transform;
-			}
-		}
-	}
+    public Transform chaseCameraSource
+    {
+        get
+        {
+            if (model != null) {
+                return model.chaseCameraSource;
+            }
+            else {
+                return transform;
+            }
+        }
+    }
 
-	public Rigidbody rb;
-	public ProjectileKind selectedShot;
-	public ProjectileInventory shotInventory;
+    public Rigidbody rb;
+    public ProjectileKind selectedShot;
+    public ProjectileInventory shotInventory;
 
-	bool togglePowerInputAmount = false;
-	float savedPowerModifier;
+    bool togglePowerInputAmount = false;
+    float savedPowerModifier;
 
-	// state management variables
-	[SyncVar]
-	bool hasRegistered = false; 	// am I registered to turn controller
+    // state management variables
+    [SyncVar]
+    bool hasRegistered = false;     // am I registered to turn controller
 
-	[SyncVar(hook="OnChangeControl")]
-	public bool hasControl=false;
-
-	[SyncVar]
-	public int playerIndex = -1;
-
-	[SyncVar]
-	public string playerName = "";
+    [SyncVar(hook = "OnChangeControl")]
+    public bool hasControl = false;
 
     [SyncVar]
-    public int charVoice = 2;
+    public int playerIndex = -1;
 
-    public AnyOneLinersKind anyOneLiner;
-    public AcornOneLinersKind acornOneLiner;
-    public BeetOneLinersKind beetOneLiner;
-    public CannonOneLinersKind cannonOneLiner;
-    public MissileOneLinersKind missileOneLiner;
-    public MushboomOneLinersKind mushboomOneLiner;
-    public PillarOneLinersKind pillarOneLiner;
-    public SharktoothOneLinersKind sharktoothOneLiner;
-    public TeleportOneLinersKind teleportOneLiner;
+    [SyncVar]
+    public string playerName = "";
+
+    public int charVoice = 1;
     public AudioClip speech;
 
-	private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
-	private AudioClip tankSound;
-	private AudioClip turretHorizontalMovementSound;
-	private AudioClip turretVerticalMovementSound;
-	private AudioSource tankHorizontalMovementAudioSource;
-	private AudioSource tankVerticalMovementAudioSource;
-	private GameObject secondaryAudioSource;
+    private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
+    private AudioClip tankSound;
+    private AudioClip turretHorizontalMovementSound;
+    private AudioClip turretVerticalMovementSound;
+    private AudioSource tankHorizontalMovementAudioSource;
+    private AudioSource tankVerticalMovementAudioSource;
+    private GameObject secondaryAudioSource;
 
-	[SyncVar]
+    [SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
-	[SyncVar]
+    [SyncVar]
     public TankTurretBaseKind turretBaseKind = TankTurretBaseKind.standard;
-	[SyncVar]
+    [SyncVar]
     public TankTurretKind turretKind = TankTurretKind.standard;
-	[SyncVar]
+    [SyncVar]
     public TankHatKind hatKind = TankHatKind.sunBlue;
     private float minTurretElevation = 0.00f;
     private float maxTurretElevation = 70.0f;
 
-	void Awake() {
+    void Awake() {
         //Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
-		// lookup/cache required components
-		rb = GetComponent<Rigidbody> ();
-		shotInventory = GetComponent<ProjectileInventory>();
+        // lookup/cache required components
+        rb = GetComponent<Rigidbody>();
+        shotInventory = GetComponent<ProjectileInventory>();
 
-		// disable rigidbody physics until activated by turn manager
-		SetPhysicsActive(false);
+        // disable rigidbody physics until activated by turn manager
+        SetPhysicsActive(false);
 
-		// create underlying model
-		CreateModel();
-		tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
-		turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
-		turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
-		tankHorizontalMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
-		tankHorizontalMovementAudioSource.loop = true;
-		tankHorizontalMovementAudioSource.clip = turretHorizontalMovementSound;
+        // create underlying model
+        CreateModel();
+        tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
+        turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
+        turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
+        tankHorizontalMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
+        tankHorizontalMovementAudioSource.loop = true;
+        tankHorizontalMovementAudioSource.clip = turretHorizontalMovementSound;
 
-		secondaryAudioSource = new GameObject("secondaryAudioSource");
-		secondaryAudioSource.transform.SetParent(transform);
-		tankVerticalMovementAudioSource = secondaryAudioSource.AddComponent<AudioSource>() as AudioSource;
-		tankVerticalMovementAudioSource.loop = true;
-		tankVerticalMovementAudioSource.clip = turretVerticalMovementSound;
-        charVoice = UnityEngine.Random.Range(0, 4);
+        secondaryAudioSource = new GameObject("secondaryAudioSource");
+        secondaryAudioSource.transform.SetParent(transform);
+        tankVerticalMovementAudioSource = secondaryAudioSource.AddComponent<AudioSource>() as AudioSource;
+        tankVerticalMovementAudioSource.loop = true;
+        tankVerticalMovementAudioSource.clip = turretVerticalMovementSound;
+        charVoice = BarkManager.self.AssignCharVoice();
     }
 
     public void ServerActivate() {
-		RpcActivate();
-	}
+        RpcActivate();
+    }
 
-    void GetTheShotOneLiner() {
-        int anyNumber = UnityEngine.Random.Range(0, 10),
-            numberOfLines,
-            voiceIndex,
-            lineIndex;
+    public void ServerPlace(Vector3 position) {
+        RpcPlace(position);
+    }
 
-        if (anyNumber > 5) {
-            switch (selectedShot) {
-                case (ProjectileKind)1:
-                    numberOfLines = System.Enum.GetValues(typeof(AcornOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    acornOneLiner = (AcornOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + acornOneLiner);
-                    return;
-                case (ProjectileKind)2:
-                    numberOfLines = System.Enum.GetValues(typeof(MissileOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    missileOneLiner = (MissileOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + missileOneLiner);
-                    return;
-                case (ProjectileKind)3:
-                    numberOfLines = System.Enum.GetValues(typeof(SharktoothOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    sharktoothOneLiner = (SharktoothOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + sharktoothOneLiner);
-                    return;
-                case (ProjectileKind)5:
-                    numberOfLines = System.Enum.GetValues(typeof(PillarOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    pillarOneLiner = (PillarOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + pillarOneLiner);
-                    return;
-                case (ProjectileKind)6:
-                    numberOfLines = System.Enum.GetValues(typeof(BeetOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    beetOneLiner = (BeetOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + beetOneLiner);
-                    return;
-                case (ProjectileKind)7:
-                    numberOfLines = System.Enum.GetValues(typeof(MushboomOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    mushboomOneLiner = (MushboomOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + mushboomOneLiner);
-                    return;
-                default:
-                    numberOfLines = System.Enum.GetValues(typeof(CannonOneLinersKind)).Length / 4;
-                    voiceIndex = numberOfLines * charVoice;
-                    lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-                    cannonOneLiner = (CannonOneLinersKind)(voiceIndex + lineIndex);
-                    speech = (AudioClip)Resources.Load("OneLiners/" + cannonOneLiner);
-                    return;
-            }
-        }
-        else {
-            numberOfLines = System.Enum.GetValues(typeof(AnyOneLinersKind)).Length / 4;
-            voiceIndex = numberOfLines * charVoice;
-            lineIndex = UnityEngine.Random.Range(0, numberOfLines);
-            anyOneLiner = (AnyOneLinersKind)(voiceIndex + lineIndex);
-            speech = (AudioClip)Resources.Load("OneLiners/" + anyOneLiner);
-            return;
+    void OnDeath(GameObject from) {
+        Debug.Log("OnDeath");
+        var manager = TurnManager.GetGameManager();
+        if (manager != null) {
+            manager.ServerHandleTankDeath(gameObject);
         }
     }
 
-	public void ServerPlace(Vector3 position) {
-		RpcPlace(position);
-	}
+    void OnDestroy() {
+        Debug.Log("TankController.OnDestroy, isServer: " + isServer);
+        if (TurnManager.singleton != null) {
+            TurnManager.singleton.ServerDeletePlayer(this);
+        }
+    }
 
-	void OnDeath(GameObject from) {
-		Debug.Log("OnDeath");
-		var manager = TurnManager.GetGameManager();
-		if (manager != null) {
-	        manager.ServerHandleTankDeath(gameObject);
-		}
-	}
+    void SetPhysicsActive(bool status) {
+        rb.isKinematic = !status;
+        rb.detectCollisions = status;
+    }
+    static int spawnOrder = 0;
+    void CreateModel() {
+        // upon start up ... instantiate the model
+        var modelGo = (GameObject)GameObject.Instantiate(
+            modelPrefab,
+            transform.position,
+            Quaternion.identity,
+            this.transform
+        );
+        model = modelGo.GetComponent<TankModel>();
+        spawnOrder++;
+        gameObject.name = "TankSpawn" + spawnOrder;
+        // add two child network transforms
+        gameObject.SetActive(false);
 
-	void OnDestroy() {
-		Debug.Log("TankController.OnDestroy, isServer: " + isServer);
-		if (TurnManager.singleton != null) {
-			TurnManager.singleton.ServerDeletePlayer(this);
-		}
-	}
+        var netChild = gameObject.AddComponent<NetworkTransformChild>();
+        netChild.target = modelGo.transform;
 
-	void SetPhysicsActive(bool status) {
-		rb.isKinematic = !status;
-		rb.detectCollisions = status;
-	}
-	static int spawnOrder = 0;
-	void CreateModel() {
-		// upon start up ... instantiate the model
-		var modelGo = (GameObject) GameObject.Instantiate (
-			modelPrefab,
-			transform.position,
-			Quaternion.identity,
-			this.transform
-		);
-		model = modelGo.GetComponent<TankModel>();
-		spawnOrder ++;
-		gameObject.name = "TankSpawn" + spawnOrder;
-		// add two child network transforms
-		gameObject.SetActive(false);
+        netChild = gameObject.AddComponent<NetworkTransformChild>();
+        netChild.target = model.turret.transform;
 
-		var netChild = gameObject.AddComponent<NetworkTransformChild>();
-		netChild.target = modelGo.transform;
+        gameObject.SetActive(true);
 
-		netChild = gameObject.AddComponent<NetworkTransformChild>();
-		netChild.target = model.turret.transform;
+        // manually set center of mass for tank
+        rb.centerOfMass = model.centerOfMass.position;
+    }
 
-		gameObject.SetActive(true);
-
-		// manually set center of mass for tank
-		rb.centerOfMass = model.centerOfMass.position;
-	}
-
-	void Start() {
-		// cheater!!!
-		// following loop gives max ammo for each shot type
-		// disable to allow lootbox system to be worthwile
-		/*
+    void Start() {
+        // cheater!!!
+        // following loop gives max ammo for each shot type
+        // disable to allow lootbox system to be worthwile
+        /*
 		for(int i = 0; i < System.Enum.GetValues(typeof(ProjectileKind)).Length; i++){
 			shotInventory.Modify((ProjectileKind) i, int.MaxValue);
 		}
 		*/
 
-		// link health onDeath event
-		var health = GetComponent<Health>();
-		if (health != null) {
-			health.onDeathEvent.AddListener(OnDeath);
-		}
+        // link health onDeath event
+        var health = GetComponent<Health>();
+        if (health != null) {
+            health.onDeathEvent.AddListener(OnDeath);
+        }
         // Debug.Log("TankController Start: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
 
-		// copy state to model
+        // copy state to model
         model.tankBaseKind = tankBaseKind;
         model.turretBaseKind = turretBaseKind;
         model.turretKind = turretKind;
         model.hatKind = hatKind;
-		model.UpdateAvatar();
+        model.UpdateAvatar();
 
-		savedPowerModifier = shotPowerModifier;
-	}
+        savedPowerModifier = shotPowerModifier;
+    }
 
-	public void DialAdjustPower(int offset){
-		bool isNegative = offset < 0;
-		float tweakAmt = 0.0f;
-		switch (Mathf.FloorToInt(Mathf.Abs (offset))) {
-		case 1:
-			tweakAmt = 5.0f;
-			break;
-		case 2:
-			tweakAmt = 60.0f;
-			break;
-		case 3:
-			tweakAmt = 200.0f;
-			break;
-		}
-		if (isNegative) {
-			shotPower -= tweakAmt;
-		} else {
-			shotPower += tweakAmt;
-		}
+    public void DialAdjustPower(int offset) {
+        bool isNegative = offset < 0;
+        float tweakAmt = 0.0f;
+        switch (Mathf.FloorToInt(Mathf.Abs(offset))) {
+            case 1:
+                tweakAmt = 5.0f;
+                break;
+            case 2:
+                tweakAmt = 60.0f;
+                break;
+            case 3:
+                tweakAmt = 200.0f;
+                break;
+        }
+        if (isNegative) {
+            shotPower -= tweakAmt;
+        }
+        else {
+            shotPower += tweakAmt;
+        }
 
-		if(shotPower > maxShotPower) {
-			shotPower = maxShotPower;
-		}
-	}
+        if (shotPower > maxShotPower) {
+            shotPower = maxShotPower;
+        }
+    }
 
-	public void DialAdjustElevation(int offset){
-		bool isNegative = offset < 0;
-		float tweakAmt = 0.0f;
-		switch (Mathf.FloorToInt(Mathf.Abs (offset))) {
-		case 1:
-			tweakAmt = 1.0f;
-			break;
-		case 2:
-			tweakAmt = 5.0f;
-			break;
-		case 3:
-			tweakAmt = 10.0f;
-			break;
-		}
+    public void DialAdjustElevation(int offset) {
+        bool isNegative = offset < 0;
+        float tweakAmt = 0.0f;
+        switch (Mathf.FloorToInt(Mathf.Abs(offset))) {
+            case 1:
+                tweakAmt = 1.0f;
+                break;
+            case 2:
+                tweakAmt = 5.0f;
+                break;
+            case 3:
+                tweakAmt = 10.0f;
+                break;
+        }
 
-		if (isNegative) {
-			model.turretElevation -= tweakAmt;
-		} else {
-			model.turretElevation += tweakAmt;
-		}
-	}
+        if (isNegative) {
+            model.turretElevation -= tweakAmt;
+        }
+        else {
+            model.turretElevation += tweakAmt;
+        }
+    }
 
-	public string AmmoDisplayCountText(){
-		var available = shotInventory.GetAvailable(selectedShot);
-		if(available == int.MaxValue) {
-			return "Unlimited";
-		} else{
-			return available.ToString();
-		}
+    public string AmmoDisplayCountText() {
+        var available = shotInventory.GetAvailable(selectedShot);
+        if (available == int.MaxValue) {
+            return "Unlimited";
+        }
+        else {
+            return available.ToString();
+        }
 
-	}
+    }
 
-	public void DialAdjustHeading(int offset){
-		bool isNegative = offset < 0;
-		float tweakAmt = 0.0f;
-		switch (Mathf.FloorToInt(Mathf.Abs (offset))) {
-		case 1:
-			tweakAmt = 1.0f;
-			break;
-		case 2:
-			tweakAmt = 5.0f;
-			break;
-		case 3:
-			tweakAmt = 10.0f;
-			break;
-		}
-		if (isNegative) {
-			model.tankRotation -= tweakAmt;
-		} else {
-			model.tankRotation += tweakAmt;
-		}
-	}
+    public void DialAdjustHeading(int offset) {
+        bool isNegative = offset < 0;
+        float tweakAmt = 0.0f;
+        switch (Mathf.FloorToInt(Mathf.Abs(offset))) {
+            case 1:
+                tweakAmt = 1.0f;
+                break;
+            case 2:
+                tweakAmt = 5.0f;
+                break;
+            case 3:
+                tweakAmt = 10.0f;
+                break;
+        }
+        if (isNegative) {
+            model.tankRotation -= tweakAmt;
+        }
+        else {
+            model.tankRotation += tweakAmt;
+        }
+    }
 
-	void Register() {
-		// local player handles own registration
-		if (!isLocalPlayer) return;
-		// only register once
-		if (hasRegistered) return;
+    void Register() {
+        // local player handles own registration
+        if (!isLocalPlayer) return;
+        // only register once
+        if (hasRegistered) return;
 
-		// server-side: register directly
-		if (isServer) {
-			ServerRegisterToManager();
+        // server-side: register directly
+        if (isServer) {
+            ServerRegisterToManager();
 
-		// client-side: send command to server
-		} else {
-			CmdRegister();
-		}
-	}
+            // client-side: send command to server
+        }
+        else {
+            CmdRegister();
+        }
+    }
 
-	// Update is called once per frame
-	void Update () {
-		// register to turn manager (if required)
-		if (!hasRegistered) {
-			Register();
-		}
-	}
+    // Update is called once per frame
+    void Update() {
+        // register to turn manager (if required)
+        if (!hasRegistered) {
+            Register();
+        }
+    }
 
     // ------------------------------------------------------
     // CLIENT-ONLY METHODS
@@ -377,237 +308,240 @@ public class TankController : NetworkBehaviour {
     // ------------------------------------------------------
     // SERVER-ONLY METHODS
 
-	/// <summary>
-	/// Executed on the server
-	/// Assign index to tank... this same index will be used on both client and server and is synced when assigned
-	/// </summary>
-	public void ServerAssignIndex(int index) {
-		if (!isServer) return;
-		// Debug.Log("assigning index " + index + " to " + name);
-		playerIndex = index;
-	}
+    /// <summary>
+    /// Executed on the server
+    /// Assign index to tank... this same index will be used on both client and server and is synced when assigned
+    /// </summary>
+    public void ServerAssignIndex(int index) {
+        if (!isServer) return;
+        // Debug.Log("assigning index " + index + " to " + name);
+        playerIndex = index;
+    }
 
-	/// <summary>
-	/// Executed on the server
-	/// Enable tank controls
-	/// </summary>
-	public void ServerEnableControl() {
-		// this is a server function
-		if (!isServer) return;
+    /// <summary>
+    /// Executed on the server
+    /// Enable tank controls
+    /// </summary>
+    public void ServerEnableControl() {
+        // this is a server function
+        if (!isServer) return;
 
-		// enable controls, note this is a SyncVar meaning the value gets synced from server to client
-		hasControl = true;
-	}
+        // enable controls, note this is a SyncVar meaning the value gets synced from server to client
+        hasControl = true;
+    }
 
-	/// <summary>
-	/// Executed on the server
-	/// Disable tank controls
-	/// </summary>
-	public void ServerDisableControl() {
-		// this is a server function
-		if (!isServer) return;
+    /// <summary>
+    /// Executed on the server
+    /// Disable tank controls
+    /// </summary>
+    public void ServerDisableControl() {
+        // this is a server function
+        if (!isServer) return;
 
-		// enable controls, note this is a SyncVar meaning the value gets synced from server to client
-		hasControl = false;
-	}
+        // enable controls, note this is a SyncVar meaning the value gets synced from server to client
+        hasControl = false;
+    }
 
-	/// <summary>
-	/// Executed on the server
-	/// Register this tank to turn manager
-	/// </summary>
-	void ServerRegisterToManager() {
-		//Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
-		// this is a server function
-		if (!isServer) return;
+    /// <summary>
+    /// Executed on the server
+    /// Register this tank to turn manager
+    /// </summary>
+    void ServerRegisterToManager() {
+        //Debug.Log("ServerRegisterToManager, manager: " + TurnManager.singleton);
+        // this is a server function
+        if (!isServer) return;
 
-		// ensure we haven't already registered
-		if (hasRegistered) return;
+        // ensure we haven't already registered
+        if (hasRegistered) return;
 
-		// register
-		if (TurnManager.singleton != null) {
-			hasRegistered = TurnManager.singleton.ServerRegisterPlayer(this);
-		}
-	}
+        // register
+        if (TurnManager.singleton != null) {
+            hasRegistered = TurnManager.singleton.ServerRegisterPlayer(this);
+        }
+    }
 
-	/// <summary>
-	/// Callback executed on the client when the hasControl variable changes
-	/// Fire selected projectile if current player controller is in proper state.
-	/// </summary>
-	void OnChangeControl(bool currentHasControl) {
-		// Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
-		// only apply change control to local player
-		if (!isLocalPlayer) return;
-		if (currentHasControl == hasControl) return;
-		hasControl = currentHasControl;
+    /// <summary>
+    /// Callback executed on the client when the hasControl variable changes
+    /// Fire selected projectile if current player controller is in proper state.
+    /// </summary>
+    void OnChangeControl(bool currentHasControl) {
+        // Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
+        // only apply change control to local player
+        if (!isLocalPlayer) return;
+        if (currentHasControl == hasControl) return;
+        hasControl = currentHasControl;
 
-		// disable -> enable
-		if (currentHasControl) {
-	        StartCoroutine(ShootStateEngine());
+        // disable -> enable
+        if (currentHasControl) {
+            StartCoroutine(ShootStateEngine());
 
-		// enable -> disable
-		} else {
+            // enable -> disable
+        }
+        else {
 
-		}
-	}
+        }
+    }
 
     // ------------------------------------------------------
     // STATE ENGINES
-	/// <summary>
-	/// This is the state-engine driving tank operations while controls are active
-	/// </summary>
-	IEnumerator ShootStateEngine() {
-		// Debug.Log("ShootStateEngine called for " + this.name + " with isServer: " + isServer);
-		// disable tank physics
-		rb.isKinematic = true;
+    /// <summary>
+    /// This is the state-engine driving tank operations while controls are active
+    /// </summary>
+    IEnumerator ShootStateEngine() {
+        // Debug.Log("ShootStateEngine called for " + this.name + " with isServer: " + isServer);
+        // disable tank physics
+        rb.isKinematic = true;
 
-		// line up and take the shot
+        // line up and take the shot
         yield return StartCoroutine(AimStateEngine());
 
-		// relinquish control
-		// Debug.Log("ShootStateEngine release control for " + this.name);
-		CmdReleaseControl();
+        // relinquish control
+        // Debug.Log("ShootStateEngine release control for " + this.name);
+        CmdReleaseControl();
 
-		// re-enable tank physics
-		rb.isKinematic = false;
+        // re-enable tank physics
+        rb.isKinematic = false;
 
-	}
+    }
 
-	/// <summary>
-	/// This is the state-engine driving the aim/power/shot control for the tank.
-	/// Stay in this state until a shot is fired.
-	/// NOTE: ensure that all yield calls are using next of frame (yield return null) to ensure proper input handling
-	/// </summary>
-	IEnumerator AimStateEngine() {
-		// check to see if we still have availability for selected shot
-		if (shotInventory.GetAvailable(selectedShot) <= 0) {
-			selectedShot = shotInventory.NextAvailableShot(selectedShot);
-			Debug.Log ("now using shot: " + selectedShot);
-		}
+    /// <summary>
+    /// This is the state-engine driving the aim/power/shot control for the tank.
+    /// Stay in this state until a shot is fired.
+    /// NOTE: ensure that all yield calls are using next of frame (yield return null) to ensure proper input handling
+    /// </summary>
+    IEnumerator AimStateEngine() {
+        // check to see if we still have availability for selected shot
+        if (shotInventory.GetAvailable(selectedShot) <= 0) {
+            selectedShot = shotInventory.NextAvailableShot(selectedShot);
+            Debug.Log("now using shot: " + selectedShot);
+        }
 
-		// Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
-		// continue while we have control
-		while (hasControl) {
-			if (EventSystem.current.currentSelectedGameObject != null &&
-			    EventSystem.current.currentSelectedGameObject.tag == "inputexclusive") {
-				yield return null;
-				continue;
-			}
-			//Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
-			if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
-				togglePowerInputAmount = true;
-			}
-			if (Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift)) {
-				togglePowerInputAmount = false;
-			}
-			if (togglePowerInputAmount == false) {
-				if (Input.GetKey (KeyCode.LeftBracket)) {
-					shotPower -= shotPowerModifier;
-					if (shotPower <= 0.0f) {
-						shotPower = 0.0f;
-					}
-				}
+        // Debug.Log("AimStateEngine called for " + this.name + " with isServer: " + isServer + " and hasControl: " + hasControl);
+        // continue while we have control
+        while (hasControl) {
+            if (EventSystem.current.currentSelectedGameObject != null &&
+                EventSystem.current.currentSelectedGameObject.tag == "inputexclusive") {
+                yield return null;
+                continue;
+            }
+            //Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
+            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) {
+                togglePowerInputAmount = true;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift)) {
+                togglePowerInputAmount = false;
+            }
+            if (togglePowerInputAmount == false) {
+                if (Input.GetKey(KeyCode.LeftBracket)) {
+                    shotPower -= shotPowerModifier;
+                    if (shotPower <= 0.0f) {
+                        shotPower = 0.0f;
+                    }
+                }
 
-				if (Input.GetKey (KeyCode.RightBracket)) {
-					shotPower += shotPowerModifier;
-				}
-			} else {
-				if (Input.GetKeyDown (KeyCode.LeftBracket)) {
-					shotPower -= shotPowerModifier;
-					if (shotPower <= 0.0f) {
-						shotPower = 0.0f;
-					}
-				}
+                if (Input.GetKey(KeyCode.RightBracket)) {
+                    shotPower += shotPowerModifier;
+                }
+            }
+            else {
+                if (Input.GetKeyDown(KeyCode.LeftBracket)) {
+                    shotPower -= shotPowerModifier;
+                    if (shotPower <= 0.0f) {
+                        shotPower = 0.0f;
+                    }
+                }
 
-				if (Input.GetKeyDown (KeyCode.RightBracket)) {
-					Debug.Log("right bracket");
-					shotPower += shotPowerModifier;
-				}
-			}
+                if (Input.GetKeyDown(KeyCode.RightBracket)) {
+                    Debug.Log("right bracket");
+                    shotPower += shotPowerModifier;
+                }
+            }
 
-			if (Input.GetKeyDown (KeyCode.Comma)) {
-				selectedShot = shotInventory.PrevAvailableShot(selectedShot);
-				Debug.Log ("now using shot: " + selectedShot);
-			}
-			if (Input.GetKeyDown (KeyCode.Period)) {
-				selectedShot = shotInventory.NextAvailableShot(selectedShot);
-				Debug.Log ("now using shot: " + selectedShot);
-			}
+            if (Input.GetKeyDown(KeyCode.Comma)) {
+                selectedShot = shotInventory.PrevAvailableShot(selectedShot);
+                Debug.Log("now using shot: " + selectedShot);
+            }
+            if (Input.GetKeyDown(KeyCode.Period)) {
+                selectedShot = shotInventory.NextAvailableShot(selectedShot);
+                Debug.Log("now using shot: " + selectedShot);
+            }
 
-			if(shotPower > maxShotPower) {
-				shotPower = maxShotPower;
-			}
+            if (shotPower > maxShotPower) {
+                shotPower = maxShotPower;
+            }
 
-			// Shoot already ... when shot is fired, finish this coroutine;
-			if (Input.GetKeyDown (KeyCode.Space)) {
-				//Debug.Log("space is down, calling CmdFire");
-				// sanity check for ammo
-				tankVerticalMovementAudioSource.Stop();
-				tankHorizontalMovementAudioSource.Stop();
-				if (shotInventory.GetAvailable(selectedShot) > 0) {
-					GetTheShotOneLiner();
-					SoundManager.instance.PlayAudioClip(tankSound);
-					SoundManager.instance.PlayClipDelayed(tankSound.length/2, speech);
-					CmdFire(shotPower, selectedShot);
-					// decrease ammo count
-					shotInventory.ServerModify(selectedShot, -1);
-					// check to see if we still have availability for selected shot
-					if (shotInventory.GetAvailable(selectedShot) <= 0) {
-						selectedShot = shotInventory.NextAvailableShot(selectedShot);
-						Debug.Log ("now using shot: " + selectedShot);
-					}
-				} else {
-					Debug.Log("out of ammo for shottype " + selectedShot);
-				}
+            // Shoot already ... when shot is fired, finish this coroutine;
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                //Debug.Log("space is down, calling CmdFire");
+                // sanity check for ammo
+                tankVerticalMovementAudioSource.Stop();
+                tankHorizontalMovementAudioSource.Stop();
+                if (shotInventory.GetAvailable(selectedShot) > 0) {
+                    speech = BarkManager.self.GetTheShotOneLiner(selectedShot, charVoice);
+                    SoundManager.instance.PlayAudioClip(tankSound);
+                    SoundManager.instance.PlayClipDelayed(tankSound.length / 2, speech);
+                    CmdFire(shotPower, selectedShot);
+                    // decrease ammo count
+                    shotInventory.ServerModify(selectedShot, -1);
+                    // check to see if we still have availability for selected shot
+                    if (shotInventory.GetAvailable(selectedShot) <= 0) {
+                        selectedShot = shotInventory.NextAvailableShot(selectedShot);
+                        Debug.Log("now using shot: " + selectedShot);
+                    }
+                }
+                else {
+                    Debug.Log("out of ammo for shottype " + selectedShot);
+                }
 
-				yield break;
-			}
-			if (Input.GetKeyDown(KeyCode.O)){
-				GetTheShotOneLiner();
-			}
+                yield break;
+            }
+            if (Input.GetKeyDown(KeyCode.O)) {
+                speech = BarkManager.self.GetTheShotOneLiner(selectedShot, charVoice);
+            }
 
-			if (model != null) {
-				model.tankRotation += Input.GetAxis ("Horizontal") * Time.deltaTime * rotationSpeedVertical;
-				model.turretElevation += Input.GetAxis ("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
-				model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
-			}
-			if(Input.GetAxis ("Horizontal") != 0){
-				if(tankHorizontalMovementAudioSource.isPlaying == false){
-					tankHorizontalMovementAudioSource.Play();
-				}
-			}
-			if(Input.GetAxis ("Vertical") != 0){
-				if(tankVerticalMovementAudioSource.isPlaying == false){
-					tankVerticalMovementAudioSource.Play();
-				}
-			}
+            if (model != null) {
+                model.tankRotation += Input.GetAxis("Horizontal") * Time.deltaTime * rotationSpeedVertical;
+                model.turretElevation += Input.GetAxis("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
+                model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
+            }
+            if (Input.GetAxis("Horizontal") != 0) {
+                if (tankHorizontalMovementAudioSource.isPlaying == false) {
+                    tankHorizontalMovementAudioSource.Play();
+                }
+            }
+            if (Input.GetAxis("Vertical") != 0) {
+                if (tankVerticalMovementAudioSource.isPlaying == false) {
+                    tankVerticalMovementAudioSource.Play();
+                }
+            }
 
-			if(Input.GetAxis ("Vertical") == 0){
-				tankVerticalMovementAudioSource.Stop();
-			}
-			if(Input.GetAxis ("Horizontal") == 0){
-				tankHorizontalMovementAudioSource.Stop();
-			}
+            if (Input.GetAxis("Vertical") == 0) {
+                tankVerticalMovementAudioSource.Stop();
+            }
+            if (Input.GetAxis("Horizontal") == 0) {
+                tankHorizontalMovementAudioSource.Stop();
+            }
 
-			// continue on next frame
-			yield return null;
-		}
-	}
+            // continue on next frame
+            yield return null;
+        }
+    }
 
     // ------------------------------------------------------
     // SERVER->CLIENT METHODS
-	[ClientRpc]
-	void RpcActivate() {
-		//Debug.Log("activating tank: " + playerName);
-		SetPhysicsActive(true);
-	}
+    [ClientRpc]
+    void RpcActivate() {
+        //Debug.Log("activating tank: " + playerName);
+        SetPhysicsActive(true);
+    }
 
-	[ClientRpc]
-	void RpcPlace(Vector3 position) {
-		if (isLocalPlayer) {
-			//Debug.Log(String.Format("positioning tank: {0} @ {1}", playerName, position));
-			transform.position = position;
-		}
-	}
+    [ClientRpc]
+    void RpcPlace(Vector3 position) {
+        if (isLocalPlayer) {
+            //Debug.Log(String.Format("positioning tank: {0} @ {1}", playerName, position));
+            transform.position = position;
+        }
+    }
 
     // ------------------------------------------------------
     // CLIENT->SERVER METHODS
@@ -620,58 +554,58 @@ public class TankController : NetworkBehaviour {
         UxChatController.SendToConsole(this, newChat);
     }
 
-	[Command]
-	void CmdRegister() {
-		ServerRegisterToManager();
-	}
+    [Command]
+    void CmdRegister() {
+        ServerRegisterToManager();
+    }
 
-	/// <summary>
-	/// Called from the client, executed on the server
-	/// Fire selected projectile if current player controller is in proper state.
-	/// </summary>
-	[Command]
-	void CmdFire(float shotPower, ProjectileKind projectiledKind) {
-		//Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
-		// controller state-based authorization check
-		if (!hasControl) {
-			Debug.Log("nope");
-			return;
-		}
+    /// <summary>
+    /// Called from the client, executed on the server
+    /// Fire selected projectile if current player controller is in proper state.
+    /// </summary>
+    [Command]
+    void CmdFire(float shotPower, ProjectileKind projectiledKind) {
+        //Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
+        // controller state-based authorization check
+        if (!hasControl) {
+            Debug.Log("nope");
+            return;
+        }
 
-		// instantiate from prefab
-		var prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(projectiledKind);
-		var liveProjectile = (GameObject)GameObject.Instantiate (
-			prefab,
-			model.shotSource.position,
-			model.shotSource.rotation
-		);
-		liveProjectile.name = name + "Projectile";
-		liveProjectile.layer = gameObject.layer;
-		liveProjectile.GetComponent<ProjectileController>().shooter = this;
+        // instantiate from prefab
+        var prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(projectiledKind);
+        var liveProjectile = (GameObject)GameObject.Instantiate(
+            prefab,
+            model.shotSource.position,
+            model.shotSource.rotation
+        );
+        liveProjectile.name = name + "Projectile";
+        liveProjectile.layer = gameObject.layer;
+        liveProjectile.GetComponent<ProjectileController>().shooter = this;
 
-		// set initial velocity/force
-		liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
+        // set initial velocity/force
+        liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
 
-		// set network spawn
-		NetworkServer.Spawn (liveProjectile);
+        // set network spawn
+        NetworkServer.Spawn(liveProjectile);
 
-		// update manager
-		if (TurnManager.singleton != null) TurnManager.singleton.ServerHandleShotFired(this, liveProjectile);
-	}
+        // update manager
+        if (TurnManager.singleton != null) TurnManager.singleton.ServerHandleShotFired(this, liveProjectile);
+    }
 
-	/// <summary>
-	/// Called from the client, executed on the server
-	/// release control
-	/// </summary>
-	[Command]
-	void CmdReleaseControl() {
-		Debug.Log("CmdReleaseControl for " + name);
-		/// release control
-		hasControl = false;
+    /// <summary>
+    /// Called from the client, executed on the server
+    /// release control
+    /// </summary>
+    [Command]
+    void CmdReleaseControl() {
+        Debug.Log("CmdReleaseControl for " + name);
+        /// release control
+        hasControl = false;
 
-		// tell the manager
-		//manager.ServerReleaseTank(this);
-		// FIXME
-	}
+        // tell the manager
+        //manager.ServerReleaseTank(this);
+        // FIXME
+    }
 
 }
