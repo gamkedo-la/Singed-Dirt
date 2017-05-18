@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +15,13 @@ using UnityEngine;
 ///         1. Add a new Enum below and add a reference in the NetRegistry.cs file. 
 ///         2. Group the one-liners by character voice using the same voice sequence as the other Enums. 
 ///         (Example: If meanie is the first group in one Enum, it should be first in all Enums.)
+///         3. Declare a currentIndex property and totalLines property for your the bark type.
+///         4. Add an indexQueue for your new bark type.
+///         5. Declare a kind variable for the bark type. (Example: deathOneLinersKind deathOneLiner)
+///         6. Assign the totalLines value in Awake.
+///         7. Assign the reset value for currentIndex and build the indexQueue in the Reset method.
+///         8. Add the appropriate condition and triggered code in GetTheShotOneLiner method, or 
+///         write a new method specific to your bark.
 /// 
 /// To add one-liners to already-existing ammo/bark types: 
 ///         1. Add each version's filename to the appropriate Enum, grouping it with its appropriate 
