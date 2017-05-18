@@ -5772,6 +5772,7 @@ MonoBehaviour:
   _isMatchmaking: 0
   isHosting: 1
   doAutoStart: 1
+  menuOKSound: {fileID: 0}
 --- !u!114 &114616222236280816
 MonoBehaviour:
   m_ObjectHideFlags: 1

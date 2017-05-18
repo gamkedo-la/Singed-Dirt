@@ -95,7 +95,7 @@ public class ProjectileController : NetworkBehaviour {
 					if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
 						health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
 						GetAudioClipFile (ProjectileSoundKind.tank_hit);
-						SingedLobbyManager.s_singleton.PlayAudioClip(tankHit);
+						SoundManager.instance.PlayAudioClip(tankHit);
 						//Debug.Log ("Damage done to " + rootObject.name + ": " + damagePoints + ". Remaining: " + health.health);
 
 						// Do shock displacement
@@ -118,7 +118,7 @@ public class ProjectileController : NetworkBehaviour {
 		if (terrainManager != null) {
 			var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
 			GetAudioClipFile (ProjectileSoundKind.projectile_explo);
-			SingedLobbyManager.s_singleton.PlayAudioClip(projExplo);
+			SoundManager.instance.PlayAudioClip(projExplo);
 			//Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
 			GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
 			NetworkServer.Spawn(deformation);
