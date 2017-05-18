@@ -1,13 +1,18 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 public class ProjectileInventory : NetworkBehaviour {
+    [System.Serializable]
+    public class SenderEvent : UnityEvent<object> { };
+
     int[] ammoCounts;
     int maxShot;
-
+    public SenderEvent onModifyEvent;
     void Awake() {
+        onModifyEvent = new SenderEvent();
         maxShot = System.Enum.GetValues(typeof(ProjectileKind)).Length;
         ammoCounts = new int[maxShot+1];
 
@@ -30,6 +35,7 @@ public class ProjectileInventory : NetworkBehaviour {
                 ammoCounts[(int) kind] += amount;
             }
         }
+        onModifyEvent.Invoke(this);
     }
 
     ProjectileKind FindAvailableShot(ProjectileKind currentShot, int modifier) {

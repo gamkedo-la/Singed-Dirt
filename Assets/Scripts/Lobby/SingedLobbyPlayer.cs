@@ -87,23 +87,9 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     [SyncVar(hook = "OnMyName")]
     public string playerName = "";
 
-    public static Color hexToColor(string hex) {
-        hex = hex.Replace ("0x", "");//in case the string is formatted 0xFFFFFF
-        hex = hex.Replace ("#", "");//in case the string is formatted #FFFFFF
-        byte a = 255;//assume fully visible unless specified in hex
-        byte r = byte.Parse(hex.Substring(0,2), System.Globalization.NumberStyles.HexNumber);
-        byte g = byte.Parse(hex.Substring(2,2), System.Globalization.NumberStyles.HexNumber);
-        byte b = byte.Parse(hex.Substring(4,2), System.Globalization.NumberStyles.HexNumber);
-        //Only use alpha if the string has enough characters
-        if(hex.Length == 8){
-            a = byte.Parse(hex.Substring(4,2), System.Globalization.NumberStyles.HexNumber);
-        }
-        return new Color32(r,g,b,a);
-    }
-
     // FIXME: evaluate
-    public Color OddRowColor = hexToColor("562F00FF");
-    public Color EvenRowColor = hexToColor("814C00FF");
+    public Color OddRowColor = ParseHex.ToColor("562F00FF");
+    public Color EvenRowColor = ParseHex.ToColor("814C00FF");
 
     void Awake() {
         // Debug.Log("SingedLobbyPlayer Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
@@ -247,7 +233,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// </summary>
     public void CheckRemoveButton() {
         if (!isLocalPlayer) return;
-        
+
         int localPlayerCount = 0;
         foreach (var player in ClientScene.localPlayers) {
             localPlayerCount += (player == null || player.playerControllerId == -1) ? 0 : 1;

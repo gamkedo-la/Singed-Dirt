@@ -1092,6 +1092,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hudController: {fileID: 1894649620}
   gameOverController: {fileID: 1141001981}
+  minPlayerSpacing: 30
   useRandomSpawn: 1
   expectedPlayers: 2
   activeTanks: 
@@ -1474,51 +1475,6 @@ Prefab:
         type: 2}
       propertyPath: m_AnchorMax.y
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_SizeDelta.x
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
-        type: 2}
-      propertyPath: m_SizeDelta.x
-      value: -9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac27fffd133b6af4f9dafaed1bc7b5c4, type: 2}

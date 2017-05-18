@@ -83,7 +83,6 @@ public class LootSpawnController : NetworkBehaviour {
 
     public void ServerSpawnRound() {
         var num = UnityEngine.Random.Range(0, maxPerRound);
-        Debug.Log("loot spawn round, spawning: " + num);
         ServerSpawnN(num);
     }
 

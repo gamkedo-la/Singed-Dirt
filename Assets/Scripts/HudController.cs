@@ -11,21 +11,34 @@ public class HudController: MonoBehaviour {
 	public InputField powerValue;
 	public Transform projectileModelPosition;
 	public RectTransform shotPowerBar;
+    public AmmoListController ammoListPanel;
 	private Dictionary<ProjectileKind, GameObject> projetileModels;
 
     TankController activeTank;
 	ProjectileKind selectedProjectile;
+    bool forceAmmoUpdate = false;
 
     void Awake() {
 		selectedProjectile = ProjectileKind.cannonBall;
 		projetileModels = new Dictionary<ProjectileKind, GameObject>();
 		projetileModels[selectedProjectile] = getProjectileModel(selectedProjectile);
 		UpdateSelectedShot();
+        forceAmmoUpdate = true;
     }
 
     public void AssignTank(TankController tank) {
         if (tank.isLocalPlayer) {
             activeTank = tank;
+            activeTank.shotInventory.onModifyEvent.RemoveAllListeners();
+            activeTank.shotInventory.onModifyEvent.AddListener(OnInventoryModify);
+            ammoListPanel.AssignInventory(activeTank.shotInventory);
+        }
+    }
+
+    public void OnInventoryModify(object inventory) {
+        // update current inventory se
+        if (Object.ReferenceEquals((object) activeTank.shotInventory, inventory)) {
+            ammoListPanel.AssignInventory(activeTank.shotInventory);
         }
     }
 
@@ -43,15 +56,18 @@ public class HudController: MonoBehaviour {
     }
 
     void UpdateSelectedShot() {
-        if(activeTank != null && selectedProjectile != activeTank.selectedShot) {
+        if(forceAmmoUpdate || (activeTank != null && selectedProjectile != activeTank.selectedShot)) {
+            forceAmmoUpdate = false;
             projetileModels[selectedProjectile].SetActive(false);
             if(!projetileModels.ContainsKey(activeTank.selectedShot)) {
-							  projetileModels[activeTank.selectedShot] = getProjectileModel(activeTank.selectedShot);
+    			projetileModels[activeTank.selectedShot] = getProjectileModel(activeTank.selectedShot);
             }
 
             projetileModels[activeTank.selectedShot].SetActive(true);
-            
-						selectedProjectile = activeTank.selectedShot;
+
+			selectedProjectile = activeTank.selectedShot;
+            // update ammo list panel to reference selected projectile
+            ammoListPanel.SetSelected(selectedProjectile);
         }
     }
 
@@ -72,7 +88,7 @@ public class HudController: MonoBehaviour {
 		scale.x *= projectileModelPosition.localScale.x;
 		scale.y *= projectileModelPosition.localScale.y;
 		scale.z *= projectileModelPosition.localScale.z;
-		
+
 		shotModel.transform.localScale = scale;
 
 		shotModel.transform.localRotation = shotModelPrefab.transform.localRotation;
@@ -83,7 +99,7 @@ public class HudController: MonoBehaviour {
 	//Recursively set the layer of a transform and all children
 	private void SetLayer(Transform root, int layer) {
 		root.gameObject.layer = layer;
-		foreach(Transform child in root) { 
+		foreach(Transform child in root) {
 			SetLayer(child, layer);
 		}
 	}

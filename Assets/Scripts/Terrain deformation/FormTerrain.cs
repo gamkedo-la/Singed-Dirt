@@ -126,7 +126,6 @@ public class FormTerrain : NetworkBehaviour {
 			midGenerator = voronoiBisectorGenerator;
 			// override midTerrainSpawnCount to equal # of voronoi edges
 			midTerrainSpawnCount = voronoiBisectorGenerator.voronoi.edgeList.Count;
-			Debug.Log("mid count: " + midTerrainSpawnCount);
 		} else {
 			shortGenerator = new SpawnBoxSpawnGenerator(shortSpawnBox);
 			midGenerator = new SpawnBoxSpawnGenerator(midSpawnBox);
