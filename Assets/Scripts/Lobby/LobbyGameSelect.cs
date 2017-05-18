@@ -14,14 +14,12 @@ public class LobbyGameSelect : MonoBehaviour {
     public InputField matchNameInput;
 
     private AudioClip menuOKSound;
-    private AudioClip music;
     private MenuSoundKind menuSoundKind = MenuSoundKind.menuSelect;
     private MusicKind musicKind = MusicKind.mainMenuMusic;
 
     void Start() {
         //lobbyManager = SingedLobbyManager.s_singleton;
-        GetMusicClipFile(musicKind);
-        SingedLobbyManager.s_singleton.PlayMusic(music);
+        SoundManager.instance.PlayMenuMusic();
         GetAudioClipFile(MenuSoundKind.menuSelect);
     }
 
@@ -49,10 +47,6 @@ public class LobbyGameSelect : MonoBehaviour {
         menuOKSound = (AudioClip)Resources.Load("MenuSound/" + sound);
     }
 
-    void GetMusicClipFile(MusicKind sound) {
-        music = (AudioClip)Resources.Load("Music/" + sound);
-    }
-
     public void OnClickHost() {
         // Debug.Log("OnClickHost");
 
@@ -60,7 +54,7 @@ public class LobbyGameSelect : MonoBehaviour {
         //lobbyManager.ChangeTo(lobbyManager.lobbyPanel.gameObject);
 
         var lobbyManager = SingedLobbyManager.s_singleton;
-        lobbyManager.PlayAudioClip(menuOKSound);
+        SoundManager.instance.PlayAudioClip(menuOKSound);
 
         // set hosting address/port
         lobbyManager.networkPort = port;
@@ -76,7 +70,7 @@ public class LobbyGameSelect : MonoBehaviour {
         // Debug.Log("OnClickJoin");
 
         var lobbyManager = SingedLobbyManager.s_singleton;
-        lobbyManager.PlayAudioClip(menuOKSound);
+        SoundManager.instance.PlayAudioClip(menuOKSound);
 
         // set connect address/port
         lobbyManager.networkAddress = host;
@@ -96,7 +90,7 @@ public class LobbyGameSelect : MonoBehaviour {
         var lobbyManager = SingedLobbyManager.s_singleton;
 
         
-        lobbyManager.PlayAudioClip(menuOKSound);
+        SoundManager.instance.PlayAudioClip(menuOKSound);
 
         lobbyManager.StartMatchMaker();
         Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
@@ -119,7 +113,7 @@ public class LobbyGameSelect : MonoBehaviour {
     public void OnClickOpenServerList() {
         var lobbyManager = SingedLobbyManager.s_singleton;
         GetAudioClipFile(MenuSoundKind.menuSelect);
-        lobbyManager.PlayAudioClip(menuOKSound);
+        SoundManager.instance.PlayAudioClip(menuOKSound);
         lobbyManager.StartMatchMaker();
         // FIXME: validate this is the right callback
         lobbyManager.ChangeTo(lobbyManager.matchmakerServerPanel.gameObject,

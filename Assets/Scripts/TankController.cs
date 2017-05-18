@@ -545,8 +545,8 @@ public class TankController : NetworkBehaviour {
 				tankHorizontalMovementAudioSource.Stop();
 				if (shotInventory.GetAvailable(selectedShot) > 0) {
 					GetTheShotOneLiner();
-					SingedLobbyManager.s_singleton.PlayAudioClip(tankSound);
-					SingedLobbyManager.s_singleton.PlayClipDelayed(tankSound.length/2, speech);
+					SoundManager.instance.PlayAudioClip(tankSound);
+					SoundManager.instance.PlayClipDelayed(tankSound.length/2, speech);
 					CmdFire(shotPower, selectedShot);
 					// decrease ammo count
 					shotInventory.ServerModify(selectedShot, -1);
