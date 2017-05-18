@@ -55,15 +55,15 @@ Key things to know about the options (and while these are handy to know, it's a 
 
 ### General criteria for adding new barks and character voices:
 1. New ammo/bark types can have more or fewer barks than the other ammo/bark types.
-..* (Example: if you want a new bark triggered on Death, you might only have 1 one-liner.)
+	* (Example: if you want a new bark triggered on Death, you might only have 1 one-liner.)
 2. BUT any new one-liner must have 1 version/file for each character voice.
-..* (Example: the Death one-liner might have 4 different files: meanie, grumpy, aggro, and cheery.) 
+	* (Example: the Death one-liner might have 4 different files: meanie, grumpy, aggro, and cheery.) 
 3. Any new character voice must match the other characters in the number of one-liners for every ammo/bark type. (Example: If the other characters have 4 barks for Acorn and 1 for Death, then the new character must have 4 barks for Acorn and 1 for Death.)
  
 ### To add a new type of ammo/bark one-liner: 
 1. Add a new Enum below and add a reference in the NetRegistry.cs file. 
 2. Group the one-liners by character voice using the same voice sequence as the other Enums. 
-..* (Example: If meanie is the first group in one Enum, it should be first in all Enums.)
+	* (Example: If meanie is the first group in one Enum, it should be first in all Enums.)
 
 ### To add one-liners to already-existing ammo/bark types: 
 1. Add each version's filename to the appropriate Enum, grouping it with its appropriate character voice.
@@ -71,7 +71,7 @@ Key things to know about the options (and while these are handy to know, it's a 
 ### To add a new character voice: 
 1. Add each filename to its appropriate Enum below, grouping the references by character voice. 
 2. Always add your voice group at the same position within each Enum. 
-..* (Example: If the new character's lines are put 2nd in one Enum, it should be 2nd in all the other Enums.) 
+	* (Example: If the new character's lines are put 2nd in one Enum, it should be 2nd in all the other Enums.) 
 3. Increase the totalVoices property by the number of new character voices added.
 4. Declare a currentIndex property and totalLines property for your the bark type.
 5. Add an indexQueue for your new bark type.
