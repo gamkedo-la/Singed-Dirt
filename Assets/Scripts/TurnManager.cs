@@ -18,6 +18,7 @@ public class TurnManager : NetworkBehaviour {
 
     public float minPlayerSpacing = 30f;
     public bool useRandomSpawn = true;
+    public bool followActivePlayer = true;
 
     // Public variables
     public static TurnManager singleton;
@@ -255,9 +256,9 @@ public class TurnManager : NetworkBehaviour {
     /// Set the view to the local tank
     /// </summary>
     [ClientRpc]
-    void RpcViewLocalTank(GameObject tankGO) {
+    void RpcViewLocalTank(GameObject tankGO, bool localOnly) {
         var tank = tankGO.GetComponent<TankController>();
-        if (tank != null && tank.isLocalPlayer) {
+        if (tank != null && (tank.isLocalPlayer || !localOnly)) {
             // Debug.Log("setting camera view to local: " + tank.name);
             camController.WatchPlayer(tank);
             //camController.SetPlayerCameraFocus(localTank);
@@ -503,7 +504,7 @@ public class TurnManager : NetworkBehaviour {
         ServerSetActiveTank(tank);
 
         // set starting camera positions for each player (this is done client side)
-        RpcViewLocalTank(tank.gameObject);
+        RpcViewLocalTank(tank.gameObject, !followActivePlayer);
 
         // wait for shot fired by this tank
         while (tank != null && tank.hasControl) {
@@ -514,7 +515,7 @@ public class TurnManager : NetworkBehaviour {
         if (tank != null && liveProjectile != null) {
             // Debug.Log("live projectile detected");
             // update local camera to watch live projectile
-            RpcViewShot(tank.gameObject, liveProjectile, true);
+            RpcViewShot(tank.gameObject, liveProjectile, !followActivePlayer);
         }
         // wait until the projectile is destroyed
         while (liveProjectile != null) {
@@ -525,7 +526,7 @@ public class TurnManager : NetworkBehaviour {
         if (tank != null && liveExplosion != null) {
             // Debug.Log("live explosion detected");
             // update local camera to watch live explosion
-            RpcViewExplosion(tank.gameObject, liveExplosion, true);
+            RpcViewExplosion(tank.gameObject, liveExplosion, !followActivePlayer);
         }
         // wait until the explosion is destroyed
         while (liveExplosion != null) {
@@ -534,7 +535,7 @@ public class TurnManager : NetworkBehaviour {
 
         // reset view to local tank view
         if (tank != null) {
-            RpcViewLocalTank(tank.gameObject);
+            RpcViewLocalTank(tank.gameObject, !followActivePlayer);
         }
     }
 

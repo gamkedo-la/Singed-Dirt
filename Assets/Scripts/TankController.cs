@@ -371,9 +371,9 @@ public class TankController : NetworkBehaviour {
     void OnChangeControl(bool currentHasControl) {
         // Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
         // only apply change control to local player
-        if (!isLocalPlayer) return;
         if (currentHasControl == hasControl) return;
         hasControl = currentHasControl;
+        if (!isLocalPlayer) return;
 
         // disable -> enable
         if (currentHasControl) {
