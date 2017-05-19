@@ -315,8 +315,7 @@ public class BarkManager : MonoBehaviour {
     private SharktoothOneLinersKind sharktoothOneLiner;
     private TeleportOneLinersKind teleportOneLiner;
 
-    private int maxPlayers,
-        totalVoices = 4,
+    private int totalVoices = 4,
         currentVoiceIndex,
         currentAnyLineIndex,
         currentAcornLineIndex,
@@ -355,10 +354,6 @@ public class BarkManager : MonoBehaviour {
             self = this;
         }
         else Destroy(gameObject);
-
-        if (TurnManager.singleton != null) {
-            maxPlayers = TurnManager.singleton.expectedPlayers;
-        }
 
         totalAnyLines = System.Enum.GetValues(typeof(AnyOneLinersKind)).Length / totalVoices;
         totalAcornLines = System.Enum.GetValues(typeof(AcornOneLinersKind)).Length / totalVoices;
