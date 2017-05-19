@@ -14,7 +14,7 @@ public class AmmoInfoController: UxListElement {
     // normal 6B4E29FF
 
     public void AssignAmmo(ProjectileKind projectileKind, int count) {
-        ammoNameText.text = projectileKind.ToString();
+        ammoNameText.text = NameMapping.ForProjectile(projectileKind);
         if (count > 99) {
             ammoCountText.text = "99+";
         } else {

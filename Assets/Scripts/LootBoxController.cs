@@ -47,7 +47,7 @@ public class LootBoxController : NetworkBehaviour {
 				String.Format("{0} acquired {1} {2}",
 					from.GetComponent<TankController>().playerName,
 					lootCount,
-					lootKind.ToString()));
+					NameMapping.ForProjectile(lootKind)));
 		}
 		var inventory = from.GetComponent<ProjectileInventory>();
 		if (inventory != null) {

@@ -6,33 +6,33 @@ using UnityEngine;
 ///         1. New ammo/bark types can have more or fewer barks than the other ammo/bark types.
 ///         (Example: if you want a new bark triggered on Death, you might only have 1 one-liner.)
 ///         2. BUT any new one-liner must have 1 version/file for each character voice.
-///         (Example: the Death one-liner might have 4 different files: meanie, grumpy, aggro, and cheery.) 
+///         (Example: the Death one-liner might have 4 different files: meanie, grumpy, aggro, and cheery.)
 ///         3. Any new character voice must match the other characters in the number of one-
-///         liners for every ammo/bark type. (Example: If the other characters have 4 barks for Acorn and 
+///         liners for every ammo/bark type. (Example: If the other characters have 4 barks for Acorn and
 ///         1 for Death, then the new character must have 4 barks for Acorn and 1 for Death.)
-/// 
-/// To add a new type of ammo/bark one-liner: 
-///         1. Add a new Enum below and add a reference in the NetRegistry.cs file. 
-///         2. Group the one-liners by character voice using the same voice sequence as the other Enums. 
+///
+/// To add a new type of ammo/bark one-liner:
+///         1. Add a new Enum below and add a reference in the NetRegistry.cs file.
+///         2. Group the one-liners by character voice using the same voice sequence as the other Enums.
 ///         (Example: If meanie is the first group in one Enum, it should be first in all Enums.)
 ///         3. Declare a currentIndex property and totalLines property for your the bark type.
 ///         4. Add an indexQueue for your new bark type.
 ///         5. Declare a kind variable for the bark type. (Example: deathOneLinersKind deathOneLiner)
 ///         6. Assign the totalLines value in Awake.
 ///         7. Assign the reset value for currentIndex and build the indexQueue in the Reset method.
-///         8. Add the appropriate condition and triggered code in GetTheShotOneLiner method, or 
+///         8. Add the appropriate condition and triggered code in GetTheShotOneLiner method, or
 ///         write a new method specific to your bark.
-/// 
-/// To add one-liners to already-existing ammo/bark types: 
-///         1. Add each version's filename to the appropriate Enum, grouping it with its appropriate 
+///
+/// To add one-liners to already-existing ammo/bark types:
+///         1. Add each version's filename to the appropriate Enum, grouping it with its appropriate
 ///         character voice.
-/// 
-/// To add a new character voice: 
-///         1. Add each filename to its appropriate Enum below, grouping the references by character 
-///         voice. 
-///         2. Always add your voice group at the same position within each Enum. 
-///         (Example: If the new character's lines are put 2nd in one Enum, it should be 2nd in all the other 
-///         Enums.) 
+///
+/// To add a new character voice:
+///         1. Add each filename to its appropriate Enum below, grouping the references by character
+///         voice.
+///         2. Always add your voice group at the same position within each Enum.
+///         (Example: If the new character's lines are put 2nd in one Enum, it should be 2nd in all the other
+///         Enums.)
 ///         3. Increase the totalVoices property by the number of new character voices added.
 
 public enum AnyOneLinersKind {
@@ -356,7 +356,9 @@ public class BarkManager : MonoBehaviour {
         }
         else Destroy(gameObject);
 
-        maxPlayers = TurnManager.singleton.expectedPlayers;
+        if (TurnManager.singleton != null) {
+            maxPlayers = TurnManager.singleton.expectedPlayers;
+        }
 
         totalAnyLines = System.Enum.GetValues(typeof(AnyOneLinersKind)).Length / totalVoices;
         totalAcornLines = System.Enum.GetValues(typeof(AcornOneLinersKind)).Length / totalVoices;

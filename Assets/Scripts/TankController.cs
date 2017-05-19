@@ -124,6 +124,10 @@ public class TankController : NetworkBehaviour {
 
     void OnDeath(GameObject from) {
         Debug.Log("OnDeath");
+		UxChatController.SendToConsole(
+			String.Format("{0} terminated {1}",
+				from.GetComponent<TankController>().playerName,
+                playerName));
         var manager = TurnManager.GetGameManager();
         if (manager != null) {
             manager.ServerHandleTankDeath(gameObject);
