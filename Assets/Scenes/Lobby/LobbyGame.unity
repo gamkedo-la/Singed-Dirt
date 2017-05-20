@@ -1094,7 +1094,9 @@ MonoBehaviour:
   gameOverController: {fileID: 1141001981}
   minPlayerSpacing: 30
   useRandomSpawn: 1
+  followActivePlayer: 1
   expectedPlayers: 2
+  currentRound: 1
   activeTanks: 
   spawnPoints: []
   helpUI: {fileID: 1141001980}
@@ -1205,6 +1207,9 @@ MonoBehaviour:
   minAmmoCount: 1
   maxAmmoCount: 5
   excludedProjectiles: 04000000
+  mushboomCount: 0
+  minMushbooms: 1
+  maxPercentMushbooms: 0.15
 --- !u!1001 &1108172677
 Prefab:
   m_ObjectHideFlags: 0
@@ -1247,6 +1252,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8a608c3ad4a2de94087b1c74c37d91b9, type: 2}
   m_IsPrefabParent: 0
+--- !u!20 &1108172678 stripped
+Camera:
+  m_PrefabParentObject: {fileID: 20677212425379164, guid: 8a608c3ad4a2de94087b1c74c37d91b9,
+    type: 2}
+  m_PrefabInternal: {fileID: 1108172677}
 --- !u!1 &1122314018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1476,6 +1486,66 @@ Prefab:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224850423161020332, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: -9
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 224056638535425738, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224417853437737450, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114404288079836296, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: projectileModelWorldPosition
+      value: 
+      objectReference: {fileID: 923877541}
+    - target: {fileID: 114404288079836296, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: projectileViewCamera
+      value: 
+      objectReference: {fileID: 1108172678}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac27fffd133b6af4f9dafaed1bc7b5c4, type: 2}
   m_IsPrefabParent: 0
