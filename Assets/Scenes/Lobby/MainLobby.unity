@@ -536,28 +536,6 @@ GameObject:
   m_PrefabParentObject: {fileID: 1657969184499350, guid: c76013760e8db471d93c63f2f9c54c5d,
     type: 2}
   m_PrefabInternal: {fileID: 1209524994}
---- !u!1 &1017501035 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1291712578783406, guid: c76013760e8db471d93c63f2f9c54c5d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1209524994}
---- !u!224 &1017501036 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224590781351160464, guid: c76013760e8db471d93c63f2f9c54c5d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1209524994}
---- !u!114 &1017501037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1017501035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0b2605944d7f4f6a85341248ff93e1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  creditsPanel: {fileID: 1433167256}
 --- !u!1001 &1209524994
 Prefab:
   m_ObjectHideFlags: 0
@@ -565,11 +543,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4990047113501618, guid: c76013760e8db471d93c63f2f9c54c5d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 528.34875
@@ -602,251 +575,19 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 114554520290032798, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 464060544}
     - target: {fileID: 114461884310350196, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 464060546}
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
+    - target: {fileID: 114554520290032798, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1017501037}
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ToggleCredits
-      objectReference: {fileID: 0}
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 114605660969215620, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 01c7d1688a48f4fb5b3d94f0a67895f0,
-        type: 3}
-    - target: {fileID: 114978222422242378, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: f90a09ac541ff4aa2bef4f887e9252e4,
-        type: 3}
-    - target: {fileID: 114978222422242378, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114978222422242378, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114978222422242378, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114978222422242378, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114727790636901854, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 36fc55afd574749889b1a6546fc31444,
-        type: 3}
-    - target: {fileID: 114731257570254472, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
-      value: 0
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 464060544}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c76013760e8db471d93c63f2f9c54c5d, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1286475743
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1286475744}
-  - component: {fileID: 1286475746}
-  - component: {fileID: 1286475745}
-  m_Layer: 5
-  m_Name: Text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1286475744
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1286475743}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1433167257}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -8}
-  m_SizeDelta: {x: 1024, y: 418}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1286475745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1286475743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.9485294, g: 0.927606, b: 0.927606, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
-  m_Text: "Thank you so much to such an awesome team!  This game brought to you from
-    the fine folks at Gamkedo.club:\n\nJeremy Kenyon - Project Lead, general sound
-    manager (programming), main menu, artillery shell (model), and sharktooth cluster
-    bomb (model and code), unicorn horn style hat model, pillar shot model,  writing
-    one-liners, other random programming jobs too\x03\x03\n\nTylor Allison - Network
-    code, Lobby UI and code, loot box model and code, game chat, player listing in
-    game (UI and whos turn it is), ammo lister (UI and which one you have selected
-    plus custom name mapping), voronoi player spawn location generation and voronoi
-    terrain generation, player model customization, and probably something else I
-    forgot\n\nJL Evans- Awesome voice overs!  BarkManager (code to add specific VOs
-    for specific ammo and to ensure they are random and don't repeat until all are
-    done), MushBoom and Beet Missiles (particle effects, model, and code for handling
-    special effects for both), arena sand textures, writing one-liners\n\nChrister
-    'McFunkyPants' Kaitila - Awesome voice overs!  Arena model, banners and flags,
-    tank models, 3D Singed Dirt model logo, clouds, hats, writing one-liners\n\nCaspar
-    Dunant - Acorn model, trailing particle effects for heated air effect behind projectiles\n\nTrenton
-    Pegeas - Pillar shot idea and terrain deformation template\n\nMicky Turner - Select
-    and back menu sound effects, tank shot effects\n\nDedrick Sarzaba - UI tank select
-    and turn sounds, projectile explosion and tank hit sounds (also hooked up in code),
-    power up/down sounds, tank rotating/aiming sounds\n\nNicholas Polchies - UI health
-    bar and power bar fixes, UI ammo model display fixes\n\nMichael Fewkes - Gameplay
-    Music\n\nMark Brown - Lobby Music\n\nTim Waskett - Terrain deformation\n"
---- !u!222 &1286475746
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1286475743}
---- !u!1 &1433167256
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1433167257}
-  - component: {fileID: 1433167259}
-  - component: {fileID: 1433167258}
-  m_Layer: 5
-  m_Name: CreditsPanel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &1433167257
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1433167256}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1286475744}
-  m_Father: {fileID: 1017501036}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2, y: 255}
-  m_SizeDelta: {x: 882, y: 404}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1433167258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1433167256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.459007, g: 0.43258002, b: 0.46323532, a: 0.778}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
---- !u!222 &1433167259
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1433167256}
 --- !u!1 &1814429132
 GameObject:
   m_ObjectHideFlags: 0

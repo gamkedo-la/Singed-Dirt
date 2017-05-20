@@ -77,6 +77,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1236215228605026
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224079452082703538}
+  - component: {fileID: 222260081506098316}
+  - component: {fileID: 114716968168310450}
+  m_Layer: 5
+  m_Name: CreditsPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1 &1273989909556054
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +137,7 @@ GameObject:
   - component: {fileID: 222613698570192344}
   - component: {fileID: 114605660969215620}
   - component: {fileID: 114731257570254472}
+  - component: {fileID: 114992745121358708}
   m_Layer: 5
   m_Name: Credits
   m_TagString: Untagged
@@ -387,6 +405,23 @@ GameObject:
   - component: {fileID: 23157356399468480}
   m_Layer: 0
   m_Name: tower006
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1692941138320206
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224174613805042956}
+  - component: {fileID: 222473049440120840}
+  - component: {fileID: 114808853556803090}
+  m_Layer: 5
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2017,9 +2052,36 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 6e1ee6ce592ac4aa7831abc3e70d263a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 01c7d1688a48f4fb5b3d94f0a67895f0, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!114 &114716968168310450
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1236215228605026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.459007, g: 0.43258002, b: 0.46323532, a: 0.778}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -2044,7 +2106,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: c133dcbfd762d46d4a8fddf2ea055e76, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 36fc55afd574749889b1a6546fc31444, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2090,9 +2152,75 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114605660969215620}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114992745121358708}
+        m_MethodName: ToggleCredits
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114808853556803090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692941138320206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9485294, g: 0.927606, b: 0.927606, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 0.8
+  m_Text: "Thank you so much to such an awesome team!  This game brought to you from
+    the fine folks at Gamkedo.club:\n\nJeremy Kenyon - Project Lead, general sound
+    manager (programming), main menu, artillery shell (model), and sharktooth cluster
+    bomb (model and code), unicorn horn style hat model, pillar shot model,  writing
+    one-liners, other random programming jobs too\x03\x03\n\nTylor Allison - Network
+    code, Lobby UI and code, loot box model and code, game chat, player listing in
+    game (UI and whos turn it is), ammo lister (UI and which one you have selected
+    plus custom name mapping), voronoi player spawn location generation and voronoi
+    terrain generation, player model customization, and probably something else I
+    forgot\n\nJL Evans- Awesome voice overs!  BarkManager (code to add specific VOs
+    for specific ammo and to ensure they are random and don't repeat until all are
+    done), MushBoom and Beet Missiles (particle effects, model, and code for handling
+    special effects for both), arena sand textures, writing one-liners\n\nChrister
+    'McFunkyPants' Kaitila - Awesome voice overs!  Arena model, banners and flags,
+    tank models, 3D Singed Dirt model logo, clouds, hats, writing one-liners\n\nCaspar
+    Dunant - Acorn model, trailing particle effects for heated air effect behind projectiles\n\nTrenton
+    Pegeas - Pillar shot idea and terrain deformation template\n\nMicky Turner - Select
+    and back menu sound effects, tank shot effects\n\nDedrick Sarzaba - UI tank select
+    and turn sounds, projectile explosion and tank hit sounds (also hooked up in code),
+    power up/down sounds, tank rotating/aiming sounds\n\nNicholas Polchies - UI health
+    bar and power bar fixes, UI ammo model display fixes\n\nMichael Fewkes - Gameplay
+    Music\n\nMark Brown - Lobby Music\n\nTim Waskett - Terrain deformation\n\nLou
+    Herard - Radius damage callculation and tank knock back\n"
 --- !u!114 &114829858276037604
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2186,7 +2314,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: da380a7e168ad4fc090d356973830a49, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f90a09ac541ff4aa2bef4f887e9252e4, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2194,18 +2322,42 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114992745121358708
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1291712578783406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b2605944d7f4f6a85341248ff93e1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  creditsPanel: {fileID: 1236215228605026}
 --- !u!222 &222169010252673854
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1804610543597888}
+--- !u!222 &222260081506098316
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1236215228605026}
 --- !u!222 &222336885666632522
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1816041412445938}
+--- !u!222 &222473049440120840
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692941138320206}
 --- !u!222 &222533688060670470
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -2280,6 +2432,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224079452082703538
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1236215228605026}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 224174613805042956}
+  m_Father: {fileID: 224590781351160464}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 1, y: 243.5}
+  m_SizeDelta: {x: 879, y: 427}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224139171428466370
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2319,6 +2490,24 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224174613805042956
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692941138320206}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 224079452082703538}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.75, y: 0}
+  m_SizeDelta: {x: 1040.5, y: 421}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224218320637057326
 RectTransform:
@@ -2367,6 +2556,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224075091485798102}
+  - {fileID: 224079452082703538}
   m_Father: {fileID: 224139171428466370}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
