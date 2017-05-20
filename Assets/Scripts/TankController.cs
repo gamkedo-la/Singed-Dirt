@@ -464,6 +464,9 @@ public class TankController : NetworkBehaviour {
             }
             if (togglePowerInputAmount == false) {
                 if (Input.GetKey(KeyCode.LeftBracket)) {
+                    if(tankPowerAudioSource.isPlaying == false){
+                        tankPowerAudioSource.Play();
+                    }
                     shotPower -= shotPowerModifier;
                     if (shotPower <= 0.0f) {
                         shotPower = 0.0f;
@@ -471,6 +474,9 @@ public class TankController : NetworkBehaviour {
                 }
 
                 if (Input.GetKey(KeyCode.RightBracket)) {
+                    if(tankPowerAudioSource.isPlaying == false){
+                        tankPowerAudioSource.Play();
+                    }
                     shotPower += shotPowerModifier;
                 }
             }
