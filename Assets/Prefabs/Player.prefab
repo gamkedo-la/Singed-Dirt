@@ -233,7 +233,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1016754442509034}
   serializedVersion: 5
-  lengthInSec: 5
+  lengthInSec: 3
   simulationSpeed: 1
   looping: 1
   prewarm: 0
@@ -287,7 +287,7 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       minMaxState: 3
-      scalar: 2
+      scalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -305,7 +305,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.5
+          value: 0.33333334
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -314,7 +314,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSpeed:
       minMaxState: 3
-      scalar: 30
+      scalar: 25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -332,7 +332,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.6666667
+          value: 0.6
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -404,7 +404,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
     startSize:
       minMaxState: 3
-      scalar: 3
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -422,7 +422,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.5
+          value: 0.4
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -565,12 +565,12 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 0
     randomizeRotationDirection: 1
-    maxNumParticles: 1000
+    maxNumParticles: 1200
     size3D: 0
     rotation3D: 0
     gravityModifier:
       minMaxState: 0
-      scalar: 0.75
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -617,7 +617,7 @@ ParticleSystem:
     boxY: 1
     boxZ: 1
     radius:
-      value: 10
+      value: 6
       mode: 0
       spread: 0
       speed:
@@ -719,7 +719,7 @@ ParticleSystem:
     serializedVersion: 4
     rateOverTime:
       minMaxState: 0
-      scalar: 150
+      scalar: 200
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1067,7 +1067,7 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 32768
+        atime1: 22937
         atime2: 64957
         atime3: 0
         atime4: 0
