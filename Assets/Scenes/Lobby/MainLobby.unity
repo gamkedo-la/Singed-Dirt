@@ -535,8 +535,8 @@ Transform:
 GameObject:
   m_PrefabParentObject: {fileID: 1657969184499350, guid: c76013760e8db471d93c63f2f9c54c5d,
     type: 2}
-  m_PrefabInternal: {fileID: 1209524994}
---- !u!1001 &1209524994
+  m_PrefabInternal: {fileID: 1274290886}
+--- !u!1001 &1274290886
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -575,16 +575,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 114461884310350196, guid: c76013760e8db471d93c63f2f9c54c5d,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 464060546}
     - target: {fileID: 114554520290032798, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 464060544}
+    - target: {fileID: 114461884310350196, guid: c76013760e8db471d93c63f2f9c54c5d,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 464060546}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c76013760e8db471d93c63f2f9c54c5d, type: 2}
   m_IsPrefabParent: 0
