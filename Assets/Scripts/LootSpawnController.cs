@@ -132,9 +132,14 @@ public class LootSpawnController : NetworkBehaviour {
                 }
             }
             var ammoAmount = UnityEngine.Random.Range(minAmmoCount, maxAmmoCount + 1);
-            if (ammoKind == (ProjectileKind)7) {
-                mushboomCount++;
-                ammoAmount = 1;
+            switch (ammoKind) {
+                case ((ProjectileKind)6):
+                    ammoAmount = 1;
+                    break;
+                case ((ProjectileKind)7):
+                    mushboomCount++;
+                    ammoAmount = 1;
+                    break;
             }
             lootboxGo.GetComponent<LootBoxController>().AssignLoot(ammoKind, ammoAmount);
             var health = lootboxGo.GetComponent<Health>();

@@ -9,6 +9,8 @@ using UnityEngine.Networking;
 
 public class TankController : NetworkBehaviour {
 
+    private bool isSlowed = false;
+
     // Public
     public GameObject modelPrefab;
     public TankModel model;
@@ -124,9 +126,9 @@ public class TankController : NetworkBehaviour {
 
     void OnDeath(GameObject from) {
         Debug.Log("OnDeath");
-		UxChatController.SendToConsole(
-			String.Format("{0} terminated {1}",
-				from.GetComponent<TankController>().playerName,
+        UxChatController.SendToConsole(
+            String.Format("{0} terminated {1}",
+                from.GetComponent<TankController>().playerName,
                 playerName));
         var manager = TurnManager.GetGameManager();
         if (manager != null) {
@@ -278,6 +280,18 @@ public class TankController : NetworkBehaviour {
         }
         else {
             model.tankRotation += tweakAmt;
+        }
+    }
+
+    public void SetDebuff(string effect) {
+        switch (effect) {
+            case "slow":
+            case "Slow":
+                isSlowed = true;
+                transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+                break;
+            default:
+                break;
         }
     }
 
@@ -583,6 +597,12 @@ public class TankController : NetworkBehaviour {
             model.shotSource.position,
             model.shotSource.rotation
         );
+        if (isSlowed) {
+            liveProjectile.GetComponent<Rigidbody>().mass *= 2;
+            liveProjectile.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            transform.GetChild(0).GetComponent<ParticleSystem>().Stop();
+            isSlowed = false;
+        }
         liveProjectile.name = name + "Projectile";
         liveProjectile.layer = gameObject.layer;
         liveProjectile.GetComponent<ProjectileController>().shooter = this;
