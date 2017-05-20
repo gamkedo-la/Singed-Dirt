@@ -11,6 +11,7 @@ public class ProjectileController : NetworkBehaviour {
 
     public ExplosionKind explosionKind = ExplosionKind.fire;
     public DeformationKind deformationKind = DeformationKind.shotCrater;
+    private ProjectileKind myKind;
 
     public GameObject clusterBomblet;
 
@@ -33,6 +34,10 @@ public class ProjectileController : NetworkBehaviour {
         DisableCollisions(0.2f);
         rb = GetComponent<Rigidbody>();
         startPos = transform.position;
+    }
+
+    public void SetProjectileKind(ProjectileKind kind){
+        myKind = kind;
     }
 
     void OnCollisionEnter(Collision collision) {
@@ -96,6 +101,9 @@ public class ProjectileController : NetworkBehaviour {
                     // The formula is based on a max proximity damage distance of 10m
                     int damagePoints = (int)(1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
                     if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
+                        if(myKind == ProjectileKind.cannonBall){
+                            damagePoints /= 2;
+                        }
                         health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
                         GetAudioClipFile(ProjectileSoundKind.tank_hit);
                         SoundManager.instance.PlayAudioClip(tankHit);

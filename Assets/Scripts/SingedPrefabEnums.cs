@@ -42,7 +42,8 @@ public enum TankSoundKind {
     canonFire1 = 0,
     canonFire2,
     tank_movement_LeftRight_LOOP_01,
-    tank_movement_UpDown_LOOP_01
+    tank_movement_UpDown_LOOP_01,
+    tank_power_UpDown_LOOP
 }
 
 public enum ProjectileSoundKind {
