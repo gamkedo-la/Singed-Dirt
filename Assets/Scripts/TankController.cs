@@ -293,7 +293,7 @@ public class TankController : NetworkBehaviour {
         }
     }
 
-    public void SetDebuff(string effect) {
+    public void SetAreaOfEffect(string effect) {
         switch (effect) {
             case "slow":
             case "Slow":

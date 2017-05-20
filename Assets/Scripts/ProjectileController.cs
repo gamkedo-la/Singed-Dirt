@@ -16,7 +16,8 @@ public class ProjectileController : NetworkBehaviour {
     public GameObject clusterBomblet;
 
     public bool isMushboom = false;
-    public string debuffEffect = "None";
+    public string areaOfEffect = "None";
+    public float effectRadius = 10f;
     public float clusterHeight = 20.0f;
     private bool passedClusterHeight = false;
     private Rigidbody rb;
@@ -36,7 +37,7 @@ public class ProjectileController : NetworkBehaviour {
         startPos = transform.position;
     }
 
-    public void SetProjectileKind(ProjectileKind kind){
+    public void SetProjectileKind(ProjectileKind kind) {
         myKind = kind;
     }
 
@@ -67,7 +68,7 @@ public class ProjectileController : NetworkBehaviour {
         //Debug.Log("ServerExplode: " + this);
         // Get list of colliders in range of this explosion
         // FIXME: range of projectile shouldn't be hard-coded
-        Collider[] flakReceivers = Physics.OverlapSphere(transform.position, 10.0f);
+        Collider[] flakReceivers = Physics.OverlapSphere(transform.position, effectRadius);
         // keep track of list of root objects already evaluated
         var hitList = new List<GameObject>();
 
@@ -80,6 +81,12 @@ public class ProjectileController : NetworkBehaviour {
 
                 GameObject gameObjRef = flakReceiver.gameObject;
                 //Debug.Log("hit gameObject: " + rootObject.name);
+
+                // Debuff
+                TankController tankObj = rootObject.GetComponent<TankController>();
+                if (tankObj != null) {
+                    tankObj.SetAreaOfEffect(areaOfEffect);
+                }
 
                 // potentially apply damage to any object that has health component
                 var health = rootObject.GetComponent<Health>();
@@ -101,19 +108,13 @@ public class ProjectileController : NetworkBehaviour {
                     // The formula is based on a max proximity damage distance of 10m
                     int damagePoints = (int)(1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
                     if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
-                        if(myKind == ProjectileKind.cannonBall){
+                        if (myKind == ProjectileKind.cannonBall) {
                             damagePoints /= 2;
                         }
                         health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
                         GetAudioClipFile(ProjectileSoundKind.tank_hit);
                         SoundManager.instance.PlayAudioClip(tankHit);
                         //Debug.Log ("Damage done to " + rootObject.name + ": " + damagePoints + ". Remaining: " + health.health);
-
-                        // Debuff
-                        TankController tankObj = rootObject.GetComponent<TankController>();
-                        if (tankObj != null) {
-                            tankObj.SetDebuff(debuffEffect);
-                        }
 
                         // Do shock displacement
                         // if target has rigidbody, apply displacement force to rigidbody

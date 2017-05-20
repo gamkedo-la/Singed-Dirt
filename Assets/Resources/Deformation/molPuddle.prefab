@@ -86,7 +86,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_delayLodUpdate: 1
   m_instantScar: 1
-  m_radiusWorldUnits: 10
+  m_radiusWorldUnits: 18
   m_heightWorldUnits: 1.25
   m_profile:
     serializedVersion: 2
