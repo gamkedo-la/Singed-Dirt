@@ -58,7 +58,8 @@ public enum ExplosionKind {
     cluster,
     bomblet,
     molasses,
-    mushCloud
+    mushCloud,
+    peeShooterFire
 }
 
 public enum DeformationKind {
@@ -66,7 +67,8 @@ public enum DeformationKind {
     bombletCrater,
     pillarDeformer,
     molPuddle,
-    groundZero
+    groundZero,
+    peeCrater
 }
 
 public enum TankBaseKind {

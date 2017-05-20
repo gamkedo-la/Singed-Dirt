@@ -2,7 +2,7 @@ using System.Collections.Generic;
 public static class NameMapping {
     static Dictionary<ProjectileKind, string> projectileMapping =
         new Dictionary<ProjectileKind, string>() {
-            { ProjectileKind.cannonBall, "Cannon Ball" },
+            { ProjectileKind.cannonBall, "Pee Shooter" },
             { ProjectileKind.acorn, "Deez Nutz" },
             { ProjectileKind.artilleryShell, "FUD Maker" },
             { ProjectileKind.sharkToothCluster, "To The Teeth" },
