@@ -112,7 +112,7 @@ public class ProjectileController : NetworkBehaviour {
                             damagePoints /= 2;
                         }
                         if(myKind == ProjectileKind.acorn){
-                            damagePoints *= 2;
+                            damagePoints = (int)(damagePoints * 1.5);
                         }
                         health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
                         GetAudioClipFile(ProjectileSoundKind.tank_hit);
