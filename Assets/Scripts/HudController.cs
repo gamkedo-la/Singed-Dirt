@@ -9,22 +9,31 @@ public class HudController: MonoBehaviour {
     public Text hudStatus;
 	public Transform healthBar;
 	public InputField powerValue;
-	public Transform projectileModelPosition;
+	public Transform projectileModelWorldPosition;
+	public Camera projectileViewCamera;
+	public RectTransform projectileModelScreenPosition;
 	public RectTransform shotPowerBar;
-    public AmmoListController ammoListPanel;
+	public AmmoListController ammoListPanel;
 	private Dictionary<ProjectileKind, GameObject> projetileModels;
 
-    TankController activeTank;
+	TankController activeTank;
 	ProjectileKind selectedProjectile;
-    bool forceAmmoUpdate = false;
+	bool forceAmmoUpdate = false;
 
-    void Awake() {
+	void Awake() {
 		selectedProjectile = ProjectileKind.cannonBall;
 		projetileModels = new Dictionary<ProjectileKind, GameObject>();
 		projetileModels[selectedProjectile] = getProjectileModel(selectedProjectile);
 		UpdateSelectedShot();
-        forceAmmoUpdate = true;
-    }
+		forceAmmoUpdate = true;
+		adjustProjectileModelPosition();
+  }
+
+	private void adjustProjectileModelPosition()
+	{
+		Debug.Log("Projectile pivot: " + projectileModelScreenPosition.position);
+		projectileModelWorldPosition.position = projectileViewCamera.ScreenToWorldPoint(new Vector3(projectileModelScreenPosition.position.x, projectileModelScreenPosition.position.y, 1f));
+	}
 
     public void AssignTank(TankController tank) {
         if (tank.isLocalPlayer) {
@@ -74,10 +83,10 @@ public class HudController: MonoBehaviour {
 	public GameObject getProjectileModel(ProjectileKind shotToShow) {
 		GameObject prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(shotToShow);
 		GameObject shotModelPrefab = prefab.transform.Find("Model").gameObject;
-		GameObject shotModel = (GameObject)GameObject.Instantiate(shotModelPrefab, projectileModelPosition.position, projectileModelPosition.rotation);
+		GameObject shotModel = (GameObject)GameObject.Instantiate(shotModelPrefab, projectileModelWorldPosition.position, projectileModelWorldPosition.rotation);
 
-		shotModel.transform.parent = projectileModelPosition;
-		SetLayer(shotModel.transform, projectileModelPosition.gameObject.layer);
+		shotModel.transform.parent = projectileModelWorldPosition;
+		SetLayer(shotModel.transform, projectileModelWorldPosition.gameObject.layer);
 
 		Vector3 scale = shotModel.transform.localScale;
 
@@ -85,9 +94,9 @@ public class HudController: MonoBehaviour {
 		scale.y *= prefab.transform.localScale.y;
 		scale.z *= prefab.transform.localScale.z;
 
-		scale.x *= projectileModelPosition.localScale.x;
-		scale.y *= projectileModelPosition.localScale.y;
-		scale.z *= projectileModelPosition.localScale.z;
+		scale.x *= projectileModelWorldPosition.localScale.x;
+		scale.y *= projectileModelWorldPosition.localScale.y;
+		scale.z *= projectileModelWorldPosition.localScale.z;
 
 		shotModel.transform.localScale = scale;
 
