@@ -53,7 +53,6 @@ public class LootBoxController : NetworkBehaviour {
         if (inventory != null) {
             inventory.ServerModify(lootKind, lootCount);
         }
-        if (lootKind == (ProjectileKind)7) LootSpawnController.singleton.mushboomCount--;
         Destroy(gameObject);
     }
 }

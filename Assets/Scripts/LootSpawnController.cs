@@ -43,8 +43,8 @@ public class LootSpawnController : NetworkBehaviour {
     };
 
     public int mushboomCount = 0,
-        minMushbooms = 2;
-    public float maxPercentMushbooms = 0.2f;
+        minMushbooms = 1;
+    public float maxPercentMushbooms = 0.15f;
 
     ISpawnGenerator locationGenerator;
     float startWidth = 256f;
@@ -87,7 +87,7 @@ public class LootSpawnController : NetworkBehaviour {
 
     public void ServerSpawnRound() {
         var num = UnityEngine.Random.Range(0, maxPerRound);
-        minMushbooms = Math.Min((int)(maxLootBoxes * maxPercentMushbooms), 2 * TurnManager.singleton.currentRound);
+        minMushbooms = Math.Min((int)(maxLootBoxes * maxPercentMushbooms), TurnManager.singleton.currentRound);
         ServerSpawnN(num);
     }
 
