@@ -384,12 +384,12 @@ public class BarkManager : MonoBehaviour {
 
     // Public Methods
     public int AssignCharVoice() {
-        int voice = voiceIndexQueue[currentVoiceIndex];
-        currentVoiceIndex++;
         if (currentVoiceIndex >= totalVoices) {
             currentVoiceIndex = 0;
             RandomizeQueue(voiceIndexQueue);
         }
+        int voice = voiceIndexQueue[currentVoiceIndex];
+        currentVoiceIndex++;
         return voice;
     }
 
@@ -402,108 +402,108 @@ public class BarkManager : MonoBehaviour {
         if (anyNumber > 5) {
             switch (shot) {
                 case (ProjectileKind)1:
+                    if (currentAcornLineIndex >= totalAcornLines) {
+                        currentAcornLineIndex = 0;
+                        RandomizeQueue(acornIndexQueue);
+                    }
                     lineIndex = acornIndexQueue[currentAcornLineIndex];
                     voiceIndex = totalAcornLines * voice;
                     acornOneLiner = (AcornOneLinersKind)(voiceIndex + lineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + acornOneLiner);
 
                     currentAcornLineIndex++;
-                    if (currentAcornLineIndex >= totalAcornLines) {
-                        currentAcornLineIndex = 0;
-                        RandomizeQueue(acornIndexQueue);
-                    }
                     return theLine;
 
                 case (ProjectileKind)2:
+                    if (currentMissileLineIndex >= totalMissileLines) {
+                        currentMissileLineIndex = 0;
+                        RandomizeQueue(missileIndexQueue);
+                    }
                     lineIndex = missileIndexQueue[currentMissileLineIndex];
                     voiceIndex = totalMissileLines * voice;
                     missileOneLiner = (MissileOneLinersKind)(voiceIndex + lineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + missileOneLiner);
 
                     currentMissileLineIndex++;
-                    if (currentMissileLineIndex >= totalMissileLines) {
-                        currentMissileLineIndex = 0;
-                        RandomizeQueue(missileIndexQueue);
-                    }
                     return theLine;
 
                 case (ProjectileKind)3:
+                    if (currentSharktoothLineIndex >= totalSharktoothLines) {
+                        currentSharktoothLineIndex = 0;
+                        RandomizeQueue(sharktoothIndexQueue);
+                    }
                     lineIndex = sharktoothIndexQueue[currentSharktoothLineIndex];
                     voiceIndex = totalSharktoothLines * voice;
                     sharktoothOneLiner = (SharktoothOneLinersKind)(voiceIndex + lineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + sharktoothOneLiner);
 
                     currentSharktoothLineIndex++;
-                    if (currentSharktoothLineIndex >= totalSharktoothLines) {
-                        currentSharktoothLineIndex = 0;
-                        RandomizeQueue(sharktoothIndexQueue);
-                    }
                     return theLine;
 
                 case (ProjectileKind)5:
+                    if (currentPillarLineIndex >= totalPillarLines) {
+                        currentPillarLineIndex = 0;
+                        RandomizeQueue(pillarIndexQueue);
+                    }
                     lineIndex = pillarIndexQueue[currentPillarLineIndex];
                     voiceIndex = totalPillarLines * voice;
                     pillarOneLiner = (PillarOneLinersKind)(voiceIndex + lineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + pillarOneLiner);
 
                     currentPillarLineIndex++;
-                    if (currentPillarLineIndex >= totalPillarLines) {
-                        currentPillarLineIndex = 0;
-                        RandomizeQueue(pillarIndexQueue);
-                    }
                     return theLine;
 
                 case (ProjectileKind)6:
+                    if (currentBeetLineIndex >= totalBeetLines) {
+                        currentBeetLineIndex = 0;
+                        RandomizeQueue(beetIndexQueue);
+                    }
                     lineIndex = beetIndexQueue[currentBeetLineIndex];
                     voiceIndex = totalBeetLines * voice;
                     beetOneLiner = (BeetOneLinersKind)(voiceIndex + currentBeetLineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + beetOneLiner);
 
                     currentBeetLineIndex++;
-                    if (currentBeetLineIndex >= totalBeetLines) {
-                        currentBeetLineIndex = 0;
-                        RandomizeQueue(beetIndexQueue);
-                    }
                     return theLine;
 
                 case (ProjectileKind)7:
+                    if (currentMushboomLineIndex >= totalMushboomLines) {
+                        currentMushboomLineIndex = 0;
+                        RandomizeQueue(mushboomIndexQueue);
+                    }
                     lineIndex = mushboomIndexQueue[currentMushboomLineIndex];
                     voiceIndex = totalMushboomLines * voice;
                     mushboomOneLiner = (MushboomOneLinersKind)(voiceIndex + currentMushboomLineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + mushboomOneLiner);
 
                     currentMushboomLineIndex++;
-                    if (currentMushboomLineIndex >= totalMushboomLines) {
-                        currentMushboomLineIndex = 0;
-                        RandomizeQueue(mushboomIndexQueue);
-                    }
                     return theLine;
 
                 default:
+                    if (currentCannonLineIndex >= totalCannonLines) {
+                        currentCannonLineIndex = 0;
+                        RandomizeQueue(cannonIndexQueue);
+                    }
                     lineIndex = cannonIndexQueue[currentCannonLineIndex];
                     voiceIndex = totalCannonLines * voice;
                     cannonOneLiner = (CannonOneLinersKind)(voiceIndex + currentCannonLineIndex);
                     theLine = (AudioClip)Resources.Load("OneLiners/" + cannonOneLiner);
 
                     currentCannonLineIndex++;
-                    if (currentCannonLineIndex >= totalCannonLines) {
-                        currentCannonLineIndex = 0;
-                        RandomizeQueue(cannonIndexQueue);
-                    }
                     return theLine;
             }
         }
         else {
+            if (currentAnyLineIndex >= totalAnyLines) {
+                currentAnyLineIndex = 0;
+                RandomizeQueue(anyIndexQueue);
+            }
             lineIndex = anyIndexQueue[currentAnyLineIndex];
             voiceIndex = totalAnyLines * voice;
             anyOneLiner = (AnyOneLinersKind)(voiceIndex + currentAnyLineIndex);
             theLine = (AudioClip)Resources.Load("OneLiners/" + anyOneLiner);
 
             currentAnyLineIndex++;
-            if (currentAnyLineIndex >= totalAnyLines) {
-                currentAnyLineIndex = 0;
-                RandomizeQueue(anyIndexQueue);
-            }
             return theLine;
         }
     }

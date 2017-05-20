@@ -9,6 +9,8 @@ using UnityEngine.Networking;
 
 public class TankController : NetworkBehaviour {
 
+    private bool isSlowed = false;
+
     // Public
     public GameObject modelPrefab;
     public TankModel model;
@@ -71,11 +73,14 @@ public class TankController : NetworkBehaviour {
 
     private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
     private AudioClip tankSound;
+    private AudioClip tankPowerSound;
     private AudioClip turretHorizontalMovementSound;
     private AudioClip turretVerticalMovementSound;
     private AudioSource tankHorizontalMovementAudioSource;
     private AudioSource tankVerticalMovementAudioSource;
+    private AudioSource tankPowerAudioSource;
     private GameObject secondaryAudioSource;
+    private GameObject powerAudioSource;
 
     [SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
@@ -102,6 +107,7 @@ public class TankController : NetworkBehaviour {
         tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
         turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
         turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
+        tankPowerSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_power_UpDown_LOOP);
         tankHorizontalMovementAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
         tankHorizontalMovementAudioSource.loop = true;
         tankHorizontalMovementAudioSource.clip = turretHorizontalMovementSound;
@@ -112,6 +118,12 @@ public class TankController : NetworkBehaviour {
         tankVerticalMovementAudioSource.loop = true;
         tankVerticalMovementAudioSource.clip = turretVerticalMovementSound;
         charVoice = BarkManager.self.AssignCharVoice();
+
+        powerAudioSource = new GameObject("powerAudioSource");
+        powerAudioSource.transform.SetParent(transform);
+        tankPowerAudioSource = powerAudioSource.AddComponent<AudioSource>() as AudioSource;
+        tankPowerAudioSource.loop = true;
+        tankPowerAudioSource.clip = tankPowerSound;
     }
 
     public void ServerActivate() {
@@ -124,9 +136,9 @@ public class TankController : NetworkBehaviour {
 
     void OnDeath(GameObject from) {
         Debug.Log("OnDeath");
-		UxChatController.SendToConsole(
-			String.Format("{0} terminated {1}",
-				from.GetComponent<TankController>().playerName,
+        UxChatController.SendToConsole(
+            String.Format("{0} terminated {1}",
+                from.GetComponent<TankController>().playerName,
                 playerName));
         var manager = TurnManager.GetGameManager();
         if (manager != null) {
@@ -281,6 +293,18 @@ public class TankController : NetworkBehaviour {
         }
     }
 
+    public void SetDebuff(string effect) {
+        switch (effect) {
+            case "slow":
+            case "Slow":
+                isSlowed = true;
+                transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+                break;
+            default:
+                break;
+        }
+    }
+
     void Register() {
         // local player handles own registration
         if (!isLocalPlayer) return;
@@ -371,9 +395,9 @@ public class TankController : NetworkBehaviour {
     void OnChangeControl(bool currentHasControl) {
         // Debug.Log("OnChangeControl called for " + this.name + " with isServer: " + isServer + " hasControl: " + currentHasControl);
         // only apply change control to local player
-        if (!isLocalPlayer) return;
         if (currentHasControl == hasControl) return;
         hasControl = currentHasControl;
+        if (!isLocalPlayer) return;
 
         // disable -> enable
         if (currentHasControl) {
@@ -428,6 +452,9 @@ public class TankController : NetworkBehaviour {
                 yield return null;
                 continue;
             }
+            tankHorizontalMovementAudioSource.volume = SoundManager.instance.SFXVolume;
+            tankVerticalMovementAudioSource.volume = SoundManager.instance.SFXVolume;
+            tankPowerAudioSource.volume = SoundManager.instance.SFXVolume;
             //Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) {
                 togglePowerInputAmount = true;
@@ -449,6 +476,9 @@ public class TankController : NetworkBehaviour {
             }
             else {
                 if (Input.GetKeyDown(KeyCode.LeftBracket)) {
+                    if(tankPowerAudioSource.isPlaying == false){
+                        tankPowerAudioSource.Play();
+                    }
                     shotPower -= shotPowerModifier;
                     if (shotPower <= 0.0f) {
                         shotPower = 0.0f;
@@ -457,8 +487,14 @@ public class TankController : NetworkBehaviour {
 
                 if (Input.GetKeyDown(KeyCode.RightBracket)) {
                     Debug.Log("right bracket");
+                    if(tankPowerAudioSource.isPlaying == false){
+                        tankPowerAudioSource.Play();
+                    }
                     shotPower += shotPowerModifier;
                 }
+            }
+            if(Input.GetKeyUp(KeyCode.RightBracket) || Input.GetKeyUp(KeyCode.LeftBracket)){
+                tankPowerAudioSource.Stop();                    
             }
 
             if (Input.GetKeyDown(KeyCode.Comma)) {
@@ -583,9 +619,16 @@ public class TankController : NetworkBehaviour {
             model.shotSource.position,
             model.shotSource.rotation
         );
+        if (isSlowed) {
+            liveProjectile.GetComponent<Rigidbody>().mass *= 2;
+            liveProjectile.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            transform.GetChild(0).GetComponent<ParticleSystem>().Stop();
+            isSlowed = false;
+        }
         liveProjectile.name = name + "Projectile";
         liveProjectile.layer = gameObject.layer;
         liveProjectile.GetComponent<ProjectileController>().shooter = this;
+        liveProjectile.GetComponent<ProjectileController>().SetProjectileKind(selectedShot);
 
         // set initial velocity/force
         liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);

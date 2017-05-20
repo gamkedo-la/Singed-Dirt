@@ -29,8 +29,8 @@ public enum MenuSoundKind {
     menuSelect = 0,
     menuBack,
     playerConnect,
-	ui_tank_option,
-	ui_tank_rotate
+    ui_tank_option,
+    ui_tank_rotate
 }
 
 public enum MusicKind {
@@ -42,28 +42,31 @@ public enum TankSoundKind {
     canonFire1 = 0,
     canonFire2,
     tank_movement_LeftRight_LOOP_01,
-    tank_movement_UpDown_LOOP_01
+    tank_movement_UpDown_LOOP_01,
+    tank_power_UpDown_LOOP
 }
 
 public enum ProjectileSoundKind {
     groundHit = 0,
-	projectile_explo,
-	tank_hit
+    projectile_explo,
+    tank_hit
 }
 
 public enum ExplosionKind {
     fire = 0,
-	virus,
+    virus,
     cluster,
     bomblet,
-    molasses
+    molasses,
+    mushCloud
 }
 
 public enum DeformationKind {
     shotCrater = 0,
     bombletCrater,
     pillarDeformer,
-    molPuddle
+    molPuddle,
+    groundZero
 }
 
 public enum TankBaseKind {
@@ -91,7 +94,7 @@ public enum TankHatKind {
     sunRed,
     sunYellow,
     sunWhite,
-	horn,
+    horn,
 }
 
 public enum SpawnKind {

@@ -56,6 +56,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
         // set initial panel to main game select
         ChangeTo(gameSelectPanel.gameObject, null);
         GetAudioClipFile(menuSoundKind);
+        SoundManager.instance.SetVolumeSliders();
     }
     void GetAudioClipFile(MenuSoundKind sound) {
         menuOKSound = (AudioClip)Resources.Load("MenuSound/" + sound);

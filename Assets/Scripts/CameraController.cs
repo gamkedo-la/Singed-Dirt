@@ -146,7 +146,7 @@ public class CameraController : MonoBehaviour {
 				playerZoom += zoomIncrement;
 				if (playerZoom > maxPlayerZoom) playerZoom = maxPlayerZoom;
 			}
-			if (tank.hasControl) {
+			if (tank.hasControl && tank.isLocalPlayer) {
 				desiredPosition = tank.chaseCameraSource.position;
 				desiredRotation = tank.chaseCameraSource.rotation;
 				/*
