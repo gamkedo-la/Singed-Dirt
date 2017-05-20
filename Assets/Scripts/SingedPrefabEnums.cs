@@ -59,7 +59,8 @@ public enum ExplosionKind {
     bomblet,
     molasses,
     mushCloud,
-    peeShooterFire
+    peeShooterFire,
+    hacking
 }
 
 public enum DeformationKind {

@@ -20,7 +20,7 @@ public class ProjectileInventory : NetworkBehaviour {
         ammoCounts[(int) ProjectileKind.cannonBall] = int.MaxValue;
         // uncomment these to get unlimited ammo for the appropriate type for testing
         // ammoCounts[(int) ProjectileKind.acorn] = int.MaxValue;
-        // ammoCounts[(int) ProjectileKind.artilleryShell] = int.MaxValue;
+        ammoCounts[(int) ProjectileKind.artilleryShell] = int.MaxValue;
         ammoCounts[(int) ProjectileKind.beetMissile] = int.MaxValue;
         // ammoCounts[(int) ProjectileKind.mushboom] = int.MaxValue;
         // ammoCounts[(int) ProjectileKind.pillarShot] = int.MaxValue;
