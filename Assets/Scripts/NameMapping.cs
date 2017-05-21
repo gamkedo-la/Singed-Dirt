@@ -4,7 +4,7 @@ public static class NameMapping {
         new Dictionary<ProjectileKind, string>() {
             { ProjectileKind.cannonBall, "Pee Shooter" },
             { ProjectileKind.acorn, "Deez Nutz" },
-            { ProjectileKind.artilleryShell, "FUD Maker" },
+            { ProjectileKind.artilleryShell, "ILOVEYOU" },
             { ProjectileKind.sharkToothCluster, "To The Teeth" },
             { ProjectileKind.beetMissile, "Beet Dem Down" },
             { ProjectileKind.pillarShot, "Build Dem Up" },
