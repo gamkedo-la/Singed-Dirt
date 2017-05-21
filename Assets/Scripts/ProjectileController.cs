@@ -111,9 +111,15 @@ public class ProjectileController : NetworkBehaviour {
                         if (myKind == ProjectileKind.cannonBall) {
                             damagePoints /= 2;
                         }
-                        if(myKind == ProjectileKind.acorn){
+                        if (myKind == ProjectileKind.acorn) {
                             damagePoints = (int)(damagePoints * 1.5);
                         }
+
+                        if (myKind == ProjectileKind.artilleryShell && tankObj.hasVirus == false && tankObj != null) {
+                            tankObj.InfectPlayer(rootObject);
+                            damagePoints = 20;
+                        }
+
                         health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
                         GetAudioClipFile(ProjectileSoundKind.tank_hit);
                         SoundManager.instance.PlayAudioClip(tankHit);

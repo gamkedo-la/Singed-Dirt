@@ -92,6 +92,12 @@ public class TankController : NetworkBehaviour {
     public TankHatKind hatKind = TankHatKind.sunBlue;
     private float minTurretElevation = 0.00f;
     private float maxTurretElevation = 70.0f;
+    public bool hasVirus = false;
+    private float virusDuration = 2;
+    public ParticleSystem virusParticles;
+    public GameObject virusParticlesGO;
+    private Health playerHealth;
+    private GameObject infectingPlayer;
 
     void Awake() {
         //Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
@@ -104,6 +110,8 @@ public class TankController : NetworkBehaviour {
 
         // create underlying model
         CreateModel();
+
+        // let there be sound!
         tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
         turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
         turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
@@ -124,6 +132,12 @@ public class TankController : NetworkBehaviour {
         tankPowerAudioSource = powerAudioSource.AddComponent<AudioSource>() as AudioSource;
         tankPowerAudioSource.loop = true;
         tankPowerAudioSource.clip = tankPowerSound;
+        
+        virusParticlesGO = (GameObject)GameObject.Instantiate(Resources.Load("Spawn/" + SpawnKind.InfectedParticles));
+        virusParticlesGO.transform.SetParent(transform);
+        virusParticlesGO.name = "E-Virus";
+        virusParticles = virusParticlesGO.GetComponentInChildren<ParticleSystem>();
+        playerHealth = GetComponent<Health>();
     }
 
     public void ServerActivate() {
@@ -209,6 +223,13 @@ public class TankController : NetworkBehaviour {
         model.UpdateAvatar();
 
         savedPowerModifier = shotPowerModifier;
+    }
+
+    public void InfectPlayer(GameObject patientZero){
+        virusParticles.Play();
+        hasVirus = true;
+        infectingPlayer = patientZero;
+        UxChatController.SendToConsole("" + gameObject.name + " has been infected with an E-Virus!");
     }
 
     public void DialAdjustPower(int offset) {
@@ -420,6 +441,18 @@ public class TankController : NetworkBehaviour {
         // disable tank physics
         rb.isKinematic = true;
 
+        // turn related effects
+        if (hasVirus == true) {
+            if (virusDuration <= 0) {
+                hasVirus = false;
+                virusDuration = 2;
+                virusParticles.Stop();
+            } else {
+                playerHealth.TakeDamage(10, infectingPlayer);
+                virusDuration -= 1;
+            }
+        }
+
         // line up and take the shot
         yield return StartCoroutine(AimStateEngine());
 
@@ -455,6 +488,7 @@ public class TankController : NetworkBehaviour {
             tankHorizontalMovementAudioSource.volume = SoundManager.instance.SFXVolume;
             tankVerticalMovementAudioSource.volume = SoundManager.instance.SFXVolume;
             tankPowerAudioSource.volume = SoundManager.instance.SFXVolume;
+
             //Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) {
                 togglePowerInputAmount = true;
