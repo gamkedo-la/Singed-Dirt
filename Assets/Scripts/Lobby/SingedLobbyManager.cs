@@ -95,7 +95,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     public void AddLocalPlayer() {
         // attempt to set new local player
         // Debug.Log("AddLocalPlayer");
-        SoundManager.instance.RpcPlayAudioClip(menuOKSound);
+        SoundManager.instance.PlayAudioClip(menuOKSound);
         TryToAddPlayer();
     }
 

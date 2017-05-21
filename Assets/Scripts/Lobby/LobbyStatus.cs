@@ -35,7 +35,7 @@ public class LobbyStatus : MonoBehaviour {
     }
 
     void PlaySound(){
-        SoundManager.instance.RpcPlayAudioClip(menuBackSound);
+        SoundManager.instance.PlayAudioClip(menuBackSound);
     }
 
     /// <summary>
