@@ -158,7 +158,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickReady(bool value) {
-        SoundManager.instance.PlayAudioClip(menuOKSound);
+        SoundManager.instance.RpcPlayAudioClip(menuOKSound);
         // send ready or not ready message to lobby manager
         if (readyToggle.isOn) {
             SendReadyToBeginMessage();
@@ -168,7 +168,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickSetup() {
-        SoundManager.instance.PlayAudioClip(menuOKSound);
+        SoundManager.instance.RpcPlayAudioClip(menuOKSound);
         var manager = SingedLobbyManager.s_singleton;
         if (manager != null) {
             // change to playerSetupPanel
@@ -252,7 +252,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     }
 
     public void OnClickRemovePlayer() {
-        SoundManager.instance.PlayAudioClip(menuBadSound);
+        SoundManager.instance.RpcPlayAudioClip(menuBadSound);
         if (isLocalPlayer) {
             RemovePlayer();
         } else if (isServer) {

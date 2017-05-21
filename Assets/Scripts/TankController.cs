@@ -559,7 +559,7 @@ public class TankController : NetworkBehaviour {
                 tankHorizontalMovementAudioSource.Stop();
                 if (shotInventory.GetAvailable(selectedShot) > 0) {
                     speech = BarkManager.self.GetTheShotOneLiner(selectedShot, charVoice);
-                    SoundManager.instance.PlayAudioClip(tankSound);
+                    SoundManager.instance.RpcPlayAudioClip(tankSound);
                     SoundManager.instance.PlayClipDelayed(tankSound.length / 2, speech);
                     CmdFire(shotPower, selectedShot);
                     // decrease ammo count

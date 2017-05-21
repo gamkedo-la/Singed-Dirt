@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class SoundManager : MonoBehaviour {
+public class SoundManager : NetworkBehaviour {
 
 	public static SoundManager instance;
 
@@ -114,7 +115,8 @@ public class SoundManager : MonoBehaviour {
 		StartCoroutine(FadeIntoNewSong(gameplayMusicPlayer, menuMusicPlayer));
 	}
 
-	public void PlayAudioClip(AudioClip clip, bool pitchModulation = false) {
+	[ClientRpc]
+	public void RpcPlayAudioClip(AudioClip clip, bool pitchModulation = false) {
 		GameObject tempGO = new GameObject("TempAudio"); // create the temp object
 		
         tempGO.transform.SetParent(Camera.main.transform);
@@ -136,6 +138,6 @@ public class SoundManager : MonoBehaviour {
 
     IEnumerator WaitThenPlaySound(float waitSec, AudioClip clip, bool pitchModulation) {
         yield return new WaitForSeconds(waitSec);
-        PlayAudioClip(clip, pitchModulation);
+        RpcPlayAudioClip(clip, pitchModulation);
     }
 }

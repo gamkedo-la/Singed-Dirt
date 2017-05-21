@@ -62,7 +62,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.hatKind = (TankHatKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
     public void OnClickPrevHat() {
         var intSelection = (int) tankModel.hatKind - 1;
@@ -70,7 +70,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.hatKind = (TankHatKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
 
     public void OnClickNextTurret() {
@@ -79,7 +79,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.turretKind = (TankTurretKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
     public void OnClickPrevTurret() {
         var intSelection = (int) tankModel.turretKind - 1;
@@ -87,7 +87,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.turretKind = (TankTurretKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
 
     public void OnClickNextTurretBase() {
@@ -96,7 +96,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.turretBaseKind = (TankTurretBaseKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
     public void OnClickPrevTurretBase() {
         var intSelection = (int) tankModel.turretBaseKind - 1;
@@ -104,7 +104,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.turretBaseKind = (TankTurretBaseKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
 
     public void OnClickNextBase() {
@@ -113,7 +113,7 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.tankBaseKind = (TankBaseKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
     public void OnClickPrevBase() {
         var intSelection = (int) tankModel.tankBaseKind - 1;
@@ -121,18 +121,18 @@ public class TankModelPanel : MonoBehaviour {
         tankModel.tankBaseKind = (TankBaseKind) intSelection;
         tankModel.UpdateAvatar();
 		GetAudioClipFile (MenuSoundKind.ui_tank_option);
-		SoundManager.instance.PlayAudioClip (tankOption);
+		SoundManager.instance.RpcPlayAudioClip (tankOption);
     }
 
     public void OnClickRotateRight() {
         tankModel.tankRotation -= rotationSpeed;
 		GetAudioClipFile (MenuSoundKind.ui_tank_rotate);
-		SoundManager.instance.PlayAudioClip(tankRotate);
+		SoundManager.instance.RpcPlayAudioClip(tankRotate);
     }
     public void OnClickRotateLeft() {
         tankModel.tankRotation += rotationSpeed;
 		GetAudioClipFile (MenuSoundKind.ui_tank_rotate);
-		SoundManager.instance.PlayAudioClip(tankRotate);
+		SoundManager.instance.RpcPlayAudioClip(tankRotate);
     }
 
     public void OnClickCancel() {
