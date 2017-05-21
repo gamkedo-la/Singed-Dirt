@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Networking;
 
-public class SoundManager : NetworkBehaviour {
+public class SoundManager : MonoBehaviour {
 
 	public static SoundManager instance;
 
@@ -115,17 +114,11 @@ public class SoundManager : NetworkBehaviour {
 		StartCoroutine(FadeIntoNewSong(gameplayMusicPlayer, menuMusicPlayer));
 	}
 
-	[ClientRpc]
-	private void RpcPlayClip (GameObject source) {
-		AudioSource aSource = source.gameObject.GetComponent<AudioSource>();
-		aSource.Play();
-		Destroy(source, aSource.clip.length/aSource.pitch); // destroy object after clip duration
-	}
 	public void PlayAudioClip(AudioClip clip, bool pitchModulation = false) {
 		GameObject tempGO = new GameObject("TempAudio"); // create the temp object
 		
         tempGO.transform.SetParent(Camera.main.transform);
-		NetworkIdentity networkSource = tempGO.AddComponent<NetworkIdentity>() as NetworkIdentity; // add an audio source
+
 		AudioSource aSource = tempGO.AddComponent<AudioSource>() as AudioSource; // add an audio source
 		aSource.clip = clip; // define the clip
 		aSource.volume = SFXVolume;
@@ -133,7 +126,8 @@ public class SoundManager : NetworkBehaviour {
             aSource.pitch = Random.Range(0.7f,1.4f);
         }
 		// set other aSource properties here, if desired
-		RpcPlayClip(tempGO);
+		aSource.Play(); // start the sound
+		Destroy(tempGO, clip.length/aSource.pitch); // destroy object after clip duration
 	}
 
     public void PlayClipDelayed(float delay, AudioClip clip, bool pitchModulation = false) {
