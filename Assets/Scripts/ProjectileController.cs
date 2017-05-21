@@ -48,8 +48,13 @@ public class ProjectileController : NetworkBehaviour {
         if (isServer && !hasCollided) {
             // single collision/explosion per projectile
             hasCollided = true;
-            if (!isMushboom) ServerExplode(collision);
-            else GetComponent<MushBehavior>().PlantIt();
+            if (!isMushboom) {
+                Debug.Log("collision is " + collision.gameObject.name);
+                ServerExplode(collision);
+            }
+            else {
+                GetComponent<MushBehavior>().PlantIt();
+            }
         }
     }
 
@@ -114,10 +119,12 @@ public class ProjectileController : NetworkBehaviour {
                         if (myKind == ProjectileKind.acorn) {
                             damagePoints = (int)(damagePoints * 1.5);
                         }
-
-                        if (myKind == ProjectileKind.artilleryShell && tankObj.hasVirus == false && tankObj != null) {
-                            tankObj.InfectPlayer(rootObject);
-                            damagePoints = 20;
+                        Debug.Log("MyKind is " + myKind);
+                        if (tankObj != null) {
+                            if(myKind == ProjectileKind.artilleryShell && tankObj.hasVirus == false){
+                                tankObj.InfectPlayer(rootObject);
+                                damagePoints = 20;
+                            }
                         }
 
                         health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
