@@ -102,4 +102,5 @@ public enum TankHatKind {
 
 public enum SpawnKind {
     lootbox = 0,
+    glowBall
 }
