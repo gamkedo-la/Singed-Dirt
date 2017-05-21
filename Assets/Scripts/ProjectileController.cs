@@ -256,8 +256,13 @@ public class ProjectileController : NetworkBehaviour {
             }
         }
 
-        // destroy original projectile
-        Destroy(gameObject);
+        // hide original projectile
+        foreach (Transform child in transform) {
+            if (!child.gameObject.name.Contains("Player")) {
+                child.gameObject.SetActive(false);
+            }
+        }
+        gameObject.GetComponent<CapsuleCollider>().enabled = false;
         yield return null;
     }
 
