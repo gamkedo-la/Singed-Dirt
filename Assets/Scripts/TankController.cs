@@ -320,6 +320,7 @@ public class TankController : NetworkBehaviour {
             case "Slow":
                 isSlowed = true;
                 transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+                UxChatController.SendToConsole("" + gameObject.name + " has been slowed with molasses!");
                 break;
             default:
                 break;
