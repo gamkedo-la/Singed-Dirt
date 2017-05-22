@@ -634,8 +634,8 @@ MonoBehaviour:
     and back menu sound effects, tank shot effects\n\nDedrick Sarzaba - UI tank select
     and turn sounds, projectile explosion and tank hit sounds (also hooked up in code),
     power up/down sounds, tank rotating/aiming sounds\n\nNicholas Polchies - UI health
-    bar and power bar fixes, UI ammo model display fixes\n\nMichael Fewkes - Gameplay
-    Music\n\nMark Brown - Lobby Music\n\nTim Waskett - Terrain deformation\n\nLou
+    bar and power bar fixes, UI ammo model display fixes\n\nMichael \"Misha\" Fewkes
+    - Gameplay Music\n\nMark Brown - Lobby Music\n\nTim Waskett - Terrain deformation\n\nLou
     Herard - Radius damage callculation and tank knock back\n\nClick anywhere to close
     credits."
 --- !u!222 &1411483943
