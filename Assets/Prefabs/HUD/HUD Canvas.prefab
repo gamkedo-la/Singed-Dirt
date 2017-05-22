@@ -634,7 +634,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1373979812160792
 GameObject:
   m_ObjectHideFlags: 1
@@ -3291,11 +3291,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Heading: 30.59 degrees
-
-    Elevation: 20.34 degrees
-
-    Muzzle Velocity: 1,700 m/s'
+  m_Text: Press H for help!
 --- !u!114 &114310736779685228
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4187,11 +4183,12 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "  Thanks for testing!\n\n  AWSD or Arrow keys for turning left to right
-    and aiming up and down.\n\n  Space to shoot! (Important one there)\n\n  [ to lower
-    shot power and ] to increase.\n\n  < and > to change weapon types.\n\n  H to bring
-    up this menu and to close it.\n\n  Y to quit (escape brings up a menu and q is
-    close to w so don't want to accidentlly quit)"
+  m_Text: "  INSTRUCTIONS\n\n  WASD or Arrow keys for turning left to right and aiming
+    up and down.\n\n  Q to decrease shot power and E to increase it.\n\n  Space to
+    shoot! (Important one there)\n\n  Shoot boxes to get more ammo types!\n  \n  <
+    and > to change ammo types.\n\n  Have fun and remember you can damage yourself
+    so shoot far away!  Thanks for playing!\n\n    ** Press H to close this window
+    **"
 --- !u!114 &114521214328477188
 MonoBehaviour:
   m_ObjectHideFlags: 1

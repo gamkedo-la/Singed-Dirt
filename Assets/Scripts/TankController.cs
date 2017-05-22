@@ -498,7 +498,7 @@ public class TankController : NetworkBehaviour {
                 togglePowerInputAmount = false;
             }
             if (togglePowerInputAmount == false) {
-                if (Input.GetKey(KeyCode.LeftBracket)) {
+                if (Input.GetKey(KeyCode.LeftBracket) || Input.GetKey(KeyCode.Q)) {
                     if(tankPowerAudioSource.isPlaying == false){
                         tankPowerAudioSource.Play();
                     }
@@ -508,7 +508,7 @@ public class TankController : NetworkBehaviour {
                     }
                 }
 
-                if (Input.GetKey(KeyCode.RightBracket)) {
+                if (Input.GetKey(KeyCode.RightBracket) || Input.GetKey(KeyCode.E)) {
                     if(tankPowerAudioSource.isPlaying == false){
                         tankPowerAudioSource.Play();
                     }
@@ -516,7 +516,7 @@ public class TankController : NetworkBehaviour {
                 }
             }
             else {
-                if (Input.GetKeyDown(KeyCode.LeftBracket)) {
+                if (Input.GetKeyDown(KeyCode.LeftBracket) || Input.GetKeyDown(KeyCode.Q)) {
                     if(tankPowerAudioSource.isPlaying == false){
                         tankPowerAudioSource.Play();
                     }
@@ -526,7 +526,7 @@ public class TankController : NetworkBehaviour {
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.RightBracket)) {
+                if (Input.GetKeyDown(KeyCode.RightBracket) || Input.GetKeyDown(KeyCode.E)) {
                     Debug.Log("right bracket");
                     if(tankPowerAudioSource.isPlaying == false){
                         tankPowerAudioSource.Play();
