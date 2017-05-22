@@ -15,4 +15,10 @@ public class Credits : MonoBehaviour {
             isEnabled = false;
         }
     }
+
+    void Update() {
+        if (Input.GetMouseButtonDown(0) && isEnabled){
+            ToggleCredits();
+        }
+    }
 }
