@@ -1546,6 +1546,28 @@ Prefab:
       propertyPath: projectileViewCamera
       value: 
       objectReference: {fileID: 1108172678}
+    - target: {fileID: 1368378084982806, guid: ac27fffd133b6af4f9dafaed1bc7b5c4, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114296046638864784, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_Text
+      value: Press H for help!
+      objectReference: {fileID: 0}
+    - target: {fileID: 1613250152303208, guid: ac27fffd133b6af4f9dafaed1bc7b5c4, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114514694335262860, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+        type: 2}
+      propertyPath: m_Text
+      value: "  Thanks for playing!\n\n  AWSD or Arrow keys for turning left to right
+        and aiming up and down.\n\n  Space to shoot! (Important one there)\n\n  [
+        to lower shot power and ] to increase.\n\n  < and > to change weapon types.\n\n
+        \ H to bring up this menu and to close it.\n\n  Have fun and remember you
+        can damage yourself so shoot far away!"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac27fffd133b6af4f9dafaed1bc7b5c4, type: 2}
   m_IsPrefabParent: 0
