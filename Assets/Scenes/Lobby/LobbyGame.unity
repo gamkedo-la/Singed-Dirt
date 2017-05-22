@@ -1562,7 +1562,7 @@ Prefab:
     - target: {fileID: 114514694335262860, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
         type: 2}
       propertyPath: m_Text
-      value: "  Thanks for playing!\n\n  AWSD or Arrow keys for turning left to right
+      value: "  Thanks for playing!\n\n  WASD or Arrow keys for turning left to right
         and aiming up and down.\n\n  Space to shoot! (Important one there)\n\n  [
         to lower shot power and ] to increase.\n\n  < and > to change weapon types.\n\n
         \ H to bring up this menu and to close it.\n\n  Have fun and remember you
