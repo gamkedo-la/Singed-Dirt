@@ -167,7 +167,8 @@ public class CameraController : MonoBehaviour {
 		cameraMode = CameraMode.watchLaunch;
 		// Debug.Log("Starting watch launch");
 		isLaunchViewFalling = false;
-		StartCoroutine(WatchLaunchLoop(projectileGO, playerGO.transform.GetChild(0).gameObject));
+		Debug.Log("DEBUG playerGO " + playerGO.name);
+		StartCoroutine(WatchLaunchLoop(projectileGO, playerGO.transform.Find("TankModel(Clone)").gameObject));
 	}
 
 	IEnumerator WatchLaunchLoop(GameObject projectileGO, GameObject playerGO){
