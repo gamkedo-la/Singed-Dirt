@@ -2567,7 +2567,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Host
+  m_Text: 'Start/Host
 
 '
 --- !u!114 &114048884032318814
@@ -2602,7 +2602,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 0
-  m_Text: Local/LAN Games
+  m_Text: Local Hotseat or LAN Games
 --- !u!114 &114049239751137974
 MonoBehaviour:
   m_ObjectHideFlags: 1
