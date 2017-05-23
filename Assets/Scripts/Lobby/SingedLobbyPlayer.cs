@@ -99,12 +99,13 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         lobbyManager = SingedLobbyManager.s_singleton;
     }
 
-    void Start() {
-        turretBaseKind = (TankTurretBaseKind)Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
-        tankBaseKind = (TankBaseKind)Random.Range(0, System.Enum.GetValues(typeof(TankBaseKind)).Length);
-        turretKind = (TankTurretKind)Random.Range(0, System.Enum.GetValues(typeof(TankTurretKind)).Length);
-        hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
-    }
+    // void Start() {
+    //     int type = Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
+    //     turretBaseKind = (TankTurretBaseKind)type;
+    //     tankBaseKind = (TankBaseKind)type;
+    //     turretKind = (TankTurretKind)type;
+    //     hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
+    // }
 
     // ------------------------------------------------------
     // EVENT HANDLER METHODS
@@ -223,6 +224,11 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
             var name = "Player" + LobbyPanelManager.singleton.playerCount.ToString();
             CmdNameChanged(name);
         }
+        int type = Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
+        turretBaseKind = (TankTurretBaseKind)type;
+        tankBaseKind = (TankBaseKind)type;
+        turretKind = (TankTurretKind)type;
+        hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
 
         //we switch from simple name display to name input
         setupButton.interactable = true;
