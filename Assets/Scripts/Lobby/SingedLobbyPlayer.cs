@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
@@ -96,6 +97,13 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         GetAudioClipFile(MenuSoundKind.menuSelect, false);
         GetAudioClipFile(MenuSoundKind.menuBack, true);
         lobbyManager = SingedLobbyManager.s_singleton;
+    }
+
+    void Start() {
+        turretBaseKind = (TankTurretBaseKind)Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
+        tankBaseKind = (TankBaseKind)Random.Range(0, System.Enum.GetValues(typeof(TankBaseKind)).Length);
+        turretKind = (TankTurretKind)Random.Range(0, System.Enum.GetValues(typeof(TankTurretKind)).Length);
+        hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
     }
 
     // ------------------------------------------------------
