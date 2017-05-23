@@ -140,6 +140,9 @@ public class LootSpawnController : NetworkBehaviour {
                     mushboomCount++;
                     ammoAmount = 1;
                     break;
+                case ((ProjectileKind)5):
+                    ammoAmount = 1;
+                    break;
             }
             lootboxGo.GetComponent<LootBoxController>().AssignLoot(ammoKind, ammoAmount);
             var health = lootboxGo.GetComponent<Health>();
