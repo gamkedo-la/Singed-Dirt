@@ -99,14 +99,6 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         lobbyManager = SingedLobbyManager.s_singleton;
     }
 
-    // void Start() {
-    //     int type = Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
-    //     turretBaseKind = (TankTurretBaseKind)type;
-    //     tankBaseKind = (TankBaseKind)type;
-    //     turretKind = (TankTurretKind)type;
-    //     hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
-    // }
-
     // ------------------------------------------------------
     // EVENT HANDLER METHODS
     /// <summary>
