@@ -206,7 +206,8 @@ MonoBehaviour:
   deformationKind: 5
   clusterBomblet: {fileID: 0}
   isMushboom: 0
-  debuffEffect: None
+  areaOfEffect: None
+  effectRadius: 10
   clusterHeight: 15
   bomletForceKick: 50
   numberOfBomblets: 8
@@ -274,7 +275,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.3
+  m_Radius: 0.51
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!198 &198175263549146484
 ParticleSystem:
