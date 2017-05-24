@@ -557,6 +557,7 @@ public class TankController : NetworkBehaviour {
                 // sanity check for ammo
                 tankVerticalMovementAudioSource.Stop();
                 tankHorizontalMovementAudioSource.Stop();
+                tankPowerAudioSource.Stop();
                 if (shotInventory.GetAvailable(selectedShot) > 0) {
                     speech = BarkManager.self.GetTheShotOneLiner(selectedShot, charVoice);
                     SoundManager.instance.PlayAudioClip(tankSound);
@@ -649,7 +650,7 @@ public class TankController : NetworkBehaviour {
         //Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
         // controller state-based authorization check
         if (!hasControl) {
-            Debug.Log("nope");
+            // Debug.Log("nope");
             return;
         }
 
