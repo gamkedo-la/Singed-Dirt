@@ -18,10 +18,10 @@ public class NetworkSetup : MonoBehaviour {
 	/// The actual logic to setup the overall game play, based on values passed in GameSetup object
 	/// </summary>
 	void SetupGame () {
-        Debug.Log("NetworkSetup start");
+        // Debug.Log("NetworkSetup start");
 		// grab game setup info
 		var gameSetupGO = GameObject.Find("GameSetup");
-        Debug.Log("gameSetupGO: " + gameSetupGO);
+        // Debug.Log("gameSetupGO: " + gameSetupGO);
 
 		// we were spawned without network manager
 		if (netManager == null) {

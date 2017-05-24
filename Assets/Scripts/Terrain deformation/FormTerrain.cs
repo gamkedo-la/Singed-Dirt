@@ -93,7 +93,7 @@ public class FormTerrain : NetworkBehaviour {
 		// start spawns
 		StartCoroutine(SpawnTerrainTypes());
 
-		Debug.Log("RpcSpawnTerrain done");
+		// Debug.Log("RpcSpawnTerrain done");
 	}
 
     // ------------------------------------------------------
@@ -142,7 +142,7 @@ public class FormTerrain : NetworkBehaviour {
 			SpawnTerrainType (tallTerrainSpawnCount, tallTerrainShapes, tallGenerator);
 		}
 		yield return null;
-		Debug.Log("SpawnTerrainTypes done");
+		// Debug.Log("SpawnTerrainTypes done");
 	}
 
 	//IEnumerator SpawnTerrainType(int terrainCount, GameObject[] terrainShapes, Transform[] spawnBoxes){

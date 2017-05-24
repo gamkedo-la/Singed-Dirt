@@ -149,7 +149,7 @@ public class TankController : NetworkBehaviour {
     }
 
     void OnDeath(GameObject from) {
-        Debug.Log("OnDeath");
+        // Debug.Log("OnDeath");
         UxChatController.SendToConsole(
             String.Format("{0} terminated {1}",
                 from.GetComponent<TankController>().playerName,
@@ -161,7 +161,7 @@ public class TankController : NetworkBehaviour {
     }
 
     void OnDestroy() {
-        Debug.Log("TankController.OnDestroy, isServer: " + isServer);
+        // Debug.Log("TankController.OnDestroy, isServer: " + isServer);
         if (TurnManager.singleton != null) {
             TurnManager.singleton.ServerDeletePlayer(this);
         }
@@ -687,7 +687,7 @@ public class TankController : NetworkBehaviour {
     /// </summary>
     [Command]
     void CmdReleaseControl() {
-        Debug.Log("CmdReleaseControl for " + name);
+        // Debug.Log("CmdReleaseControl for " + name);
         /// release control
         hasControl = false;
 

@@ -105,7 +105,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// Called when player enters the lobby
     /// </summary>
     public override void OnClientEnterLobby() {
-        Debug.Log("OnClientEnterLobby: " + this);
+        // Debug.Log("OnClientEnterLobby: " + this);
         base.OnClientEnterLobby();
 
         // setup local/other player

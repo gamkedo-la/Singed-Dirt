@@ -41,7 +41,7 @@ public class NetRegistry: NetworkBehaviour {
             PrefabRegistry.singleton.LoadEnum(spawnEnum);
         }
         foreach (var prefab in PrefabRegistry.singleton.GetAll()) {
-            Debug.Log("registering prefab: " + prefab.name);
+            // Debug.Log("registering prefab: " + prefab.name);
             if (null != prefab.GetComponent<NetworkIdentity>()) {
                 ClientScene.RegisterPrefab(prefab);
             }

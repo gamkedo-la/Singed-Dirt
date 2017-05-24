@@ -65,7 +65,7 @@ namespace TyVoronoi {
                 var padMultiplier = dumpTable.Count-depth;
                 rows += String.Join("", dumpTable[depth].Select(v=>String.Format("{0}", v).PadLeft(12*padMultiplier)).ToArray()) + "\n";
             }
-            Debug.Log("rows:\n" + rows);
+            // Debug.Log("rows:\n" + rows);
         }
 
         protected BinarySearchTreeNode<T> _InsertNode(

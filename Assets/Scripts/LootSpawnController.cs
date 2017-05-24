@@ -111,7 +111,7 @@ public class LootSpawnController : NetworkBehaviour {
             }
             if (excluded) {
                 // too close
-                Debug.Log("spawn excluded, too close to player");
+                // Debug.Log("spawn excluded, too close to player");
                 continue;
             }
 

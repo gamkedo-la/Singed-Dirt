@@ -30,7 +30,7 @@ public class Health : NetworkBehaviour {
     public void TakeDamage(int amount, GameObject from)
     {
         if (!isServer) return;
-        Debug.Log("Health.TakeDamage for " + amount + " from : " + from);
+        // Debug.Log("Health.TakeDamage for " + amount + " from : " + from);
 
         health -= amount;
         if (health <= 0) {

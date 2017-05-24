@@ -49,7 +49,7 @@ public class ProjectileController : NetworkBehaviour {
             // single collision/explosion per projectile
             hasCollided = true;
             if (!isMushboom) {
-                Debug.Log("collision is " + collision.gameObject.name);
+                Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
                 ServerExplode(collision);
             }
             else {
@@ -119,7 +119,7 @@ public class ProjectileController : NetworkBehaviour {
                         if (myKind == ProjectileKind.acorn) {
                             damagePoints = (int)(damagePoints * 1.5);
                         }
-                        Debug.Log("MyKind is " + myKind);
+                        // Debug.Log("MyKind is " + myKind);
                         if (tankObj != null) {
                             if(myKind == ProjectileKind.artilleryShell && tankObj.hasVirus == false){
                                 tankObj.InfectPlayer(rootObject);

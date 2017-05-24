@@ -93,7 +93,7 @@ public class LobbyGameSelect : MonoBehaviour {
         SoundManager.instance.PlayAudioClip(menuOKSound);
 
         lobbyManager.StartMatchMaker();
-        Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
+        // Debug.Log(String.Format("requesting match for name: {0}, maxPlayers: {1}", matchNameInput.text, lobbyManager.maxPlayers));
         lobbyManager.matchMaker.CreateMatch(
             matchNameInput.text,
             (uint)lobbyManager.maxPlayers,

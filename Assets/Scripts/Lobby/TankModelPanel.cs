@@ -18,11 +18,11 @@ public class TankModelPanel : MonoBehaviour {
 	private AudioClip tankRotate;
 
     public void Awake() {
-        Debug.Log("TankModelPanel Awake");
+        // Debug.Log("TankModelPanel Awake");
         GameObject modelGo = GameObject.Find("ModelPosition");
         if (modelGo != null) {
             var playerSetupGo = modelGo.transform.Find("TankModel");
-            Debug.Log("found tankModel: " + playerSetupGo);
+            // Debug.Log("found tankModel: " + playerSetupGo);
             tankModel = playerSetupGo.GetComponent<TankModel>();
         }
 
@@ -42,8 +42,8 @@ public class TankModelPanel : MonoBehaviour {
         // set linked player
         linkedPlayer = lobbyPlayer;
         // copy local state
-        Debug.Log("linkedPlayer: " + linkedPlayer);
-        Debug.Log("tankModel: " + tankModel);
+        // Debug.Log("linkedPlayer: " + linkedPlayer);
+        // Debug.Log("tankModel: " + tankModel);
         tankModel.tankBaseKind = linkedPlayer.tankBaseKind;
         tankModel.turretBaseKind = linkedPlayer.turretBaseKind;
         tankModel.turretKind = linkedPlayer.turretKind;
