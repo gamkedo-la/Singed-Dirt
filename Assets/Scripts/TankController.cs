@@ -538,11 +538,11 @@ public class TankController : NetworkBehaviour {
                 tankPowerAudioSource.Stop();                    
             }
 
-            if (Input.GetKeyDown(KeyCode.Comma)) {
+            if (Input.GetKeyDown(KeyCode.Comma) || Input.GetKeyDown(KeyCode.X)) {
                 selectedShot = shotInventory.PrevAvailableShot(selectedShot);
                 Debug.Log("now using shot: " + selectedShot);
             }
-            if (Input.GetKeyDown(KeyCode.Period)) {
+            if (Input.GetKeyDown(KeyCode.Period) || Input.GetKeyDown(KeyCode.C)) {
                 selectedShot = shotInventory.NextAvailableShot(selectedShot);
                 Debug.Log("now using shot: " + selectedShot);
             }

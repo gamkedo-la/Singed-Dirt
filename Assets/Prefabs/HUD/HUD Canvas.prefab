@@ -4184,11 +4184,10 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "  INSTRUCTIONS\n\n  WASD or Arrow keys for turning left to right and aiming
-    up and down.\n\n  Q to decrease shot power and E to increase it.\n\n  Space to
-    shoot! (Important one there)\n\n  Shoot boxes to get more ammo types!\n  \n  <
-    and > to change ammo types.\n\n  Have fun and remember you can damage yourself
-    so shoot far away!  Thanks for playing!\n\n    ** Press H to close this window
-    **"
+    up and down.\n\n  Q and E to decrease/increase shot power.\n\n   X and C to change
+    ammo types.\n\n  Space to shoot! (Important one there)\n\n  Shoot boxes to get
+    more ammo types!\n\n  Have fun and remember you can damage yourself so shoot far
+    away!  Thanks for playing!\n\n    ** Press H to close this window **"
 --- !u!114 &114521214328477188
 MonoBehaviour:
   m_ObjectHideFlags: 1
