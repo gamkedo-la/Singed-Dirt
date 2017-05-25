@@ -112,7 +112,7 @@ public class ProjectileController : NetworkBehaviour {
                     // hit dist 10m: about 1 hit point
                     // The formula is based on a max proximity damage distance of 10m
                     int damagePoints = (int)(1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
-                    if (damagePoints > 0 && deformationKind != DeformationKind.pillarDeformer) {
+                    if (damagePoints > 0 && myKind != ProjectileKind.pillarShot && myKind != ProjectileKind.teleportBall) {
                         if (myKind == ProjectileKind.cannonBall) {
                             damagePoints /= 2;
                         }
@@ -146,7 +146,9 @@ public class ProjectileController : NetworkBehaviour {
                 }
             }
         }
-
+        if (myKind == ProjectileKind.teleportBall && collision.gameObject.name == "Terrain") {
+            shooter.ServerPlace(transform.position);
+        }
         // perform terrain deformation (if terrain was hit)
         var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
         if (terrainManager != null) {
