@@ -129,7 +129,7 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	public void StartAudioLoop(GameObject parent, string name, string resourcePath) {
-		Debug.Log("StartAudioLoop: " + name);
+		//Debug.Log("StartAudioLoop: " + name);
 		AudioSource audioSource;
 		var audioTrans = parent.transform.Find(name);
 		if (audioTrans == null) {
@@ -143,7 +143,7 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	public void StopAudioLoop(GameObject parent, string name) {
-		Debug.Log("StopAudioLoop: " + name);
+		//Debug.Log("StopAudioLoop: " + name);
 		var audioTrans = parent.transform.Find(name);
 		if (audioTrans != null) {
 			var audioSource = audioTrans.gameObject.GetComponent<AudioSource>();
