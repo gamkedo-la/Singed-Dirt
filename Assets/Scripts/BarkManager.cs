@@ -394,10 +394,14 @@ public class BarkManager : MonoBehaviour {
     }
 
     public AudioClip GetTheShotOneLiner(ProjectileKind shot, int voice) {
+        return Resources.Load<AudioClip>(GetTheShotOneLinerPath(shot, voice));
+    }
+
+    public string GetTheShotOneLinerPath(ProjectileKind shot, int voice) {
         int anyNumber = UnityEngine.Random.Range(0, 10),
             lineIndex,
             voiceIndex;
-        AudioClip theLine;
+        string theLine;
 
         if (anyNumber > 5) {
             switch (shot) {
@@ -409,7 +413,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = acornIndexQueue[currentAcornLineIndex];
                     voiceIndex = totalAcornLines * voice;
                     acornOneLiner = (AcornOneLinersKind)(voiceIndex + lineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + acornOneLiner);
+                    theLine = "OneLiners/" + acornOneLiner;
 
                     currentAcornLineIndex++;
                     return theLine;
@@ -422,7 +426,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = missileIndexQueue[currentMissileLineIndex];
                     voiceIndex = totalMissileLines * voice;
                     missileOneLiner = (MissileOneLinersKind)(voiceIndex + lineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + missileOneLiner);
+                    theLine = "OneLiners/" + missileOneLiner;
 
                     currentMissileLineIndex++;
                     return theLine;
@@ -435,7 +439,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = sharktoothIndexQueue[currentSharktoothLineIndex];
                     voiceIndex = totalSharktoothLines * voice;
                     sharktoothOneLiner = (SharktoothOneLinersKind)(voiceIndex + lineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + sharktoothOneLiner);
+                    theLine = "OneLiners/" + sharktoothOneLiner;
 
                     currentSharktoothLineIndex++;
                     return theLine;
@@ -448,7 +452,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = pillarIndexQueue[currentPillarLineIndex];
                     voiceIndex = totalPillarLines * voice;
                     pillarOneLiner = (PillarOneLinersKind)(voiceIndex + lineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + pillarOneLiner);
+                    theLine = "OneLiners/" + pillarOneLiner;
 
                     currentPillarLineIndex++;
                     return theLine;
@@ -461,7 +465,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = beetIndexQueue[currentBeetLineIndex];
                     voiceIndex = totalBeetLines * voice;
                     beetOneLiner = (BeetOneLinersKind)(voiceIndex + currentBeetLineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + beetOneLiner);
+                    theLine = "OneLiners/" + beetOneLiner;
 
                     currentBeetLineIndex++;
                     return theLine;
@@ -474,7 +478,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = mushboomIndexQueue[currentMushboomLineIndex];
                     voiceIndex = totalMushboomLines * voice;
                     mushboomOneLiner = (MushboomOneLinersKind)(voiceIndex + currentMushboomLineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + mushboomOneLiner);
+                    theLine = "OneLiners/" + mushboomOneLiner;
 
                     currentMushboomLineIndex++;
                     return theLine;
@@ -487,7 +491,7 @@ public class BarkManager : MonoBehaviour {
                     lineIndex = cannonIndexQueue[currentCannonLineIndex];
                     voiceIndex = totalCannonLines * voice;
                     cannonOneLiner = (CannonOneLinersKind)(voiceIndex + currentCannonLineIndex);
-                    theLine = (AudioClip)Resources.Load("OneLiners/" + cannonOneLiner);
+                    theLine = "OneLiners/" + cannonOneLiner;
 
                     currentCannonLineIndex++;
                     return theLine;
@@ -501,7 +505,7 @@ public class BarkManager : MonoBehaviour {
             lineIndex = anyIndexQueue[currentAnyLineIndex];
             voiceIndex = totalAnyLines * voice;
             anyOneLiner = (AnyOneLinersKind)(voiceIndex + currentAnyLineIndex);
-            theLine = (AudioClip)Resources.Load("OneLiners/" + anyOneLiner);
+            theLine = "OneLiners/" + anyOneLiner;
 
             currentAnyLineIndex++;
             return theLine;

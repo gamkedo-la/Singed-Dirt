@@ -4,24 +4,6 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 
-public static class Extensions {
-    /// <summary>
-    /// Get the string slice between the two indexes.
-    /// Inclusive for start index, exclusive for end index.
-    /// </summary>
-    public static string Slice(
-        this string source,
-        int start,
-        int end
-    ) {
-        if (end < 0) {                       // Keep this for negative end support
-            end = source.Length + end;
-        }
-        int len = end - start;               // Calculate length
-        return source.Substring(start, len); // Return Substring of length
-    }
-}
-
 /// <summary>
 /// A singleton registry class providing a cache and access methods to retrieve object prefabs based on
 /// enum identifiers.
@@ -39,7 +21,7 @@ public class PrefabRegistry {
     private static readonly PrefabRegistry instance = new PrefabRegistry();
     static PrefabRegistry() {}
     private PrefabRegistry() {
-        prefabCache = new Dictionary<string, GameObject>();
+        resourceCache = new Dictionary<string, object>();
     }
     /// <summary>
     /// public singleton property
@@ -49,7 +31,7 @@ public class PrefabRegistry {
     }
 
     // the prefab cache
-    private Dictionary<string, GameObject> prefabCache;
+    private Dictionary<string, object> resourceCache;
 
     public void LoadEnum(Type prefabEnum) {
         foreach (var prefabId in Enum.GetValues(prefabEnum)) {
@@ -58,40 +40,63 @@ public class PrefabRegistry {
                     .GetMethod("GetPrefab")
                     .MakeGenericMethod(prefabEnum)
                     .Invoke(this, new object[] { prefabId }) as GameObject;
-        // Debug.Log("loaded: " + prefabId);
         }
     }
 
     public IEnumerable<GameObject> GetAll() {
-        return prefabCache.Values;
+        var goList = new List<GameObject>();
+        foreach (var obj in resourceCache.Values) {
+            goList.Add((GameObject) obj);
+        }
+        return goList;
     }
 
     /// <summary>
-    /// Retrieve a prefab by name of the form #directory#/#prefab_name#
+    /// Retrieve a resource by name of the form #enum_type#/#enum_value#
     /// If found, cache result
     /// </summary>
-    GameObject GetPrefab(string name) {
+    public T GetResource<T>(string name) where T: class {
         // check cache
-        GameObject prefabGO;
-        if (prefabCache.TryGetValue(name, out prefabGO)) {
-            return prefabGO;
+        object resource = null;
+        if (resourceCache.TryGetValue(name, out resource)) {
+            return (T) resource;
         }
 
         // otherwise... look up in registry and load
-        prefabGO = Resources.Load(name) as GameObject;
-        if (prefabGO == null) {
+        if (typeof(T).Equals(typeof(object))) {
+            // load generic resource
+            resource = (object) Resources.Load(name);
+        } else {
+            resource = (object) (Resources.Load(name) as T);
+        }
+        if (resource == null) {
             // Debug.Log("failed to load prefab for: " + name);
             return null;
         }
 
         // cache and return result
-        prefabCache[name] = prefabGO;
-        return prefabGO;
+        resourceCache[name] = resource;
+        return (T) resource;
     }
 
+    public static string GetResourceName<T>(T prefabID) {
+        var typeStr = typeof(T).ToString();
+        string name;
+        if (typeStr.Substring(typeStr.Length-4) == "Kind") {
+            name = typeof(T).ToString().Substring(0,typeStr.Length-4) + "/" + prefabID.ToString();
+        } else {
+            name = typeStr + "/" + prefabID.ToString();
+        }
+        return name;
+    }
+
+    /// <summary>
+    /// Retrieve a prefab by enum value.
+    /// If found, cache result
+    /// </summary>
     public GameObject GetPrefab<T>(T prefabID) {
-        var name = typeof(T).ToString().Slice(0,-4) + "/" + prefabID.ToString();
-        return GetPrefab(name);
+        var name = GetResourceName<T>(prefabID);
+        return GetResource<GameObject>(name);
     }
 
 }

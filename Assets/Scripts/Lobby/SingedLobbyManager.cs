@@ -115,6 +115,18 @@ public class SingedLobbyManager : NetworkLobbyManager {
     // ------------------------------------------------------
     // EVENT HANDLER METHODS
 
+    // hook into NetworkManager client setup process
+    public override void OnStartClient(NetworkClient mClient) {
+        base.OnStartClient(mClient); // base implementation is currently empty
+        SingedMessages.ClientRegisterMessageHandlers(mClient);
+    }
+
+    // hook into NetManagers server setup process
+    public override void OnStartServer() {
+        base.OnStartServer(); //base is empty
+        SingedMessages.ServerRegisterMessageHandlers();
+    }
+
     public override void OnMatchCreate(
         bool success,
         string extendedInfo,
@@ -169,6 +181,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
         // scene changed back to lobby
         if (SceneManager.GetSceneAt(0).name == lobbyScene) {
+            SoundManager.instance.PlayMenuMusic();
             //Debug.Log("changing to lobby scene");
             statusPanel.ToggleVisibility(true);
 
@@ -185,6 +198,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
         // otherwise ... game is starting
         } else {
+            SoundManager.instance.PlayBattleMusic();
             //Debug.Log("changing to game scene");
             // disable lower panels, set back callback to stop game
             ChangeTo(null, () => { StopGameCallback(); });
@@ -213,7 +227,6 @@ public class SingedLobbyManager : NetworkLobbyManager {
 
     public override void OnLobbyServerPlayersReady() {
         if (doAutoStart) {
-            SoundManager.instance.PlayBattleMusic();
             base.OnLobbyServerPlayersReady();
         } else {
             lobbyPanel.startGameButton.interactable = true;

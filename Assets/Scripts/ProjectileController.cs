@@ -24,8 +24,6 @@ public class ProjectileController : NetworkBehaviour {
     public float bomletForceKick = 50.0f;
     public int numberOfBomblets = 8;
     public TankController shooter;
-    private AudioClip projExplo;
-    private AudioClip tankHit;
     private Vector3 startPos;
 
     // Use this for initialization
@@ -56,11 +54,6 @@ public class ProjectileController : NetworkBehaviour {
                 GetComponent<MushBehavior>().PlantIt();
             }
         }
-    }
-
-    void GetAudioClipFile(ProjectileSoundKind sound) {
-        projExplo = (AudioClip)Resources.Load("ProjectileSound/" + sound);
-        tankHit = (AudioClip)Resources.Load("ProjectileSound/" + sound);
     }
 
     // ------------------------------------------------------
@@ -128,8 +121,8 @@ public class ProjectileController : NetworkBehaviour {
                         }
 
                         health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
-                        GetAudioClipFile(ProjectileSoundKind.tank_hit);
-                        SoundManager.instance.PlayAudioClip(tankHit);
+                        SingedMessages.SendPlayAudioClip(
+                            PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.tank_hit));
                         //Debug.Log ("Damage done to " + rootObject.name + ": " + damagePoints + ". Remaining: " + health.health);
 
                         // Do shock displacement
@@ -151,8 +144,8 @@ public class ProjectileController : NetworkBehaviour {
         var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
         if (terrainManager != null) {
             var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
-            GetAudioClipFile(ProjectileSoundKind.projectile_explo);
-            SoundManager.instance.PlayAudioClip(projExplo);
+            SingedMessages.SendPlayAudioClip(
+                PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.projectile_explo));
             //Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
             GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
             NetworkServer.Spawn(deformation);

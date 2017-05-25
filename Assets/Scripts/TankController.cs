@@ -69,9 +69,10 @@ public class TankController : NetworkBehaviour {
     public string playerName = "";
 
     public int charVoice = 1;
-    public AudioClip speech;
+    public string speech;
 
     private TankSoundKind tankSoundKind = TankSoundKind.canonFire1;
+    /*
     private AudioClip tankSound;
     private AudioClip tankPowerSound;
     private AudioClip turretHorizontalMovementSound;
@@ -81,6 +82,7 @@ public class TankController : NetworkBehaviour {
     private AudioSource tankPowerAudioSource;
     private GameObject secondaryAudioSource;
     private GameObject powerAudioSource;
+    */
 
     [SyncVar]
     public TankBaseKind tankBaseKind = TankBaseKind.standard;
@@ -99,6 +101,9 @@ public class TankController : NetworkBehaviour {
     private Health playerHealth;
     private GameObject infectingPlayer;
 
+    private bool isHorizontalAxisInUse = false;
+    private bool isVerticalAxisInUse = false;
+
     void Awake() {
         //Debug.Log("TankController Awake: isServer: " + isServer + " isLocalPlayer: " + isLocalPlayer);
         // lookup/cache required components
@@ -112,6 +117,7 @@ public class TankController : NetworkBehaviour {
         CreateModel();
 
         // let there be sound!
+        /*
         tankSound = (AudioClip)Resources.Load("TankSound/" + tankSoundKind);
         turretHorizontalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_LeftRight_LOOP_01);
         turretVerticalMovementSound = (AudioClip)Resources.Load("TankSound/" + TankSoundKind.tank_movement_UpDown_LOOP_01);
@@ -125,14 +131,17 @@ public class TankController : NetworkBehaviour {
         tankVerticalMovementAudioSource = secondaryAudioSource.AddComponent<AudioSource>() as AudioSource;
         tankVerticalMovementAudioSource.loop = true;
         tankVerticalMovementAudioSource.clip = turretVerticalMovementSound;
+        */
         charVoice = BarkManager.self.AssignCharVoice();
 
+        /*
         powerAudioSource = new GameObject("powerAudioSource");
         powerAudioSource.transform.SetParent(transform);
         tankPowerAudioSource = powerAudioSource.AddComponent<AudioSource>() as AudioSource;
         tankPowerAudioSource.loop = true;
         tankPowerAudioSource.clip = tankPowerSound;
-        
+        */
+
         virusParticlesGO = (GameObject)GameObject.Instantiate(Resources.Load("Spawn/" + SpawnKind.InfectedParticles));
         virusParticlesGO.transform.SetParent(transform);
         virusParticlesGO.name = "E-Virus";
@@ -486,58 +495,34 @@ public class TankController : NetworkBehaviour {
                 yield return null;
                 continue;
             }
-            tankHorizontalMovementAudioSource.volume = SoundManager.instance.SFXVolume;
-            tankVerticalMovementAudioSource.volume = SoundManager.instance.SFXVolume;
-            tankPowerAudioSource.volume = SoundManager.instance.SFXVolume;
 
-            //Debug.Log("OnComma: focused control is: " + EventSystem.current.currentSelectedGameObject);
-            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) {
-                togglePowerInputAmount = true;
+            // handle power up/down
+            if (Input.GetKeyDown(KeyCode.RightBracket) || Input.GetKeyDown(KeyCode.LeftBracket) ||
+                Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Q)) {
+                SingedMessages.SendStartAudioLoop(
+                    gameObject,
+                    "PowerAudio",
+                    TankSoundKind.tank_power_UpDown_LOOP);
             }
-            if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift)) {
-                togglePowerInputAmount = false;
+            if (Input.GetKeyUp(KeyCode.RightBracket) || Input.GetKeyUp(KeyCode.LeftBracket) ||
+                Input.GetKeyUp(KeyCode.E) || Input.GetKeyUp(KeyCode.Q)) {
+                SingedMessages.SendStopAudioLoop(
+                    gameObject,
+                    "PowerAudio");
             }
-            if (togglePowerInputAmount == false) {
-                if (Input.GetKey(KeyCode.LeftBracket) || Input.GetKey(KeyCode.Q)) {
-                    if(tankPowerAudioSource.isPlaying == false){
-                        tankPowerAudioSource.Play();
-                    }
-                    shotPower -= shotPowerModifier;
-                    if (shotPower <= 0.0f) {
-                        shotPower = 0.0f;
-                    }
-                }
+            if (Input.GetKey(KeyCode.RightBracket) || Input.GetKey(KeyCode.E)) {
+                var magnifier = (Input.GetKey(KeyCode.LeftShift) ||
+                                 Input.GetKey(KeyCode.RightShift)) ? 3f : 1f;
+                shotPower += magnifier*shotPowerModifier;
+            }
+            if (Input.GetKey(KeyCode.LeftBracket) || Input.GetKey(KeyCode.Q)) {
+                var magnifier = (Input.GetKey(KeyCode.LeftShift) ||
+                                 Input.GetKey(KeyCode.RightShift)) ? 3f : 1f;
+                shotPower -= magnifier*shotPowerModifier;
+            }
+            shotPower = Mathf.Clamp(shotPower, 0f, maxShotPower);
 
-                if (Input.GetKey(KeyCode.RightBracket) || Input.GetKey(KeyCode.E)) {
-                    if(tankPowerAudioSource.isPlaying == false){
-                        tankPowerAudioSource.Play();
-                    }
-                    shotPower += shotPowerModifier;
-                }
-            }
-            else {
-                if (Input.GetKeyDown(KeyCode.LeftBracket) || Input.GetKeyDown(KeyCode.Q)) {
-                    if(tankPowerAudioSource.isPlaying == false){
-                        tankPowerAudioSource.Play();
-                    }
-                    shotPower -= shotPowerModifier;
-                    if (shotPower <= 0.0f) {
-                        shotPower = 0.0f;
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.RightBracket) || Input.GetKeyDown(KeyCode.E)) {
-                    Debug.Log("right bracket");
-                    if(tankPowerAudioSource.isPlaying == false){
-                        tankPowerAudioSource.Play();
-                    }
-                    shotPower += shotPowerModifier;
-                }
-            }
-            if(Input.GetKeyUp(KeyCode.RightBracket) || Input.GetKeyUp(KeyCode.LeftBracket)){
-                tankPowerAudioSource.Stop();                    
-            }
-
+            // handle changing shot
             if (Input.GetKeyDown(KeyCode.Comma)) {
                 selectedShot = shotInventory.PrevAvailableShot(selectedShot);
                 Debug.Log("now using shot: " + selectedShot);
@@ -547,20 +532,23 @@ public class TankController : NetworkBehaviour {
                 Debug.Log("now using shot: " + selectedShot);
             }
 
-            if (shotPower > maxShotPower) {
-                shotPower = maxShotPower;
-            }
-
             // Shoot already ... when shot is fired, finish this coroutine;
             if (Input.GetKeyDown(KeyCode.Space)) {
                 //Debug.Log("space is down, calling CmdFire");
                 // sanity check for ammo
-                tankVerticalMovementAudioSource.Stop();
-                tankHorizontalMovementAudioSource.Stop();
+                SingedMessages.SendStopAudioLoop(
+                    gameObject,
+                    "PowerAudio");
+                SingedMessages.SendStopAudioLoop(
+                    gameObject,
+                    "HorizontalMovementAudio");
+                SingedMessages.SendStopAudioLoop(
+                    gameObject,
+                    "VerticalMovementAudio");
                 if (shotInventory.GetAvailable(selectedShot) > 0) {
-                    speech = BarkManager.self.GetTheShotOneLiner(selectedShot, charVoice);
-                    SoundManager.instance.PlayAudioClip(tankSound);
-                    SoundManager.instance.PlayClipDelayed(tankSound.length / 2, speech);
+                    SingedMessages.SendPlayAudioClip(tankSoundKind);
+                    speech = BarkManager.self.GetTheShotOneLinerPath(selectedShot, charVoice);
+                    SingedMessages.SendPlayAudioClip(speech, false, 0.75f);
                     CmdFire(shotPower, selectedShot);
                     // decrease ammo count
                     shotInventory.ServerModify(selectedShot, -1);
@@ -577,30 +565,52 @@ public class TankController : NetworkBehaviour {
                 yield break;
             }
             if (Input.GetKeyDown(KeyCode.O)) {
-                speech = BarkManager.self.GetTheShotOneLiner(selectedShot, charVoice);
+                speech = BarkManager.self.GetTheShotOneLinerPath(selectedShot, charVoice);
             }
 
+            // handle horizontal turret movement
+            var newRotation = Input.GetAxis("Horizontal");
+            if (!Mathf.Approximately(newRotation, 0f)) {
+                if (!isHorizontalAxisInUse) {
+                    SingedMessages.SendStartAudioLoop(
+                        gameObject,
+                        "HorizontalMovementAudio",
+                        TankSoundKind.tank_movement_LeftRight_LOOP_01);
+                    isHorizontalAxisInUse = true;
+                }
+            } else {
+                if (isHorizontalAxisInUse) {
+                    SingedMessages.SendStopAudioLoop(
+                        gameObject,
+                        "HorizontalMovementAudio");
+                    isHorizontalAxisInUse = false;
+                }
+            }
             if (model != null) {
-                model.tankRotation += Input.GetAxis("Horizontal") * Time.deltaTime * rotationSpeedVertical;
-                model.turretElevation += Input.GetAxis("Vertical") * Time.deltaTime * rotationSpeedHorizontal;
-                model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
-            }
-            if (Input.GetAxis("Horizontal") != 0) {
-                if (tankHorizontalMovementAudioSource.isPlaying == false) {
-                    tankHorizontalMovementAudioSource.Play();
-                }
-            }
-            if (Input.GetAxis("Vertical") != 0) {
-                if (tankVerticalMovementAudioSource.isPlaying == false) {
-                    tankVerticalMovementAudioSource.Play();
-                }
+                model.tankRotation += newRotation * Time.deltaTime * rotationSpeedVertical;
             }
 
-            if (Input.GetAxis("Vertical") == 0) {
-                tankVerticalMovementAudioSource.Stop();
+            // handle vertical turret movement
+            var newElevation = Input.GetAxis("Vertical");
+            if (!Mathf.Approximately(newElevation, 0f)) {
+                if (!isVerticalAxisInUse) {
+                    SingedMessages.SendStartAudioLoop(
+                        gameObject,
+                        "VerticalMovementAudio",
+                        TankSoundKind.tank_movement_UpDown_LOOP_01);
+                    isVerticalAxisInUse = true;
+                }
+            } else {
+                if (isVerticalAxisInUse) {
+                    SingedMessages.SendStopAudioLoop(
+                        gameObject,
+                        "VerticalMovementAudio");
+                    isVerticalAxisInUse = false;
+                }
             }
-            if (Input.GetAxis("Horizontal") == 0) {
-                tankHorizontalMovementAudioSource.Stop();
+            if (model != null) {
+                model.turretElevation += newElevation * Time.deltaTime * rotationSpeedHorizontal;
+                model.turretElevation = Mathf.Clamp(model.turretElevation, minTurretElevation, maxTurretElevation);
             }
 
             // continue on next frame

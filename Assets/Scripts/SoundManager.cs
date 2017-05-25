@@ -20,7 +20,6 @@ public class SoundManager : MonoBehaviour {
 	Slider musicVolumeSlider;
 	Slider SFXVolumeSlider;
 
-
 	void Awake(){
 		if (instance == null) {
 			instance = this;
@@ -33,12 +32,12 @@ public class SoundManager : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 		InitializeMusic();
 	}
-	
+
 	// Update is called once per frame
 	public void ChangeMusicVolume (float volume) {
 		gameplayMusicPlayer.volume = volume;
 		menuMusicPlayer.volume = volume;
-	}   
+	}
 
 	public void ChangeSFXVolume(float volume){
 		SFXVolume = volume;
@@ -106,6 +105,52 @@ public class SoundManager : MonoBehaviour {
 
     }
 
+	public void PlayAudioClip(SingedMessages.PlayAudioClipMessage msg) {
+		var clip = PrefabRegistry.singleton.GetResource<AudioClip>(msg.resourcePath);
+		if (clip != null) {
+			if (msg.delay != 0f) {
+				PlayClipDelayed(msg.delay, clip, msg.pitchModulation);
+			} else {
+				PlayAudioClip(clip, msg.pitchModulation);
+			}
+		}
+	}
+
+	AudioSource CreateAudioSource(GameObject parent, string name, string resourcePath) {
+		// create new game object w/ given name
+		GameObject audioGO = new GameObject(name);
+        audioGO.transform.SetParent((parent != null) ? parent.transform: Camera.main.transform);
+		 // add the audio source
+		AudioSource audioSource = audioGO.AddComponent<AudioSource>();
+		// set volume and clip to play
+		audioSource.volume = SFXVolume;
+		audioSource.clip = PrefabRegistry.singleton.GetResource<AudioClip>(resourcePath);
+		return audioSource;
+	}
+
+	public void StartAudioLoop(GameObject parent, string name, string resourcePath) {
+		Debug.Log("StartAudioLoop: " + name);
+		AudioSource audioSource;
+		var audioTrans = parent.transform.Find(name);
+		if (audioTrans == null) {
+			audioSource = CreateAudioSource(parent, name, resourcePath);
+		} else {
+			audioSource = audioTrans.gameObject.GetComponent<AudioSource>();
+		}
+		if (!audioSource.isPlaying) {
+	        audioSource.Play();
+		}
+	}
+
+	public void StopAudioLoop(GameObject parent, string name) {
+		Debug.Log("StopAudioLoop: " + name);
+		var audioTrans = parent.transform.Find(name);
+		if (audioTrans != null) {
+			var audioSource = audioTrans.gameObject.GetComponent<AudioSource>();
+	        audioSource.Stop();
+		}
+	}
+
 	public void PlayBattleMusic() {
         StartCoroutine(FadeIntoNewSong(menuMusicPlayer, gameplayMusicPlayer));
     }
@@ -116,7 +161,7 @@ public class SoundManager : MonoBehaviour {
 
 	public void PlayAudioClip(AudioClip clip, bool pitchModulation = false) {
 		GameObject tempGO = new GameObject("TempAudio"); // create the temp object
-		
+
         tempGO.transform.SetParent(Camera.main.transform);
 
 		AudioSource aSource = tempGO.AddComponent<AudioSource>() as AudioSource; // add an audio source
