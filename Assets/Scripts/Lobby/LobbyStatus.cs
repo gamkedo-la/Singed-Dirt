@@ -14,7 +14,7 @@ public class LobbyStatus : MonoBehaviour {
     [HideInInspector]
     public bool isInGame = false;
     bool isDisplayed = true;
-
+    private GameObject helpPanel;
     private AudioClip menuBackSound;
 
     void Awake() {
@@ -26,11 +26,18 @@ public class LobbyStatus : MonoBehaviour {
     void Update() {
         // nothing to do if game is not playing
         if (!isInGame) return;
-
+        // look for the help panel
+        if (helpPanel == null) {
+            helpPanel = GameObject.Find("HelpUI");
+        }
         // if game is playing, and escape is pressed, toggle status panel visibility
         if (Input.GetKeyDown(KeyCode.Escape)) {
             // Debug.Log("isInGame: " + isInGame);
-            ToggleVisibility(!isDisplayed);
+            if (helpPanel != null && helpPanel.activeInHierarchy == true) {
+                helpPanel.SetActive(false);
+            } else {
+                ToggleVisibility(!isDisplayed);
+            }
         }
     }
 

@@ -52,7 +52,6 @@ public class TurnManager : NetworkBehaviour {
     int tankHitPoints;
 
     public GameObject helpUI;
-    bool helpVisible = false;
 
     [SyncVar]
     bool gameOverState = false;
@@ -92,7 +91,7 @@ public class TurnManager : NetworkBehaviour {
     }
 
     void ServerSetActiveTank(TankController tank) {
-        Debug.Log(String.Format("ServerSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
+        // Debug.Log(String.Format("ServerSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
         //activeTank = tank;
         tank.ServerEnableControl();
         RpcSetActiveTank(tank.gameObject);
@@ -119,13 +118,11 @@ public class TurnManager : NetworkBehaviour {
         if (Input.GetKeyDown(KeyCode.N)) {
             ServerGameOver();
         }
-        if (Input.GetKeyDown(KeyCode.H) && helpVisible == false) {
+        if (Input.GetKeyDown(KeyCode.H) && helpUI.activeInHierarchy == false) {
             helpUI.SetActive(true);
-            helpVisible = true;
         }
-        else if (Input.GetKeyDown(KeyCode.H) && helpVisible == true) {
+        else if (Input.GetKeyDown(KeyCode.H) && helpUI.activeInHierarchy == true) {
             helpUI.SetActive(false);
-            helpVisible = false;
         }
     }
 
@@ -233,7 +230,7 @@ public class TurnManager : NetworkBehaviour {
     void RpcSetActiveTank(GameObject tankGo) {
         var tank = tankGo.GetComponent<TankController>();
         if (tank != null) {
-            Debug.Log(String.Format("RpcSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
+            // Debug.Log(String.Format("RpcSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
             activeTank = tank;
             if (activeTank.isLocalPlayer) {
                 hudController.AssignTank(activeTank);
@@ -295,7 +292,7 @@ public class TurnManager : NetworkBehaviour {
     void RpcViewShot(GameObject playerGO, GameObject projectileGO, bool localOnly) {
         if (playerGO.GetComponent<TankController>().isLocalPlayer || !localOnly) {
             //camController.ShakeCamera(0.8f, 0.8f);
-            Debug.Log("playerGO name is " + playerGO.name);
+            // Debug.Log("playerGO name is " + playerGO.name);
             camController.WatchLaunch(projectileGO, playerGO);
         }
     }

@@ -22,7 +22,8 @@ public enum ProjectileKind {
     sharkToothBomblet,
     pillarShot,
     beetMissile,
-    mushboom
+    mushboom,
+    teleportBall
 }
 
 public enum MenuSoundKind {
@@ -69,7 +70,8 @@ public enum DeformationKind {
     pillarDeformer,
     molPuddle,
     groundZero,
-    peeCrater
+    peeCrater,
+    teleportScar
 }
 
 public enum TankBaseKind {

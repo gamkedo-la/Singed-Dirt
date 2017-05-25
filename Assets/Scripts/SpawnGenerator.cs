@@ -209,7 +209,7 @@ public class VoronoiSpawnGenerator : ISpawnGenerator{
                 // point is invalid if within minSpacing of player spawn point
                 for (var j=0; j<playerSpawns.Length && candidateOK; j++) {
                     if ((playerSpawns[j] - candidatePoint).magnitude < minSpacing) {
-                        Debug.Log("terrain spawn too close to player");
+                        // Debug.Log("terrain spawn too close to player");
                         candidateOK = false;
                     }
                 }

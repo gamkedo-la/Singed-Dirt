@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
@@ -104,7 +105,7 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
     /// Called when player enters the lobby
     /// </summary>
     public override void OnClientEnterLobby() {
-        Debug.Log("OnClientEnterLobby: " + this);
+        // Debug.Log("OnClientEnterLobby: " + this);
         base.OnClientEnterLobby();
 
         // setup local/other player
@@ -215,6 +216,11 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
             var name = "Player" + LobbyPanelManager.singleton.playerCount.ToString();
             CmdNameChanged(name);
         }
+        int type = Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
+        turretBaseKind = (TankTurretBaseKind)type;
+        tankBaseKind = (TankBaseKind)type;
+        turretKind = (TankTurretKind)type;
+        hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
 
         //we switch from simple name display to name input
         setupButton.interactable = true;

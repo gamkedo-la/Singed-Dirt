@@ -48,3 +48,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackRings
+    uniqueID: 616514713
+    locked: 0
+  - name: Core
+    uniqueID: 4171110927
+    locked: 0
+  - name: CloudLayerAndStem
+    uniqueID: 1700638061
+    locked: 0
+  - name: FrontRings
+    uniqueID: 2165336851
+    locked: 0
+  - name: BlastRings
+    uniqueID: 2027064929
+    locked: 0

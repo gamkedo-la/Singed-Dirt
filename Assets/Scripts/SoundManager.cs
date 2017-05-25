@@ -24,7 +24,7 @@ public class SoundManager : MonoBehaviour {
 		if (instance == null) {
 			instance = this;
 		} else {
-			Debug.Log("Sound manager created another instance, destroying.");
+			// Debug.Log("Sound manager created another instance, destroying.");
 			Destroy(gameObject);
 		}
 	}

@@ -158,7 +158,7 @@ public class TankController : NetworkBehaviour {
     }
 
     void OnDeath(GameObject from) {
-        Debug.Log("OnDeath");
+        // Debug.Log("OnDeath");
         UxChatController.SendToConsole(
             String.Format("{0} terminated {1}",
                 from.GetComponent<TankController>().playerName,
@@ -170,7 +170,7 @@ public class TankController : NetworkBehaviour {
     }
 
     void OnDestroy() {
-        Debug.Log("TankController.OnDestroy, isServer: " + isServer);
+        // Debug.Log("TankController.OnDestroy, isServer: " + isServer);
         if (TurnManager.singleton != null) {
             TurnManager.singleton.ServerDeletePlayer(this);
         }
@@ -523,11 +523,11 @@ public class TankController : NetworkBehaviour {
             shotPower = Mathf.Clamp(shotPower, 0f, maxShotPower);
 
             // handle changing shot
-            if (Input.GetKeyDown(KeyCode.Comma)) {
+            if (Input.GetKeyDown(KeyCode.Comma) || Input.GetKeyDown(KeyCode.X)) {
                 selectedShot = shotInventory.PrevAvailableShot(selectedShot);
                 Debug.Log("now using shot: " + selectedShot);
             }
-            if (Input.GetKeyDown(KeyCode.Period)) {
+            if (Input.GetKeyDown(KeyCode.Period) || Input.GetKeyDown(KeyCode.C)) {
                 selectedShot = shotInventory.NextAvailableShot(selectedShot);
                 Debug.Log("now using shot: " + selectedShot);
             }
@@ -659,7 +659,7 @@ public class TankController : NetworkBehaviour {
         //Debug.Log("CmdFire for " + name + " hasControl: " + hasControl);
         // controller state-based authorization check
         if (!hasControl) {
-            Debug.Log("nope");
+            // Debug.Log("nope");
             return;
         }
 
@@ -697,7 +697,7 @@ public class TankController : NetworkBehaviour {
     /// </summary>
     [Command]
     void CmdReleaseControl() {
-        Debug.Log("CmdReleaseControl for " + name);
+        // Debug.Log("CmdReleaseControl for " + name);
         /// release control
         hasControl = false;
 

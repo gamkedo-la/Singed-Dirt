@@ -111,7 +111,7 @@ public class LootSpawnController : NetworkBehaviour {
             }
             if (excluded) {
                 // too close
-                Debug.Log("spawn excluded, too close to player");
+                // Debug.Log("spawn excluded, too close to player");
                 continue;
             }
 
@@ -138,6 +138,9 @@ public class LootSpawnController : NetworkBehaviour {
                     break;
                 case ((ProjectileKind)7):
                     mushboomCount++;
+                    ammoAmount = 1;
+                    break;
+                case ((ProjectileKind)5):
                     ammoAmount = 1;
                     break;
             }

@@ -31,7 +31,7 @@ public class HudController: MonoBehaviour {
 
 	private void adjustProjectileModelPosition()
 	{
-		Debug.Log("Projectile pivot: " + projectileModelScreenPosition.position);
+		// Debug.Log("Projectile pivot: " + projectileModelScreenPosition.position);
 		projectileModelWorldPosition.position = projectileViewCamera.ScreenToWorldPoint(new Vector3(projectileModelScreenPosition.position.x, projectileModelScreenPosition.position.y, 1f));
 	}
 

@@ -18,7 +18,7 @@ public class LobbyLoader : MonoBehaviour {
         // Debug.Log("instantiating lobby");
     }
     public void LoadLobby(){
-        Debug.Log("I'm calling load lobby!");
+        // Debug.Log("I'm calling load lobby!");
         lobbyPrefab.SetActive(true);
         mainMenu.SetActive(false);
     }

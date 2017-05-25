@@ -4171,7 +4171,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9443201ea55064f889ff32a189919094, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -4184,11 +4184,10 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "  INSTRUCTIONS\n\n  WASD or Arrow keys for turning left to right and aiming
-    up and down.\n\n  Q to decrease shot power and E to increase it.\n\n  Space to
-    shoot! (Important one there)\n\n  Shoot boxes to get more ammo types!\n  \n  <
-    and > to change ammo types.\n\n  Have fun and remember you can damage yourself
-    so shoot far away!  Thanks for playing!\n\n    ** Press H to close this window
-    **"
+    up and down.\n\n  Q and E to decrease/increase shot power.\n\n   X and C to change
+    ammo types.\n\n  Space to shoot. (Important one there)\n\n  Shoot boxes to get
+    more ammo types.\n\n  Have fun and thanks for playing!\n\n    ** Press H to close
+    this window **"
 --- !u!114 &114521214328477188
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5235,8 +5234,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 6965d30c221e747bf98b5d811689aa05, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

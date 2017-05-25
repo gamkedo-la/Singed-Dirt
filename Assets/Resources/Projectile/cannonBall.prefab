@@ -90,7 +90,7 @@ Transform:
   m_GameObject: {fileID: 1427175921913474}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 4669219878721658}
   - {fileID: 4968725460845694}
@@ -206,7 +206,8 @@ MonoBehaviour:
   deformationKind: 5
   clusterBomblet: {fileID: 0}
   isMushboom: 0
-  debuffEffect: None
+  areaOfEffect: None
+  effectRadius: 10
   clusterHeight: 15
   bomletForceKick: 50
   numberOfBomblets: 8
@@ -274,7 +275,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.3
+  m_Radius: 0.51
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!198 &198175263549146484
 ParticleSystem:
