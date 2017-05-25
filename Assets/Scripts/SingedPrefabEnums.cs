@@ -34,6 +34,11 @@ public enum MenuSoundKind {
     ui_tank_rotate
 }
 
+public enum VoiceoversKind {
+    voice_hi_intro_1_dry = 0,
+    voice_hi_intro_2_dry
+}
+
 public enum MusicKind {
     mainMenuMusic = 0,
     gameplayMusic
