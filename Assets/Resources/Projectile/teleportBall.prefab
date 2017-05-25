@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0dbbfa5cea9466a9125b5a1ad6bed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionKind: 0
+  explosionKind: 8
   deformationKind: 6
   clusterBomblet: {fileID: 0}
   isMushboom: 0

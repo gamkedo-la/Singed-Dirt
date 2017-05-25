@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -46,12 +47,17 @@ public class ProjectileController : NetworkBehaviour {
         if (isServer && !hasCollided) {
             // single collision/explosion per projectile
             hasCollided = true;
-            if (!isMushboom) {
+            if (!isMushboom && myKind != ProjectileKind.teleportBall) {
                 Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
                 ServerExplode(collision);
-            }
-            else {
+            } else if (isMushboom) {
                 GetComponent<MushBehavior>().PlantIt();
+            } else if (myKind == ProjectileKind.teleportBall) {
+                PerformTerrainDeformation(collision);
+                CreateExplosion();
+                if (collision.gameObject.name == "Terrain") {
+                    shooter.ServerPlace(transform.position);
+                }
             }
         }
     }
@@ -139,24 +145,14 @@ public class ProjectileController : NetworkBehaviour {
                 }
             }
         }
-        if (myKind == ProjectileKind.teleportBall && collision.gameObject.name == "Terrain") {
-            shooter.ServerPlace(transform.position);
-        }
-        // perform terrain deformation (if terrain was hit)
-        var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
-        if (terrainManager != null) {
-            var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
-            SingedMessages.SendPlayAudioClip(
-                PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.projectile_explo));
-            //Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
-            GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
-            NetworkServer.Spawn(deformation);
-            // determine deformation seed
-            var seed = Random.Range(1, 1 << 24);
-            // execute terrain deformation on client
-            terrainManager.RpcApplyDeform(deformation, seed);
-        }
 
+        PerformTerrainDeformation(collision);
+        CreateExplosion();
+
+    }
+
+    private void CreateExplosion()
+    {
         // instantiate explosion
         var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
         //Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
@@ -172,9 +168,26 @@ public class ProjectileController : NetworkBehaviour {
         Destroy(explosion, explosionDuration);
 
         // destroy the projectile on collision
-        Destroy(gameObject, .2f);
+        Destroy(gameObject, 0.02f);
         //NetworkServer.Destroy(gameObject);
+    }
 
+    private void PerformTerrainDeformation(Collision collision)
+    {
+                // perform terrain deformation (if terrain was hit)
+        var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
+        if (terrainManager != null) {
+            var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
+            SingedMessages.SendPlayAudioClip(
+                PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.projectile_explo));
+            //Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
+            GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
+            NetworkServer.Spawn(deformation);
+            // determine deformation seed
+            var seed = UnityEngine.Random.Range(1, 1 << 24);
+            // execute terrain deformation on client
+            terrainManager.RpcApplyDeform(deformation, seed);
+        }
     }
 
     public void DisableCollisions(float timer) {
@@ -242,7 +255,7 @@ public class ProjectileController : NetworkBehaviour {
             bombletRB.velocity = rb.velocity;
 
             // add random bomblet spread
-            bombletRB.AddForce(Random.Range(-bomletForceKick, bomletForceKick), Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, Random.Range(-bomletForceKick, bomletForceKick));
+            bombletRB.AddForce(UnityEngine.Random.Range(-bomletForceKick, bomletForceKick), UnityEngine.Random.Range(-bomletForceKick, bomletForceKick) * 0.5f, UnityEngine.Random.Range(-bomletForceKick, bomletForceKick));
 
             // copy state from original projectile
             var newController = bomblet.GetComponent<ProjectileController>();
