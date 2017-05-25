@@ -47,6 +47,8 @@ public class ProjectileController : NetworkBehaviour {
         if (isServer && !hasCollided) {
             // single collision/explosion per projectile
             hasCollided = true;
+            // hide model so it doesn't bounce around before getting destroyed
+            transform.FindChild("Model").gameObject.SetActive(false);
             if (!isMushboom && myKind != ProjectileKind.teleportBall) {
                 Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
                 ServerExplode(collision);
@@ -56,10 +58,16 @@ public class ProjectileController : NetworkBehaviour {
                 PerformTerrainDeformation(collision);
                 CreateExplosion();
                 if (collision.gameObject.name == "Terrain") {
-                    shooter.ServerPlace(transform.position);
+                    gameObject.GetComponent<Light>().enabled = false;
+                    StartCoroutine(TeleportPlayer());
                 }
             }
         }
+    }
+
+    IEnumerator TeleportPlayer() {
+        yield return new WaitForSeconds(0.5f);
+        shooter.ServerPlace(transform.position);
     }
 
     // ------------------------------------------------------
@@ -168,7 +176,7 @@ public class ProjectileController : NetworkBehaviour {
         Destroy(explosion, explosionDuration);
 
         // destroy the projectile on collision
-        Destroy(gameObject, 0.02f);
+        Destroy(gameObject, 0.7f);
         //NetworkServer.Destroy(gameObject);
     }
 
