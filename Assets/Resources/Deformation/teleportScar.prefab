@@ -86,32 +86,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_delayLodUpdate: 1
   m_instantScar: 1
-  m_radiusWorldUnits: 0.001
-  m_heightWorldUnits: 0.001
+  m_radiusWorldUnits: 2
+  m_heightWorldUnits: 0
   m_profile:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: -0.016666666
-      value: -1
+      time: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.38935566
-      value: -0.490978
-      inSlope: 1.4537573
-      outSlope: 1.4537573
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.8243835
-      value: 0.14609237
-      inSlope: 0.82028955
-      outSlope: 0.82028955
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.9996184
-      value: 0.00031156
+      time: 1
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -119,8 +107,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   m_deformationDuration: 0
-  m_bumpScale: 0.001
-  m_bumpHeightWorldUnits: 0.001
+  m_bumpScale: 0.01
+  m_bumpHeightWorldUnits: 0.01
   m_bumpBlend:
     serializedVersion: 2
     m_Curve:
