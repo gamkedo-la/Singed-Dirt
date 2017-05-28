@@ -85,7 +85,7 @@ Transform:
   m_GameObject: {fileID: 1615876647427322}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4418083290903540}
   m_Father: {fileID: 0}
@@ -224,7 +224,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -455429267
+  randomSeed: -1609131811
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -275,7 +275,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0
+          value: 0.33333334
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -513,7 +513,7 @@ ParticleSystem:
     rotation3D: 0
     gravityModifier:
       minMaxState: 0
-      scalar: 4
+      scalar: 2.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2389,7 +2389,7 @@ ParticleSystem:
         m_RotationOrder: 4
     maxLights: 20
   TrailModule:
-    enabled: 0
+    enabled: 1
     ratio: 1
     lifetime:
       minMaxState: 0
@@ -2430,12 +2430,12 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    minVertexDistance: 0.2
+    minVertexDistance: 0.1
     textureMode: 0
     worldSpace: 0
     dieWithParticles: 1
     sizeAffectsWidth: 1
-    sizeAffectsLifetime: 0
+    sizeAffectsLifetime: 1
     inheritParticleColor: 1
     colorOverLifetime:
       serializedVersion: 2
@@ -2502,7 +2502,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
     widthOverTrail:
       minMaxState: 0
-      scalar: 1
+      scalar: 0.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3101,7 +3101,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -297366404
+  randomSeed: 1204463748
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3134,7 +3134,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSpeed:
       minMaxState: 3
-      scalar: 16
+      scalar: 20
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3152,7 +3152,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.0625
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3390,7 +3390,7 @@ ParticleSystem:
     rotation3D: 0
     gravityModifier:
       minMaxState: 0
-      scalar: 4
+      scalar: 2.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5272,7 +5272,7 @@ ParticleSystem:
         m_RotationOrder: 4
     maxLights: 20
   TrailModule:
-    enabled: 0
+    enabled: 1
     ratio: 1
     lifetime:
       minMaxState: 0
@@ -5313,12 +5313,12 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    minVertexDistance: 0.2
+    minVertexDistance: 0.1
     textureMode: 0
     worldSpace: 0
     dieWithParticles: 1
     sizeAffectsWidth: 1
-    sizeAffectsLifetime: 0
+    sizeAffectsLifetime: 1
     inheritParticleColor: 1
     colorOverLifetime:
       serializedVersion: 2
@@ -5385,7 +5385,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
     widthOverTrail:
       minMaxState: 0
-      scalar: 1
+      scalar: 0.5
       maxCurve:
         serializedVersion: 2
         m_Curve:

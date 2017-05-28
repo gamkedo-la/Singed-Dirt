@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class AsplosionScript : MonoBehaviour {
 
@@ -40,11 +39,14 @@ public class AsplosionScript : MonoBehaviour {
         }
         if (control.timer >= stopMoveBy) moveIt = false;
 
-        if(scaleIt && control.timer >= startToScale) {
+        if (scaleIt && control.timer >= startToScale) {
             scaleTime += Time.deltaTime / timeToScale;
             transform.localScale = Vector3.Lerp(startScale, scaleTo, scaleTime);
         }
         if (control.timer >= stopScaleBy) scaleIt = false;
     }
 
+    public void Activate() {
+
+    }
 }
