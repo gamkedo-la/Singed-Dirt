@@ -57,7 +57,6 @@ public enum AnyOneLinersKind {
     voice_aggro25,
     voice_aggro27,
     voice_aggro29,
-    voice_aggro56,       // move to teleport when implemented
 
     voice_grumpy01,
     voice_grumpy04,
@@ -80,7 +79,6 @@ public enum AnyOneLinersKind {
     voice_grumpy25,
     voice_grumpy27,
     voice_grumpy29,
-    voice_grumpy56,     // move to teleport when implemented
 
     voice_cheery01,
     voice_cheery04,
@@ -103,7 +101,6 @@ public enum AnyOneLinersKind {
     voice_cheery25,
     voice_cheery27,
     voice_cheery29,
-    voice_cheery56,     // move to teleport when implemented
 
     voice_meanie01,
     voice_meanie04,
@@ -125,8 +122,7 @@ public enum AnyOneLinersKind {
     voice_meanie24,
     voice_meanie25,
     voice_meanie27,
-    voice_meanie29,
-    voice_meanie56      // move to teleport when implemented
+    voice_meanie29
 }
 
 public enum AcornOneLinersKind {
@@ -200,44 +196,47 @@ public enum MissileOneLinersKind {
     voice_aggro05,
     voice_aggro26,
     voice_aggro28,
-    voice_aggro38,
+    voice_aggro48,
 
     voice_grumpy05,
     voice_grumpy26,
     voice_grumpy28,
-    voice_grumpy38,
+    voice_grumpy48,
 
     voice_cheery05,
     voice_cheery26,
     voice_cheery28,
-    voice_cheery38,
+    voice_cheery48,
 
     voice_meanie05,
     voice_meanie26,
     voice_meanie28,
-    voice_meanie38
+    voice_meanie48
 }
 
 public enum MushboomOneLinersKind {
     voice_aggro45,
     voice_aggro46,
     voice_aggro47,
-    voice_aggro48,
+    voice_aggro38,
+
 
     voice_grumpy44,
     voice_grumpy45,
     voice_grumpy47,
-    voice_grumpy48,
+    voice_grumpy38,
+
 
     voice_cheery45,
     voice_cheery46,
     voice_cheery47,
-    voice_cheery48,
+    voice_cheery38,
+
 
     voice_meanie44,
     voice_meanie45,
     voice_meanie47,
-    voice_meanie48
+    voice_meanie38
 }
 
 public enum PillarOneLinersKind {
@@ -288,18 +287,22 @@ public enum TeleportOneLinersKind {
     voice_aggro52,
     voice_aggro54,
     voice_aggro55,
+    voice_aggro56,
 
     voice_grumpy52,
     voice_grumpy54,
     voice_grumpy55,
+    voice_grumpy56,
 
     voice_cheery53,
     voice_cheery54,
     voice_cheery55,
+    voice_cheery56,
 
     voice_meanie53,
     voice_meanie54,
-    voice_meanie55
+    voice_meanie55,
+    voice_meanie56
 }
 
 public class BarkManager : MonoBehaviour {
@@ -481,6 +484,19 @@ public class BarkManager : MonoBehaviour {
                     theLine = "OneLiners/" + mushboomOneLiner;
 
                     currentMushboomLineIndex++;
+                    return theLine;
+
+                case (ProjectileKind)8:
+                    if (currentTeleportLineIndex >= totalTeleportLines) {
+                        currentTeleportLineIndex = 0;
+                        RandomizeQueue(teleportIndexQueue);
+                    }
+                    lineIndex = teleportIndexQueue[currentTeleportLineIndex];
+                    voiceIndex = totalTeleportLines * voice;
+                    teleportOneLiner = (TeleportOneLinersKind)(voiceIndex + currentTeleportLineIndex);
+                    theLine = "OneLiners/" + teleportOneLiner;
+
+                    currentTeleportLineIndex++;
                     return theLine;
 
                 default:

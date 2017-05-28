@@ -46,7 +46,4 @@ public class AsplosionScript : MonoBehaviour {
         if (control.timer >= stopScaleBy) scaleIt = false;
     }
 
-    public void Activate() {
-
-    }
 }
