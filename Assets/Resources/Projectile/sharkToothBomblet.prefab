@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 23026704959376254}
   - component: {fileID: 95228825966940000}
   m_Layer: 13
-  m_Name: shark-tooth
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

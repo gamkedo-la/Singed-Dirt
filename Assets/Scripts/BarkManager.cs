@@ -196,47 +196,46 @@ public enum MissileOneLinersKind {
     voice_aggro05,
     voice_aggro26,
     voice_aggro28,
-    voice_aggro48,
+    voice_aggro45,
 
     voice_grumpy05,
     voice_grumpy26,
     voice_grumpy28,
-    voice_grumpy48,
+    voice_grumpy45,
 
     voice_cheery05,
     voice_cheery26,
     voice_cheery28,
-    voice_cheery48,
+    voice_cheery45,
+
 
     voice_meanie05,
     voice_meanie26,
     voice_meanie28,
-    voice_meanie48
+    voice_meanie45
 }
 
 public enum MushboomOneLinersKind {
-    voice_aggro45,
+    voice_aggro38,
     voice_aggro46,
     voice_aggro47,
-    voice_aggro38,
+    voice_aggro48,
 
-
-    voice_grumpy44,
-    voice_grumpy45,
-    voice_grumpy47,
     voice_grumpy38,
+    voice_grumpy44,
+    voice_grumpy47,
+    voice_grumpy48,
 
-
-    voice_cheery45,
+    voice_cheery38,
     voice_cheery46,
     voice_cheery47,
-    voice_cheery38,
+    voice_cheery48,
 
-
+    voice_meanie38,
     voice_meanie44,
-    voice_meanie45,
     voice_meanie47,
-    voice_meanie38
+    voice_meanie48
+
 }
 
 public enum PillarOneLinersKind {
