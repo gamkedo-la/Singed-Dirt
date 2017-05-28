@@ -126,7 +126,7 @@ public enum AnyOneLinersKind {
 }
 
 public enum AcornOneLinersKind {
-    voice_aggro02,
+    voice_aggro02 = 0,
     voice_aggro30,
     voice_aggro31,
     voice_aggro32,
@@ -149,7 +149,7 @@ public enum AcornOneLinersKind {
 
 
 public enum BeetOneLinersKind {
-    voice_aggro33,
+    voice_aggro33 = 0,
     voice_aggro34,
     voice_aggro35,
     voice_aggro36,
@@ -171,7 +171,7 @@ public enum BeetOneLinersKind {
 }
 
 public enum CannonOneLinersKind {
-    voice_aggro08,
+    voice_aggro08 = 0,
     voice_aggro19,
     voice_aggro22,
     voice_aggro37,
@@ -193,7 +193,7 @@ public enum CannonOneLinersKind {
 }
 
 public enum MissileOneLinersKind {
-    voice_aggro05,
+    voice_aggro05 = 0,
     voice_aggro26,
     voice_aggro28,
     voice_aggro45,
@@ -208,7 +208,6 @@ public enum MissileOneLinersKind {
     voice_cheery28,
     voice_cheery45,
 
-
     voice_meanie05,
     voice_meanie26,
     voice_meanie28,
@@ -216,7 +215,7 @@ public enum MissileOneLinersKind {
 }
 
 public enum MushboomOneLinersKind {
-    voice_aggro38,
+    voice_aggro38 = 0,
     voice_aggro46,
     voice_aggro47,
     voice_aggro48,
@@ -235,11 +234,10 @@ public enum MushboomOneLinersKind {
     voice_meanie44,
     voice_meanie47,
     voice_meanie48
-
 }
 
 public enum PillarOneLinersKind {
-    voice_aggro39,
+    voice_aggro39 = 0,
     voice_aggro41,
     voice_aggro42,
     voice_aggro43,
@@ -261,7 +259,7 @@ public enum PillarOneLinersKind {
 }
 
 public enum SharktoothOneLinersKind {
-    voice_aggro03,
+    voice_aggro03 = 0,
     voice_aggro49,
     voice_aggro50,
     voice_aggro51,
@@ -283,7 +281,7 @@ public enum SharktoothOneLinersKind {
 }
 
 public enum TeleportOneLinersKind {
-    voice_aggro52,
+    voice_aggro52 = 0,
     voice_aggro54,
     voice_aggro55,
     voice_aggro56,

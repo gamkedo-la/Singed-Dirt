@@ -15,8 +15,10 @@ public class ProjectileController : NetworkBehaviour {
     private ProjectileKind myKind;
 
     public GameObject clusterBomblet;
+    public ParticleSystem molasses;
 
-    public bool isMushboom = false;
+    public bool isMushboom = false,
+        isSlowed = false;
     public string areaOfEffect = "None";
     public float effectRadius = 10f;
     public float clusterHeight = 20.0f;
@@ -52,9 +54,11 @@ public class ProjectileController : NetworkBehaviour {
             if (!isMushboom && myKind != ProjectileKind.teleportBall) {
                 Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
                 ServerExplode(collision);
-            } else if (isMushboom) {
+            }
+            else if (isMushboom) {
                 GetComponent<MushBehavior>().PlantIt();
-            } else if (myKind == ProjectileKind.teleportBall) {
+            }
+            else if (myKind == ProjectileKind.teleportBall) {
                 PerformTerrainDeformation(collision);
                 CreateExplosion();
                 if (collision.gameObject.name == "Terrain") {
@@ -128,7 +132,7 @@ public class ProjectileController : NetworkBehaviour {
                         }
                         // Debug.Log("MyKind is " + myKind);
                         if (tankObj != null) {
-                            if(myKind == ProjectileKind.artilleryShell && tankObj.hasVirus == false){
+                            if (myKind == ProjectileKind.artilleryShell && tankObj.hasVirus == false) {
                                 tankObj.InfectPlayer(rootObject);
                                 damagePoints = 20;
                             }
@@ -159,8 +163,7 @@ public class ProjectileController : NetworkBehaviour {
 
     }
 
-    private void CreateExplosion()
-    {
+    private void CreateExplosion() {
         // instantiate explosion
         var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
         //Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
@@ -180,9 +183,8 @@ public class ProjectileController : NetworkBehaviour {
         //NetworkServer.Destroy(gameObject);
     }
 
-    private void PerformTerrainDeformation(Collision collision)
-    {
-                // perform terrain deformation (if terrain was hit)
+    private void PerformTerrainDeformation(Collision collision) {
+        // perform terrain deformation (if terrain was hit)
         var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
         if (terrainManager != null) {
             var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
@@ -269,6 +271,11 @@ public class ProjectileController : NetworkBehaviour {
             var newController = bomblet.GetComponent<ProjectileController>();
             if (newController != null) {
                 newController.shooter = shooter;
+                if (isSlowed) {
+                    newController.molasses.Play();
+                    bombletRB.mass *= 2;
+                }
+                else Destroy(newController.molasses);
             }
         }
 

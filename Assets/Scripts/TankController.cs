@@ -235,7 +235,7 @@ public class TankController : NetworkBehaviour {
         savedPowerModifier = shotPowerModifier;
     }
 
-    public void InfectPlayer(GameObject patientZero){
+    public void InfectPlayer(GameObject patientZero) {
         virusParticles.Play();
         hasVirus = true;
         infectingPlayer = patientZero;
@@ -458,7 +458,8 @@ public class TankController : NetworkBehaviour {
                 hasVirus = false;
                 virusDuration = 2;
                 virusParticles.Stop();
-            } else {
+            }
+            else {
                 playerHealth.TakeDamage(10, infectingPlayer);
                 virusDuration -= 1;
             }
@@ -514,12 +515,12 @@ public class TankController : NetworkBehaviour {
             if (Input.GetKey(KeyCode.RightBracket) || Input.GetKey(KeyCode.E)) {
                 var magnifier = (Input.GetKey(KeyCode.LeftShift) ||
                                  Input.GetKey(KeyCode.RightShift)) ? 3f : 1f;
-                shotPower += magnifier*shotPowerModifier;
+                shotPower += magnifier * shotPowerModifier;
             }
             if (Input.GetKey(KeyCode.LeftBracket) || Input.GetKey(KeyCode.Q)) {
                 var magnifier = (Input.GetKey(KeyCode.LeftShift) ||
                                  Input.GetKey(KeyCode.RightShift)) ? 3f : 1f;
-                shotPower -= magnifier*shotPowerModifier;
+                shotPower -= magnifier * shotPowerModifier;
             }
             shotPower = Mathf.Clamp(shotPower, 0f, maxShotPower);
 
@@ -579,7 +580,8 @@ public class TankController : NetworkBehaviour {
                         TankSoundKind.tank_movement_LeftRight_LOOP_01);
                     isHorizontalAxisInUse = true;
                 }
-            } else {
+            }
+            else {
                 if (isHorizontalAxisInUse) {
                     SingedMessages.SendStopAudioLoop(
                         gameObject,
@@ -601,7 +603,8 @@ public class TankController : NetworkBehaviour {
                         TankSoundKind.tank_movement_UpDown_LOOP_01);
                     isVerticalAxisInUse = true;
                 }
-            } else {
+            }
+            else {
                 if (isVerticalAxisInUse) {
                     SingedMessages.SendStopAudioLoop(
                         gameObject,
@@ -671,16 +674,22 @@ public class TankController : NetworkBehaviour {
             model.shotSource.position,
             model.shotSource.rotation
         );
+        ProjectileController liveProjectileController = liveProjectile.GetComponent<ProjectileController>();
+
         if (isSlowed) {
             liveProjectile.GetComponent<Rigidbody>().mass *= 2;
-            liveProjectile.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            liveProjectileController.molasses.Play();
+            liveProjectileController.isSlowed = true;
+
             isSlowed = false;
             slowParticles.Stop();
         }
+        else Destroy(liveProjectileController.molasses);
+
         liveProjectile.name = name + "Projectile";
         liveProjectile.layer = gameObject.layer;
-        liveProjectile.GetComponent<ProjectileController>().shooter = this;
-        liveProjectile.GetComponent<ProjectileController>().SetProjectileKind(selectedShot);
+        liveProjectileController.shooter = this;
+        liveProjectileController.SetProjectileKind(selectedShot);
 
         // set initial velocity/force
         liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
