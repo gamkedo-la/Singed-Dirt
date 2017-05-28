@@ -96,7 +96,8 @@ public class TankController : NetworkBehaviour {
     private float maxTurretElevation = 70.0f;
     public bool hasVirus = false;
     private float virusDuration = 2;
-    public ParticleSystem virusParticles;
+    public ParticleSystem virusParticles,
+        slowParticles;
     public GameObject virusParticlesGO;
     private Health playerHealth;
     private GameObject infectingPlayer;
@@ -328,7 +329,7 @@ public class TankController : NetworkBehaviour {
             case "slow":
             case "Slow":
                 isSlowed = true;
-                transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+                slowParticles.Play();
                 UxChatController.SendToConsole("" + gameObject.name + " has been slowed with molasses!");
                 break;
             default:
@@ -673,8 +674,8 @@ public class TankController : NetworkBehaviour {
         if (isSlowed) {
             liveProjectile.GetComponent<Rigidbody>().mass *= 2;
             liveProjectile.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
-            transform.GetChild(0).GetComponent<ParticleSystem>().Stop();
             isSlowed = false;
+            slowParticles.Stop();
         }
         liveProjectile.name = name + "Projectile";
         liveProjectile.layer = gameObject.layer;

@@ -207,6 +207,7 @@ MonoBehaviour:
   hatKind: 1
   hasVirus: 0
   virusParticles: {fileID: 0}
+  slowParticles: {fileID: 198857861424096648}
   virusParticlesGO: {fileID: 0}
 --- !u!114 &114615427782632318
 MonoBehaviour:
