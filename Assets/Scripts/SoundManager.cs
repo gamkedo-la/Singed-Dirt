@@ -30,22 +30,26 @@ public class SoundManager : MonoBehaviour {
             // Debug.Log("Sound manager created another instance, destroying.");
             Destroy(gameObject);
         }
-        if (justStarted) {
-            if (Random.Range(1, 2) == 1) {
-                intro1 = (AudioClip)Resources.Load("Voiceovers/" + VoiceoversKind.voice_hi_intro_1_dry);
-                PlayAudioClip(intro1);
-                justStarted = false;
-            } else {
-                intro2 = (AudioClip)Resources.Load("Voiceovers/" + VoiceoversKind.voice_hi_intro_2_dry);
-                PlayAudioClip(intro2);
-                justStarted = false;
-            }
-        }
-
     }
+
     void Start () {
         DontDestroyOnLoad(gameObject);
         InitializeMusic();
+		if (justStarted == true)
+		{
+			if (Random.Range(1, 2) == 1)
+			{
+				intro1 = (AudioClip)Resources.Load("Voiceovers/" + VoiceoversKind.voice_hi_intro_1_dry);
+				PlayAudioClip(intro1);
+				justStarted = false;
+			}
+			else
+			{
+				intro2 = (AudioClip)Resources.Load("Voiceovers/" + VoiceoversKind.voice_hi_intro_2_dry);
+				PlayAudioClip(intro2);
+				justStarted = false;
+			}
+		}
     }
 
     // Update is called once per frame
