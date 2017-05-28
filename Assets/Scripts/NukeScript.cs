@@ -16,7 +16,11 @@ public class NukeScript : MonoBehaviour {
         frontTopRing,
         backTopRing,
         stem,
-        cap;
+        cap,
+        frontBlastRing,
+        backBlastRing,
+        frontDebrisRing,
+        backDebrisRing;
 
     public float timer;
 
@@ -37,14 +41,13 @@ public class NukeScript : MonoBehaviour {
         else if (bloomOut) DecreaseBloom();
     }
 
-
     private void IncreaseBloom() {
         float bloomVal;
-        if (timer < 2.5) {
+        if (timer < 3) {
             bloomVal = Mathf.Min(2f, bloom.bloomIntensity + (float)(2f * Time.deltaTime / 2.5f));
             bloom.bloomIntensity = bloomVal;
         }
-        else if (timer < 2.75) {
+        else if (timer < 3.25) {
             bloomVal = Mathf.Min(4f, bloom.bloomIntensity + (float)(1f * Time.deltaTime / 0.25f));
             bloom.bloomIntensity = bloomVal;
         }
@@ -57,10 +60,10 @@ public class NukeScript : MonoBehaviour {
         float bloomVal,
             bloomVal2;
 
-        if (timer >= 11.75) {
+        if (timer >= 12.5) {
             bloomOut = false;
         }
-        else if (timer >= 3.75) {
+        else if (timer >= 4.25) {
             bloomVal = Mathf.Max(0.01f, bloom.bloomIntensity - (float)(4.99f * Time.deltaTime / 8f));
             bloomVal2 = Mathf.Min(3f, bloom.bloomThreshold + (float)(5.05f * Time.deltaTime / 8f));
             bloom.bloomIntensity = bloomVal;
@@ -72,7 +75,7 @@ public class NukeScript : MonoBehaviour {
         yield return new WaitForSeconds(0.15f);
         bloom.bloomIntensity = 0.1f;
 
-        yield return new WaitForSeconds(1.25f);
+        yield return new WaitForSeconds(1.75f);
         Destroy(dustStorm);
         bloomIn = true;
 
@@ -93,6 +96,10 @@ public class NukeScript : MonoBehaviour {
 
         yield return new WaitForSeconds(6f);
         cap.Play();
+        frontBlastRing.Play();
+        backBlastRing.Play();
+        frontDebrisRing.Play();
+        backDebrisRing.Play();
     }
 
 }
