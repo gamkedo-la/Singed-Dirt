@@ -201,6 +201,8 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
         OnClientReady(false);
     }
 
+    static bool firstPlayCharacterRandomizer = true;
+
     void SetupLocalPlayer() {
         // Debug.Log("SetupLocalPlayer");
         playerNameInput.interactable = true;
@@ -216,11 +218,15 @@ public class SingedLobbyPlayer : NetworkLobbyPlayer {
             var name = "Player" + LobbyPanelManager.singleton.playerCount.ToString();
             CmdNameChanged(name);
         }
-        int type = Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
-        turretBaseKind = (TankTurretBaseKind)type;
-        tankBaseKind = (TankBaseKind)type;
-        turretKind = (TankTurretKind)type;
-        hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
+
+        if (firstPlayCharacterRandomizer){
+			int type = Random.Range(0, System.Enum.GetValues(typeof(TankTurretBaseKind)).Length);
+			turretBaseKind = (TankTurretBaseKind)type;
+			tankBaseKind = (TankBaseKind)type;
+			turretKind = (TankTurretKind)type;
+			hatKind = (TankHatKind)Random.Range(0, System.Enum.GetValues(typeof(TankHatKind)).Length);
+            firstPlayCharacterRandomizer = false;
+        }
 
         //we switch from simple name display to name input
         setupButton.interactable = true;
