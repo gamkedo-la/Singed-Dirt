@@ -64,7 +64,6 @@ public enum ExplosionKind {
     cluster,
     bomblet,
     molasses,
-    mushCloud,
     peeShooterFire,
     hacking,
     teleport
@@ -110,6 +109,5 @@ public enum TankHatKind {
 
 public enum SpawnKind {
     lootbox = 0,
-    glowBall,
     InfectedParticles
 }

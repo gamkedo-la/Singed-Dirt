@@ -17,8 +17,7 @@ public class ProjectileController : NetworkBehaviour {
     public GameObject clusterBomblet;
     public ParticleSystem molasses;
 
-    public bool isMushboom = false,
-        isSlowed = false;
+    public bool isSlowed = false;
     public string areaOfEffect = "None";
     public float effectRadius = 10f;
     public float clusterHeight = 20.0f;
@@ -51,20 +50,24 @@ public class ProjectileController : NetworkBehaviour {
             hasCollided = true;
             // hide model so it doesn't bounce around before getting destroyed
             transform.FindChild("Model").gameObject.SetActive(false);
-            if (!isMushboom && myKind != ProjectileKind.teleportBall) {
-                Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
-                ServerExplode(collision);
-            }
-            else if (isMushboom) {
-                GetComponent<MushBehavior>().PlantIt();
-            }
-            else if (myKind == ProjectileKind.teleportBall) {
-                PerformTerrainDeformation(collision);
-                CreateExplosion();
-                if (collision.gameObject.name == "Terrain") {
-                    gameObject.GetComponent<Light>().enabled = false;
-                    StartCoroutine(TeleportPlayer());
-                }
+            switch (myKind) {
+                // uncomment when mushboom is ready
+                /* case ProjectileKind.mushboom:
+                     GetComponent<MushBehavior>().PlantIt();
+                     break;
+                 */
+                case ProjectileKind.teleportBall:
+                    PerformTerrainDeformation(collision);
+                    CreateExplosion();
+                    if (collision.gameObject.name == "Terrain") {
+                        gameObject.GetComponent<Light>().enabled = false;
+                        StartCoroutine(TeleportPlayer());
+                    }
+                    break;
+                default:
+                    Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
+                    ServerExplode(collision);
+                    break;
             }
         }
     }

@@ -405,7 +405,7 @@ public class BarkManager : MonoBehaviour {
 
         if (anyNumber > 5) {
             switch (shot) {
-                case (ProjectileKind)1:
+                case ProjectileKind.acorn:
                     if (currentAcornLineIndex >= totalAcornLines) {
                         currentAcornLineIndex = 0;
                         RandomizeQueue(acornIndexQueue);
@@ -418,7 +418,7 @@ public class BarkManager : MonoBehaviour {
                     currentAcornLineIndex++;
                     return theLine;
 
-                case (ProjectileKind)2:
+                case ProjectileKind.artilleryShell:
                     if (currentMissileLineIndex >= totalMissileLines) {
                         currentMissileLineIndex = 0;
                         RandomizeQueue(missileIndexQueue);
@@ -431,7 +431,7 @@ public class BarkManager : MonoBehaviour {
                     currentMissileLineIndex++;
                     return theLine;
 
-                case (ProjectileKind)3:
+                case ProjectileKind.sharkToothCluster:
                     if (currentSharktoothLineIndex >= totalSharktoothLines) {
                         currentSharktoothLineIndex = 0;
                         RandomizeQueue(sharktoothIndexQueue);
@@ -444,7 +444,7 @@ public class BarkManager : MonoBehaviour {
                     currentSharktoothLineIndex++;
                     return theLine;
 
-                case (ProjectileKind)5:
+                case ProjectileKind.pillarShot:
                     if (currentPillarLineIndex >= totalPillarLines) {
                         currentPillarLineIndex = 0;
                         RandomizeQueue(pillarIndexQueue);
@@ -457,7 +457,7 @@ public class BarkManager : MonoBehaviour {
                     currentPillarLineIndex++;
                     return theLine;
 
-                case (ProjectileKind)6:
+                case ProjectileKind.beetMissile:
                     if (currentBeetLineIndex >= totalBeetLines) {
                         currentBeetLineIndex = 0;
                         RandomizeQueue(beetIndexQueue);
@@ -470,7 +470,7 @@ public class BarkManager : MonoBehaviour {
                     currentBeetLineIndex++;
                     return theLine;
 
-                case (ProjectileKind)7:
+                case ProjectileKind.mushboom:
                     if (currentMushboomLineIndex >= totalMushboomLines) {
                         currentMushboomLineIndex = 0;
                         RandomizeQueue(mushboomIndexQueue);
@@ -483,7 +483,7 @@ public class BarkManager : MonoBehaviour {
                     currentMushboomLineIndex++;
                     return theLine;
 
-                case (ProjectileKind)8:
+                case ProjectileKind.teleportBall:
                     if (currentTeleportLineIndex >= totalTeleportLines) {
                         currentTeleportLineIndex = 0;
                         RandomizeQueue(teleportIndexQueue);

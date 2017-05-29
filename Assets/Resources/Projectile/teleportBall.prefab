@@ -317,11 +317,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0dbbfa5cea9466a9125b5a1ad6bed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionKind: 8
+  explosionKind: 7
   deformationKind: 6
   clusterBomblet: {fileID: 0}
   molasses: {fileID: 198063088909358456}
-  isMushboom: 0
   isSlowed: 0
   areaOfEffect: None
   effectRadius: 10

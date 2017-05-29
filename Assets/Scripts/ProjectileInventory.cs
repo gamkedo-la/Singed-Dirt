@@ -14,36 +14,37 @@ public class ProjectileInventory : NetworkBehaviour {
     void Awake() {
         onModifyEvent = new SenderEvent();
         maxShot = System.Enum.GetValues(typeof(ProjectileKind)).Length;
-        ammoCounts = new int[maxShot+1];
+        ammoCounts = new int[maxShot + 1];
 
         // initialize inventory
-        ammoCounts[(int) ProjectileKind.cannonBall] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.cannonBall] = int.MaxValue;
         // uncomment these to get unlimited ammo for the appropriate type for testing
-        // ammoCounts[(int) ProjectileKind.acorn] = int.MaxValue;
-        // ammoCounts[(int) ProjectileKind.artilleryShell] = int.MaxValue;
-        // ammoCounts[(int) ProjectileKind.beetMissile] = int.MaxValue;
-        // ammoCounts[(int) ProjectileKind.mushboom] = int.MaxValue;
-        // ammoCounts[(int) ProjectileKind.pillarShot] = int.MaxValue;
-        // ammoCounts[(int) ProjectileKind.sharkToothCluster] = int.MaxValue;
-         ammoCounts[(int) ProjectileKind.teleportBall] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.acorn] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.artilleryShell] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.beetMissile] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.mushboom] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.pillarShot] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.sharkToothCluster] = int.MaxValue;
+        ammoCounts[(int)ProjectileKind.teleportBall] = int.MaxValue;
     }
 
     public void Modify(ProjectileKind kind, int amount) {
-        if (ammoCounts[(int) kind] != int.MaxValue) {
+        if (ammoCounts[(int)kind] != int.MaxValue) {
             if (amount == int.MaxValue) {
-                ammoCounts[(int) kind] = amount;
-            } else {
-                ammoCounts[(int) kind] += amount;
+                ammoCounts[(int)kind] = amount;
+            }
+            else {
+                ammoCounts[(int)kind] += amount;
             }
         }
         onModifyEvent.Invoke(this);
     }
 
     ProjectileKind FindAvailableShot(ProjectileKind currentShot, int modifier) {
-        var nextShot = (maxShot + (int) currentShot + modifier) % maxShot;
-        while (nextShot != (int) currentShot) {
+        var nextShot = (maxShot + (int)currentShot + modifier) % maxShot;
+        while (nextShot != (int)currentShot) {
             if (ammoCounts[nextShot] > 0) {
-                return (ProjectileKind) nextShot;
+                return (ProjectileKind)nextShot;
             }
             nextShot = (maxShot + nextShot + modifier) % maxShot;
         }
@@ -58,7 +59,7 @@ public class ProjectileInventory : NetworkBehaviour {
     }
 
     public int GetAvailable(ProjectileKind shot) {
-        return ammoCounts[(int) shot];
+        return ammoCounts[(int)shot];
     }
 
     [ClientRpc]
