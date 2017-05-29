@@ -239,8 +239,11 @@ MonoBehaviour:
   explosionKind: 5
   deformationKind: 4
   clusterBomblet: {fileID: 0}
+  molasses: {fileID: 198940409020549420}
   isMushboom: 0
-  debuffEffect: None
+  isSlowed: 0
+  areaOfEffect: None
+  effectRadius: 10
   clusterHeight: 15
   bomletForceKick: 50
   numberOfBomblets: 8

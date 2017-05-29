@@ -205,7 +205,9 @@ MonoBehaviour:
   explosionKind: 6
   deformationKind: 5
   clusterBomblet: {fileID: 0}
+  molasses: {fileID: 198367647841144080}
   isMushboom: 0
+  isSlowed: 0
   areaOfEffect: None
   effectRadius: 10
   clusterHeight: 15
