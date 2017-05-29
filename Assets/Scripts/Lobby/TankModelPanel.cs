@@ -19,13 +19,17 @@ public class TankModelPanel : MonoBehaviour {
 
     public void Awake() {
         // Debug.Log("TankModelPanel Awake");
-        GameObject modelGo = GameObject.Find("ModelPosition");
-        if (modelGo != null) {
-            var playerSetupGo = modelGo.transform.Find("TankModel");
-            // Debug.Log("found tankModel: " + playerSetupGo);
-            tankModel = playerSetupGo.GetComponent<TankModel>();
-        }
+        FindTankModel();
+    }
 
+    void FindTankModel() {
+		GameObject modelGo = GameObject.Find("ModelPosition");
+		if (modelGo != null)
+		{
+			var playerSetupGo = modelGo.transform.Find("TankModel");
+			// Debug.Log("found tankModel: " + playerSetupGo);
+			tankModel = playerSetupGo.GetComponent<TankModel>();
+		}
     }
 
 	void GetAudioClipFile(MenuSoundKind sound) {
@@ -53,6 +57,14 @@ public class TankModelPanel : MonoBehaviour {
     }
 
     public void OnEnable() {
+        if (tankModel != null) {
+            Debug.Log("I'm getting called before find tank model and the model is " + tankModel.name);
+        }
+
+        FindTankModel();
+		if (tankModel != null){
+			Debug.Log("I'm getting called after find tank model and the model is " + tankModel.name);
+		}
         tankModel.gameObject.SetActive(true);
     }
 
