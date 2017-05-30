@@ -115,7 +115,7 @@ public class TurnManager : NetworkBehaviour {
             EventSystem.current.currentSelectedGameObject.tag == "inputexclusive") {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.N)) {
+        if (Input.GetKeyDown(KeyCode.N) && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
             ServerGameOver();
         }
         if (Input.GetKeyDown(KeyCode.H) && helpUI.activeInHierarchy == false) {

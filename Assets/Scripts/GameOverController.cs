@@ -32,6 +32,7 @@ public class GameOverController: MonoBehaviour {
 
     public void OnClickMainMenu() {
         if (SingedLobbyManager.s_singleton != null) {
+            SingedLobbyManager.s_singleton.loadMainMenu = true;
             SingedLobbyManager.s_singleton.StopGameCallback();
         }
     }
