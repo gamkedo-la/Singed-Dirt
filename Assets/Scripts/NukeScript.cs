@@ -4,13 +4,15 @@ using UnityStandardAssets.ImageEffects;
 
 public class NukeScript : MonoBehaviour {
 
-    public Transform nukeCam;
     public Bloom bloom;
-    public GameObject dustStorm,
-        colliseum,
-        explosion;
-    public ParticleSystem dustCloud,
+    public GameObject colliseum,
+        victim;
+    public ParticleSystem explosion,
+    dustStorm,
+        dustCloud,
+        heavyDust,
         core,
+        initialDebris,
         baseRing,
         secondaryRing,
         frontTopRing,
@@ -19,8 +21,7 @@ public class NukeScript : MonoBehaviour {
         cap,
         frontBlastRing,
         backBlastRing,
-        frontDebrisRing,
-        backDebrisRing;
+        frontDebrisRing;
 
     public float timer;
 
@@ -76,18 +77,24 @@ public class NukeScript : MonoBehaviour {
         bloom.bloomIntensity = 0.1f;
 
         yield return new WaitForSeconds(1.75f);
-        Destroy(dustStorm);
         bloomIn = true;
+        initialDebris.Play();
 
         yield return new WaitForSeconds(1.75f);
-        Destroy(explosion);
+        Destroy(explosion.transform.parent.gameObject);
         Destroy(colliseum);
+        Destroy(initialDebris.transform.parent.gameObject);
+        dustStorm.Stop();
         core.Play();
         baseRing.Play();
         secondaryRing.Play();
         frontTopRing.Play();
         backTopRing.Play();
         stem.Play();
+        frontBlastRing.Play();
+        backBlastRing.Play();
+        heavyDust.Play();
+        frontDebrisRing.Play();
         dustCloud.Play();
 
         yield return new WaitForSeconds(0.5f);
@@ -95,11 +102,23 @@ public class NukeScript : MonoBehaviour {
         bloomOut = true;
 
         yield return new WaitForSeconds(6f);
+        heavyDust.Play();
         cap.Play();
-        frontBlastRing.Play();
-        backBlastRing.Play();
-        frontDebrisRing.Play();
-        backDebrisRing.Play();
+
+        yield return new WaitForSeconds(3f);
+        Destroy(frontBlastRing.gameObject);
+
+        yield return new WaitForSeconds(1f);
+        Destroy(secondaryRing.transform.parent.gameObject);
+        Destroy(victim);
+        dustStorm.Play();
+
+        yield return new WaitForSeconds(3.5f);
+        Destroy(heavyDust.gameObject);
+        Destroy(frontDebrisRing.gameObject);
+
+        yield return new WaitForSeconds(0.5f);
+        Destroy(dustCloud.transform.parent.gameObject);
     }
 
 }
