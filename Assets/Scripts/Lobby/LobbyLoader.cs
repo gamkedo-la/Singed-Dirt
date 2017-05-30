@@ -20,6 +20,10 @@ public class LobbyLoader : MonoBehaviour {
 			{
 				mainMenu.SetActive(false);
 			}
+            if (SingedLobbyManager.s_singleton.loadMainMenu == true) {
+                LoadMainMenu();
+                SingedLobbyManager.s_singleton.loadMainMenu = false;
+            }
             Debug.Log("I'm about to return after the manager exists");
             return;
         } 
@@ -32,5 +36,10 @@ public class LobbyLoader : MonoBehaviour {
         // Debug.Log("I'm calling load lobby!");
         lobbyPrefab.SetActive(true);
         mainMenu.SetActive(false);
+    }
+
+    public void LoadMainMenu() {
+		lobbyPrefab.SetActive(false);
+        mainMenu.SetActive(true);
     }
 }

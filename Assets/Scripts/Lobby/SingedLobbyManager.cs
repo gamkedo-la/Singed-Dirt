@@ -27,6 +27,7 @@ public class SingedLobbyManager : NetworkLobbyManager {
     GameObject currentPanel;
     protected ulong _currentMatchID;
     protected bool _disconnectServer = false;
+    public bool loadMainMenu = false;
 
     //used to disconnect a client properly when exiting the matchmaker
     [HideInInspector]
