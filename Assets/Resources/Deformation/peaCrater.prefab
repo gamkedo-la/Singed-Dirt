@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114644200195704316}
   - component: {fileID: 114256360298263530}
   m_Layer: 0
-  m_Name: peeCrater
+  m_Name: peaCrater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

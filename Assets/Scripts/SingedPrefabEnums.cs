@@ -64,7 +64,7 @@ public enum ExplosionKind {
     cluster,
     bomblet,
     molasses,
-    peeShooterFire,
+    peaShooterFire,
     hacking,
     teleport
 }
@@ -75,7 +75,7 @@ public enum DeformationKind {
     pillarDeformer,
     molPuddle,
     groundZero,
-    peeCrater,
+    peaCrater,
     teleportScar
 }
 

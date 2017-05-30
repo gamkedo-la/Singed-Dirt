@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 114422337399504440}
   - component: {fileID: 114732945782054106}
   m_Layer: 0
-  m_Name: peeShooterFire
+  m_Name: peaShooterFire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
