@@ -80,7 +80,7 @@ public class TurnManager : NetworkBehaviour {
         LootSpawnController.singleton.mushboomCount = 0;
 
         // declare winner on each client
-        RpcGameOver(winner.gameObject);
+        RpcGameOver(winner.gameObject, false);
     }
 
     public void ServerNukeGameOver() {
@@ -90,7 +90,7 @@ public class TurnManager : NetworkBehaviour {
         currentRound = 1;
         LootSpawnController.singleton.mushboomCount = 0;
         // declare winner on each client
-        RpcGameOver(winner.gameObject);
+        RpcGameOver(winner.gameObject, true);
     }
 
     public bool GetGameOverState() {
@@ -262,10 +262,10 @@ public class TurnManager : NetworkBehaviour {
     /// Start the main client loop
     /// </summary>
     [ClientRpc]
-    void RpcGameOver(GameObject winnerGo) {
+    void RpcGameOver(GameObject winnerGo, bool nukeEnding) {
         var winner = winnerGo.GetComponent<TankController>();
         if (winner != null) {
-            gameOverController.SetWinner(winner.playerName);
+            gameOverController.SetWinner(winner.playerName, nukeEnding);
             gameOverController.gameObject.SetActive(true);
         }
     }

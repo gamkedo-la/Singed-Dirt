@@ -20,6 +20,7 @@ public class GameOverController: MonoBehaviour {
         "{0} was the winner we deserved",
         "The princess was in {0}'s castle",
     };
+    string nukeString = "{0} declares victory, but at what cost?";
 
     public void OnClickPlayAgain() {
     }
@@ -37,9 +38,13 @@ public class GameOverController: MonoBehaviour {
         }
     }
 
-    public void SetWinner(string playerName) {
-        var index = UnityEngine.Random.Range(0, winningStrings.Length);
-        winnerText.text = String.Format(winningStrings[index], playerName);
+    public void SetWinner(string playerName, bool nukeEnding=false) {
+        if (nukeEnding) {
+            winnerText.text = String.Format(nukeString, playerName);
+        } else {
+            var index = UnityEngine.Random.Range(0, winningStrings.Length);
+            winnerText.text = String.Format(winningStrings[index], playerName);
+        }
     }
 
 }
