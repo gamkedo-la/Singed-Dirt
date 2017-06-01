@@ -89,9 +89,11 @@ public class CameraController : MonoBehaviour {
 			transform.position += Random.insideUnitSphere * shakeAmount;
 		}
 
-        float terrainY = Terrain.activeTerrain.SampleHeight(desiredPosition);
-        float minCamHeight = terrainY + 17.0f;
-        desiredPosition.y = Mathf.Max(desiredPosition.y, minCamHeight);
+		if (Terrain.activeTerrain != null) {
+	        float terrainY = Terrain.activeTerrain.SampleHeight(desiredPosition);
+	        float minCamHeight = terrainY + 17.0f;
+	        desiredPosition.y = Mathf.Max(desiredPosition.y, minCamHeight);
+		}
         //Debug.Log("MinCamHeight " + minCamHeight + " desiredy " + desiredPosition.y);
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref moveVelocity, dampTime);
 		// transform.position = desiredPosition;
