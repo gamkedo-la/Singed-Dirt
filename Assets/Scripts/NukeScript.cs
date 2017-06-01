@@ -6,6 +6,8 @@ using UnityStandardAssets.ImageEffects;
 public class NukeScript : MonoBehaviour {
 
     public UnityEvent onNukeFinished;
+    public Canvas hudDisplay;
+    public Terrain groundZero;
     public Bloom bloom;
     public NukeShake camShake;
     public GameObject colliseum,
@@ -36,7 +38,7 @@ public class NukeScript : MonoBehaviour {
     }
 
     private void Start() {
-        // StartNukeSequence();
+        StartNukeSequence();
         onNukeFinished = new UnityEvent();
     }
 
@@ -79,6 +81,9 @@ public class NukeScript : MonoBehaviour {
     }
 
     public void StartNukeSequence() {
+        hudDisplay.enabled = false;
+        groundZero.enabled = true;
+        camShake.transform.GetComponent<Camera>().enabled = true;
         StartCoroutine(NukeSequence());
     }
 
@@ -130,7 +135,7 @@ public class NukeScript : MonoBehaviour {
         cap.Play();
         camShake.scale = 0.35f;
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.5f);
         camShake.scale = 0.75f;
 
         yield return new WaitForSeconds(2.25f);
@@ -155,10 +160,10 @@ public class NukeScript : MonoBehaviour {
         yield return new WaitForSeconds(0.25f);
         Destroy(dustCloud.transform.parent.gameObject);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
         camShake.scale = 0.1f;
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         camShake.scale = 0.05f;
 
         yield return new WaitForSeconds(1f);

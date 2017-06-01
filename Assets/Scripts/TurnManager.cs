@@ -260,6 +260,7 @@ public class TurnManager : NetworkBehaviour {
 
     void OnNukeFinished() {
         nukeActive = false;
+        hudController.transform.GetComponent<Canvas>().enabled = true;
     }
 
     // ------------------------------------------------------

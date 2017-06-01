@@ -19286,6 +19286,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1141001978}
   m_Script: {fileID: 11500000, guid: 9a8ef50db2c2a40efbd03f339ab8f084, type: 3}
+--- !u!223 &1141001984 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223538477473898776, guid: ac27fffd133b6af4f9dafaed1bc7b5c4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1141001978}
 --- !u!1 &1141856560
 GameObject:
   m_ObjectHideFlags: 0
@@ -46305,6 +46310,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  hudDisplay: {fileID: 1141001984}
+  groundZero: {fileID: 1197012912}
   bloom: {fileID: 2023370020}
   camShake: {fileID: 2023370014}
   colliseum: {fileID: 652205876}
@@ -53134,7 +53141,7 @@ Camera:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2023370013}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
