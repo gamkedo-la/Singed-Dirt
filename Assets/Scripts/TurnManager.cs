@@ -240,8 +240,8 @@ public class TurnManager : NetworkBehaviour {
     }
 
     void OnNukeFinished() {
+        Debug.Log("OnNukeFinished");
         nukeActive = false;
-        hudController.transform.GetComponent<Canvas>().enabled = true;
     }
 
     // ------------------------------------------------------
@@ -362,6 +362,11 @@ public class TurnManager : NetworkBehaviour {
     [ClientRpc]
     void RpcAddSpawn(Vector3 spawnLocation) {
         spawnPoints.Add(spawnLocation);
+    }
+
+    [ClientRpc]
+    void RpcToggleConsole(bool toggle) {
+        hudController.transform.GetComponent<Canvas>().enabled = toggle;
     }
 
     Vector3 GroundPosition(Vector3 position) {
@@ -604,6 +609,7 @@ public class TurnManager : NetworkBehaviour {
     IEnumerator NukeSequence() {
         // enable Nuke camera
         RpcViewNuke();
+        RpcToggleConsole(false);
 
         // find the nuke game object
         var nukeGO = GameObject.FindWithTag("nuke");
@@ -624,6 +630,8 @@ public class TurnManager : NetworkBehaviour {
         while (nukeActive) {
             yield return null;
         }
+
+        RpcToggleConsole(true);
     }
 
     public static TurnManager GetGameManager() {

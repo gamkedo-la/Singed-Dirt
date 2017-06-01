@@ -6,7 +6,6 @@ using UnityStandardAssets.ImageEffects;
 public class NukeScript : MonoBehaviour {
 
     public UnityEvent onNukeFinished;
-    public Canvas hudDisplay;
     public Terrain groundZero;
     public Bloom bloom;
     public NukeShake camShake;
@@ -81,7 +80,6 @@ public class NukeScript : MonoBehaviour {
     }
 
     public void StartNukeSequence() {
-        hudDisplay.enabled = false;
         groundZero.enabled = true;
         camShake.transform.GetComponent<Camera>().enabled = true;
         StartCoroutine(NukeSequence());
