@@ -38,7 +38,7 @@ public class NukeScript : MonoBehaviour {
     }
 
     private void Start() {
-        StartNukeSequence();
+        // StartNukeSequence();
         onNukeFinished = new UnityEvent();
     }
 
@@ -103,10 +103,10 @@ public class NukeScript : MonoBehaviour {
         camShake.scale = 3f;
         initialDebris.Play();
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.5f);
         camShake.scale = 0.1f;
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.25f);
         Destroy(explosion.transform.parent.gameObject);
         Destroy(colliseum);
         Destroy(initialDebris.transform.parent.gameObject);
@@ -154,13 +154,11 @@ public class NukeScript : MonoBehaviour {
         Destroy(frontDebrisRing.gameObject);
         camShake.scale = 0.3f;
 
-        yield return new WaitForSeconds(0.75f);
-        camShake.scale = 0.2f;
-
         yield return new WaitForSeconds(0.25f);
         Destroy(dustCloud.transform.parent.gameObject);
+        camShake.scale = 0.2f;
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(1f);
         camShake.scale = 0.1f;
 
         yield return new WaitForSeconds(1f);

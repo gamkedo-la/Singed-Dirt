@@ -3326,7 +3326,7 @@ Camera:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1981387657897452}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
@@ -5950,6 +5950,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  hudDisplay: {fileID: 0}
+  groundZero: {fileID: 218592057250030044}
   bloom: {fileID: 114517864229120448}
   camShake: {fileID: 114954714068857460}
   colliseum: {fileID: 1584977175076632}
@@ -50624,7 +50626,7 @@ Terrain:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1041278207320648}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_TerrainData: {fileID: 15600000, guid: 03cdf9d0485d4d14ca1b7acced3be955, type: 2}
   m_TreeDistance: 2000
