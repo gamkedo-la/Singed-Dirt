@@ -11,7 +11,8 @@ public class CameraController : MonoBehaviour {
 		watchPlayer,
 		watchLaunch,
 		watchProjectile,
-		watchExplosion
+		watchExplosion,
+		watchNuke
 	}
 
 	// Public
@@ -35,6 +36,7 @@ public class CameraController : MonoBehaviour {
 	// Vector3 originalPosition;
 
 	private Camera gameCamera;
+	private Camera nukeCamera;
 	// private float zoomSpeed;                      // Reference speed for the smooth damping of the orthographic size.
 	private float dampTime = 0.075f;                 // Approximate time for the camera to refocus.
 	private float rotationDampTime = 0.075f;         // Approximate time for the camera to refocus.
@@ -62,6 +64,10 @@ public class CameraController : MonoBehaviour {
 		desiredPosition = transform.position;
 
         gameCamera = GetComponentInChildren<Camera> ();
+		var cameraGO = GameObject.FindWithTag("nukeCamera");
+		if (cameraGO != null) {
+			nukeCamera = cameraGO.GetComponent<Camera>();
+		}
 	}
 
 	public void SetPlayerCameraFocus (TankController _player){
@@ -86,7 +92,7 @@ public class CameraController : MonoBehaviour {
         float terrainY = Terrain.activeTerrain.SampleHeight(desiredPosition);
         float minCamHeight = terrainY + 17.0f;
         desiredPosition.y = Mathf.Max(desiredPosition.y, minCamHeight);
-        Debug.Log("MinCamHeight " + minCamHeight + " desiredy " + desiredPosition.y);
+        //Debug.Log("MinCamHeight " + minCamHeight + " desiredy " + desiredPosition.y);
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref moveVelocity, dampTime);
 		// transform.position = desiredPosition;
 	}
@@ -96,27 +102,16 @@ public class CameraController : MonoBehaviour {
 		// transform.rotation = desiredRotation;
 	}
 
-
 	// Update is called once per frame
 	void LateUpdate () {
-		Move();
-		Rotate();
-
+		if (cameraMode != CameraMode.watchNuke) {
+			Move();
+			Rotate();
+		}
 	} // end LateUpdate
 
-	void FixedUpdate(){
-		/*
-		float springK = 0.94f;
-		if (inProjectileMode) {
-			transform.position = springK * transform.position + (1.0f - springK) * chaseCameraSpot;
-		}
-		*/
-	} // FixedUpdate
-
-	void Update() {
-	}
-
 	public void WatchOverview() {
+		SwitchCamera(gameCamera);
 		cameraMode = CameraMode.overview;
 		StartCoroutine(WatchOverviewLoop());
 	}
@@ -131,6 +126,7 @@ public class CameraController : MonoBehaviour {
 
 	// FIXME: ensure state loops can't overlap on each other (e.g.: two calls to WatchPlayer on top of each other)
 	public void WatchPlayer(TankController tank) {
+		SwitchCamera(gameCamera);
 		// Debug.Log("WatchPlayer: " + tank.name);
 		cameraMode = CameraMode.watchPlayer;
 		StartCoroutine(WatchPlayerLoop(tank));
@@ -169,6 +165,7 @@ public class CameraController : MonoBehaviour {
 
 	// #TODO need to make the shot watch smoother
 	public void WatchLaunch(GameObject projectileGO, GameObject playerGO){
+		SwitchCamera(gameCamera);
 		cameraMode = CameraMode.watchLaunch;
 		// Debug.Log("Starting watch launch");
 		isLaunchViewFalling = false;
@@ -195,6 +192,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void WatchProjectile(GameObject projectileGO) {
+		SwitchCamera(gameCamera);
 		// Debug.Log("WatchProjectile: " + projectileGO);
 		cameraMode = CameraMode.watchProjectile;
 		// Debug.Log("watch projectile coroutine looper counter");
@@ -214,6 +212,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void WatchExplosion(GameObject explosionGO) {
+		SwitchCamera(gameCamera);
 		Debug.Log("WatchExplosion: " + explosionGO);
 		cameraMode = CameraMode.watchExplosion;
 		StartCoroutine(WatchExplosionLoop(explosionGO));
@@ -239,6 +238,22 @@ public class CameraController : MonoBehaviour {
 
 			yield return null;
 		}
+	}
+
+	void SwitchCamera(Camera camera) {
+		if (gameCamera != null) {
+			gameCamera.enabled = (camera == gameCamera);
+		}
+		if (nukeCamera != null) {
+			nukeCamera.enabled = (camera == nukeCamera);
+		}
+	}
+
+	public void WatchNuke() {
+		Debug.Log("WatchNuke");
+		cameraMode = CameraMode.watchNuke;
+		SwitchCamera(nukeCamera);
+		//StartCoroutine(WatchExplosionLoop(explosionGO));
 	}
 
 	public void ShakeCamera(float amount, float dfactor){

@@ -37,6 +37,10 @@ public class TurnManager : NetworkBehaviour {
     // Private variables
     bool isReady = false;
     bool gameStarted = false;
+    bool roundActive = false;
+    bool nukeActive = false;
+
+    public TankController nukeOwner = null;
 
     // list of spawn points
     public List<Vector3> spawnPoints;
@@ -77,7 +81,16 @@ public class TurnManager : NetworkBehaviour {
 
         // declare winner on each client
         RpcGameOver(winner.gameObject);
+    }
 
+    public void ServerNukeGameOver() {
+        // winning tank is the one that shot the nuke
+        var winner = nukeOwner;
+        gameOverState = true;
+        currentRound = 1;
+        LootSpawnController.singleton.mushboomCount = 0;
+        // declare winner on each client
+        RpcGameOver(winner.gameObject);
     }
 
     public bool GetGameOverState() {
@@ -116,7 +129,8 @@ public class TurnManager : NetworkBehaviour {
             return;
         }
         if (Input.GetKeyDown(KeyCode.N) && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
-            ServerGameOver();
+            //ServerGameOver();
+            ServerStartNuke(activeTank);
         }
         if (Input.GetKeyDown(KeyCode.H) && helpUI.activeInHierarchy == false) {
             helpUI.SetActive(true);
@@ -194,6 +208,40 @@ public class TurnManager : NetworkBehaviour {
             activeTanks.Remove(player.playerIndex);
             // Debug.Log("removing index: " + player.playerIndex + " new active tanks -> " + String.Join(",", activeTanks.Select(v=>v.ToString()).ToArray()));
         }
+    }
+
+    void ServerStartNuke(TankController player) {
+        if (!isServer) return;
+
+        // find the nuke game object
+        var nukeGO = GameObject.FindWithTag("nuke");
+        if (nukeGO == null) {
+            Debug.Log("can't find nuke parent object");
+            return;
+        }
+        var nukeScript = nukeGO.GetComponent<NukeScript>();
+
+        // assign nuke owner... this is the game winner
+        nukeOwner = player;
+
+        // enable Nuke camera
+        RpcViewNuke();
+
+        // register ourselves as listener for nuke finished event
+        // FIXME: uncomment to hook into updated nuke script
+        //nukeScript.onNukeFinished.AddListener(OnNukeFinished);
+
+        // start the nuke sequence
+        // FIXME: uncomment to hook into updated nuke script
+        //nukeScript.StartNukeSequence();
+
+        // update state
+        nukeActive = true;
+        roundActive = false;
+    }
+
+    void OnNukeFinished() {
+        nukeActive = false;
     }
 
     // ------------------------------------------------------
@@ -307,6 +355,11 @@ public class TurnManager : NetworkBehaviour {
     }
 
     [ClientRpc]
+    void RpcViewNuke() {
+        camController.WatchNuke();
+    }
+
+    [ClientRpc]
     void RpcAddSpawn(Vector3 spawnLocation) {
         spawnPoints.Add(spawnLocation);
     }
@@ -389,9 +442,16 @@ public class TurnManager : NetworkBehaviour {
         // start the game
         yield return StartCoroutine(PlayRound());
         // FIXME: need to rework game win/loss logic
-        ServerGameOver();
+
+        if (nukeActive) {
+            StartCoroutine(WaitForNuke());
+            ServerNukeGameOver();
+        } else {
+            ServerGameOver();
+        }
         // Debug.Log("finishing ServerLoop");
     }
+
 
     /// <summary>
     /// This is the main client loop
@@ -446,6 +506,7 @@ public class TurnManager : NetworkBehaviour {
     }
 
     IEnumerator PlayRound() {
+        roundActive = true;
         // Debug.Log ("Starting the game!!!");
 
         // add current tanks to the active tank list
@@ -466,7 +527,7 @@ public class TurnManager : NetworkBehaviour {
         }
 
         // continue to play the round while at least two tanks are active
-        while (activeTanks.Count >= 2) {
+        while (roundActive && activeTanks.Count >= 2) {
             // determine next tank, advance current Index
             var nextTankId = turnOrder[(currentIndex++) % turnOrder.Length];
 
@@ -504,7 +565,7 @@ public class TurnManager : NetworkBehaviour {
         RpcViewLocalTank(tank.gameObject, !followActivePlayer);
 
         // wait for shot fired by this tank
-        while (tank != null && tank.hasControl) {
+        while (roundActive && tank != null && tank.hasControl) {
             yield return null;
         }
 
@@ -515,7 +576,7 @@ public class TurnManager : NetworkBehaviour {
             RpcViewShot(tank.gameObject, liveProjectile, !followActivePlayer);
         }
         // wait until the projectile is destroyed
-        while (liveProjectile != null) {
+        while (roundActive && liveProjectile != null) {
             yield return null;
         }
 
@@ -526,7 +587,7 @@ public class TurnManager : NetworkBehaviour {
             RpcViewExplosion(tank.gameObject, liveExplosion, !followActivePlayer);
         }
         // wait until the explosion is destroyed
-        while (liveExplosion != null) {
+        while (roundActive && liveExplosion != null) {
             yield return null;
         }
 
@@ -536,6 +597,12 @@ public class TurnManager : NetworkBehaviour {
         }
     }
 
+    IEnumerator WaitForNuke() {
+        // wait for nuke to be finished
+        while (nukeActive) {
+            yield return null;
+        }
+    }
 
     public static TurnManager GetGameManager() {
         // find manager GO and manager script
