@@ -212,6 +212,17 @@ public class TurnManager : NetworkBehaviour {
 
     void ServerStartNuke(TankController player) {
         if (!isServer) return;
+        Debug.Log("starting nuke on server");
+
+        // assign nuke owner... this is the game winner
+        nukeOwner = player;
+
+        // enable Nuke camera
+        RpcViewNuke();
+
+        // update state
+        nukeActive = true;
+        roundActive = false;
 
         // find the nuke game object
         var nukeGO = GameObject.FindWithTag("nuke");
@@ -221,23 +232,30 @@ public class TurnManager : NetworkBehaviour {
         }
         var nukeScript = nukeGO.GetComponent<NukeScript>();
 
-        // assign nuke owner... this is the game winner
-        nukeOwner = player;
-
-        // enable Nuke camera
-        RpcViewNuke();
-
         // register ourselves as listener for nuke finished event
         // FIXME: uncomment to hook into updated nuke script
         //nukeScript.onNukeFinished.AddListener(OnNukeFinished);
 
+        // start nuke sequence on client
+        RpcStartNuke();
+
+    }
+
+    [ClientRpc]
+    void RpcStartNuke() {
+        Debug.Log("starting nuke on client");
+
+        // find the nuke game object
+        var nukeGO = GameObject.FindWithTag("nuke");
+        if (nukeGO == null) {
+            Debug.Log("can't find nuke parent object");
+            return;
+        }
+        var nukeScript = nukeGO.GetComponent<NukeScript>();
+
         // start the nuke sequence
         // FIXME: uncomment to hook into updated nuke script
         //nukeScript.StartNukeSequence();
-
-        // update state
-        nukeActive = true;
-        roundActive = false;
     }
 
     void OnNukeFinished() {
