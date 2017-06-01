@@ -27,7 +27,8 @@ public class NukeScript : MonoBehaviour {
         frontDebrisRing;
     public float timer;
 
-    private bool bloomIn = false,
+    private bool sequenceStarted = false,
+        bloomIn = false,
         bloomOut = false;
 
     private void Awake() {
@@ -35,13 +36,16 @@ public class NukeScript : MonoBehaviour {
     }
 
     private void Start() {
+        // StartNukeSequence();
         onNukeFinished = new UnityEvent();
     }
 
     private void Update() {
-        timer += Time.deltaTime;
-        if (bloomIn) IncreaseBloom();
-        else if (bloomOut) DecreaseBloom();
+        if (sequenceStarted) {
+            timer += Time.deltaTime;
+            if (bloomIn) IncreaseBloom();
+            else if (bloomOut) DecreaseBloom();
+        }
     }
 
     private void IncreaseBloom() {
@@ -75,12 +79,14 @@ public class NukeScript : MonoBehaviour {
     }
 
     public void StartNukeSequence() {
-        explosion.Play();
-        camShake.shakeIt = true;
         StartCoroutine(NukeSequence());
     }
 
     private IEnumerator NukeSequence() {
+        sequenceStarted = true;
+        explosion.Play();
+        camShake.shakeIt = true;
+
         yield return new WaitForSeconds(0.15f);
         bloom.bloomIntensity = 0.1f;
 
@@ -89,7 +95,7 @@ public class NukeScript : MonoBehaviour {
 
         yield return new WaitForSeconds(0.75f);
         bloomIn = true;
-        camShake.scale = 1f;
+        camShake.scale = 3f;
         initialDebris.Play();
 
         yield return new WaitForSeconds(0.25f);
@@ -143,8 +149,8 @@ public class NukeScript : MonoBehaviour {
         Destroy(frontDebrisRing.gameObject);
         camShake.scale = 0.3f;
 
-        yield return new WaitForSeconds(0.25f);
-        camShake.scale = 0.15f;
+        yield return new WaitForSeconds(0.75f);
+        camShake.scale = 0.2f;
 
         yield return new WaitForSeconds(0.25f);
         Destroy(dustCloud.transform.parent.gameObject);
@@ -152,13 +158,13 @@ public class NukeScript : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         camShake.scale = 0.1f;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.5f);
         camShake.scale = 0.05f;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         camShake.shakeIt = false;
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1f);
         onNukeFinished.Invoke();
     }
 

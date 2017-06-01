@@ -22694,7 +22694,7 @@ TerrainCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1197012909}
   m_Material: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_TerrainData: {fileID: 15600000, guid: 03cdf9d0485d4d14ca1b7acced3be955, type: 2}
   m_EnableTreeColliders: 0
 --- !u!218 &1197012912
@@ -22704,7 +22704,7 @@ Terrain:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1197012909}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_TerrainData: {fileID: 15600000, guid: 03cdf9d0485d4d14ca1b7acced3be955, type: 2}
   m_TreeDistance: 2000
@@ -53107,9 +53107,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shakeIt: 0
-  maxShakeX: 1
-  maxShakeY: 1
-  maxShakeZ: 3
+  maxShakeX: 0.5
+  maxShakeY: 0.5
+  maxShakeZ: 10
   scale: 0.05
 --- !u!92 &2023370016
 Behaviour:

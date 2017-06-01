@@ -5,11 +5,12 @@ public class NukeShake : MonoBehaviour {
     public bool shakeIt;
     public float maxShakeX = 1f,
         maxShakeY = 1f,
-        maxShakeZ = 3f,
+        maxShakeZ = 10f,
         scale = 0.05f;
 
     private NukeScript control;
     private Quaternion origin;
+    private int flipState = 1;
 
     // Use this for initialization
     void Start() {
@@ -24,9 +25,12 @@ public class NukeShake : MonoBehaviour {
     }
 
     private void TheShake() {
-        float shakeX = scale * Random.Range(-maxShakeX, maxShakeX),
-            shakeY = scale * Random.Range(-maxShakeY, maxShakeY),
-            shakeZ = scale * Random.Range(-maxShakeZ, maxShakeZ);
+        flipState *= -1;
+
+        float shakeX = origin.x + flipState * scale * (Mathf.PerlinNoise(origin.x, maxShakeX)),
+        shakeY = origin.y + flipState * scale * (Mathf.PerlinNoise(origin.y, maxShakeY)),
+        shakeZ = origin.z + flipState * scale * (Mathf.PerlinNoise(origin.z, maxShakeZ));
+
         transform.localRotation = Quaternion.Euler(shakeX, shakeY, shakeZ);
     }
 
