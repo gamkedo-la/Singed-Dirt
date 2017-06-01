@@ -217,28 +217,9 @@ public class TurnManager : NetworkBehaviour {
         // assign nuke owner... this is the game winner
         nukeOwner = player;
 
-        // enable Nuke camera
-        RpcViewNuke();
-
         // update state
         nukeActive = true;
         roundActive = false;
-
-        // find the nuke game object
-        var nukeGO = GameObject.FindWithTag("nuke");
-        if (nukeGO == null) {
-            Debug.Log("can't find nuke parent object");
-            return;
-        }
-        var nukeScript = nukeGO.GetComponent<NukeScript>();
-
-        // register ourselves as listener for nuke finished event
-        // FIXME: uncomment to hook into updated nuke script
-        nukeScript.onNukeFinished.AddListener(OnNukeFinished);
-
-        // start nuke sequence on client
-        RpcStartNuke();
-
     }
 
     [ClientRpc]
@@ -463,7 +444,7 @@ public class TurnManager : NetworkBehaviour {
         // FIXME: need to rework game win/loss logic
 
         if (nukeActive) {
-            StartCoroutine(WaitForNuke());
+            StartCoroutine(NukeSequence());
             ServerNukeGameOver();
         }
         else {
@@ -588,6 +569,7 @@ public class TurnManager : NetworkBehaviour {
         while (roundActive && tank != null && tank.hasControl) {
             yield return null;
         }
+        if (!roundActive) yield break;
 
         // follow tank projectile
         if (tank != null && liveProjectile != null) {
@@ -599,6 +581,7 @@ public class TurnManager : NetworkBehaviour {
         while (roundActive && liveProjectile != null) {
             yield return null;
         }
+        if (!roundActive) yield break;
 
         // wait for explosion
         if (tank != null && liveExplosion != null) {
@@ -610,6 +593,7 @@ public class TurnManager : NetworkBehaviour {
         while (roundActive && liveExplosion != null) {
             yield return null;
         }
+        if (!roundActive) yield break;
 
         // reset view to local tank view
         if (tank != null) {
@@ -617,7 +601,25 @@ public class TurnManager : NetworkBehaviour {
         }
     }
 
-    IEnumerator WaitForNuke() {
+    IEnumerator NukeSequence() {
+        // enable Nuke camera
+        RpcViewNuke();
+
+        // find the nuke game object
+        var nukeGO = GameObject.FindWithTag("nuke");
+        if (nukeGO == null) {
+            Debug.Log("can't find nuke parent object");
+            yield break;
+        }
+        var nukeScript = nukeGO.GetComponent<NukeScript>();
+
+        // register ourselves as listener for nuke finished event
+        // FIXME: uncomment to hook into updated nuke script
+        nukeScript.onNukeFinished.AddListener(OnNukeFinished);
+
+        // start nuke sequence on client
+        RpcStartNuke();
+
         // wait for nuke to be finished
         while (nukeActive) {
             yield return null;
