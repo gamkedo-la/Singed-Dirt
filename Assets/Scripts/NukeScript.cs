@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 using UnityStandardAssets.ImageEffects;
 
 public class NukeScript : MonoBehaviour {
 
+    public UnityEvent onNukeFinished;
     public Bloom bloom;
+    public NukeShake camShake;
     public GameObject colliseum,
         victim;
     public ParticleSystem explosion,
-    dustStorm,
+        dustStorm,
         dustCloud,
         heavyDust,
         core,
@@ -22,7 +25,6 @@ public class NukeScript : MonoBehaviour {
         frontBlastRing,
         backBlastRing,
         frontDebrisRing;
-
     public float timer;
 
     private bool bloomIn = false,
@@ -33,7 +35,7 @@ public class NukeScript : MonoBehaviour {
     }
 
     private void Start() {
-        StartCoroutine(NukeSequence());
+        onNukeFinished = new UnityEvent();
     }
 
     private void Update() {
@@ -72,15 +74,28 @@ public class NukeScript : MonoBehaviour {
         }
     }
 
+    public void StartNukeSequence() {
+        explosion.Play();
+        camShake.shakeIt = true;
+        StartCoroutine(NukeSequence());
+    }
+
     private IEnumerator NukeSequence() {
         yield return new WaitForSeconds(0.15f);
         bloom.bloomIntensity = 0.1f;
 
-        yield return new WaitForSeconds(1.75f);
+        yield return new WaitForSeconds(1f);
+        camShake.scale = 0.1f;
+
+        yield return new WaitForSeconds(0.75f);
         bloomIn = true;
+        camShake.scale = 1f;
         initialDebris.Play();
 
-        yield return new WaitForSeconds(1.75f);
+        yield return new WaitForSeconds(0.25f);
+        camShake.scale = 0.1f;
+
+        yield return new WaitForSeconds(1.5f);
         Destroy(explosion.transform.parent.gameObject);
         Destroy(colliseum);
         Destroy(initialDebris.transform.parent.gameObject);
@@ -101,11 +116,18 @@ public class NukeScript : MonoBehaviour {
         bloom.bloomIntensity = 3f;
         bloomOut = true;
 
-        yield return new WaitForSeconds(6f);
-        heavyDust.Play();
-        cap.Play();
+        yield return new WaitForSeconds(3f);
+        camShake.scale = 0.2f;
 
         yield return new WaitForSeconds(3f);
+        heavyDust.Play();
+        cap.Play();
+        camShake.scale = 0.35f;
+
+        yield return new WaitForSeconds(0.75f);
+        camShake.scale = 0.75f;
+
+        yield return new WaitForSeconds(2.25f);
         Destroy(frontBlastRing.gameObject);
 
         yield return new WaitForSeconds(1f);
@@ -113,12 +135,31 @@ public class NukeScript : MonoBehaviour {
         Destroy(victim);
         dustStorm.Play();
 
-        yield return new WaitForSeconds(3.5f);
+        yield return new WaitForSeconds(2f);
+        camShake.scale = 0.5f;
+
+        yield return new WaitForSeconds(1.5f);
         Destroy(heavyDust.gameObject);
         Destroy(frontDebrisRing.gameObject);
+        camShake.scale = 0.3f;
+
+        yield return new WaitForSeconds(0.25f);
+        camShake.scale = 0.15f;
+
+        yield return new WaitForSeconds(0.25f);
+        Destroy(dustCloud.transform.parent.gameObject);
 
         yield return new WaitForSeconds(0.5f);
-        Destroy(dustCloud.transform.parent.gameObject);
+        camShake.scale = 0.1f;
+
+        yield return new WaitForSeconds(0.5f);
+        camShake.scale = 0.05f;
+
+        yield return new WaitForSeconds(0.5f);
+        camShake.shakeIt = false;
+
+        yield return new WaitForSeconds(2.5f);
+        onNukeFinished.Invoke();
     }
 
 }

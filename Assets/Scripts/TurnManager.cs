@@ -234,7 +234,7 @@ public class TurnManager : NetworkBehaviour {
 
         // register ourselves as listener for nuke finished event
         // FIXME: uncomment to hook into updated nuke script
-        //nukeScript.onNukeFinished.AddListener(OnNukeFinished);
+        nukeScript.onNukeFinished.AddListener(OnNukeFinished);
 
         // start nuke sequence on client
         RpcStartNuke();
@@ -255,7 +255,7 @@ public class TurnManager : NetworkBehaviour {
 
         // start the nuke sequence
         // FIXME: uncomment to hook into updated nuke script
-        //nukeScript.StartNukeSequence();
+        nukeScript.StartNukeSequence();
     }
 
     void OnNukeFinished() {
@@ -464,7 +464,8 @@ public class TurnManager : NetworkBehaviour {
         if (nukeActive) {
             StartCoroutine(WaitForNuke());
             ServerNukeGameOver();
-        } else {
+        }
+        else {
             ServerGameOver();
         }
         // Debug.Log("finishing ServerLoop");
