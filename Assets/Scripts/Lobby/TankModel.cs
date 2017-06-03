@@ -28,40 +28,49 @@ public class TankModel : MonoBehaviour {
     public GameObject turretPrefab = null;
     public GameObject hatPrefab = null;
 
-	float _tankRotation = 133f;
-	float _aimHorizontal = 0f;
-	float _aimVertical = 15f;
+    float _tankRotation = 133f;
+    float _aimHorizontal = 0f;
+    float _aimVertical = 15f;
 
     public void Start() {
         UpdateAvatar();
     }
 
-    public float tankRotation {
-        get {
+    public float tankRotation
+    {
+        get
+        {
             return _tankRotation;
         }
-        set {
+        set
+        {
             _tankRotation = value;
-			transform.localRotation = Quaternion.AngleAxis(_tankRotation, Vector3.up);
+            transform.localRotation = Quaternion.AngleAxis(_tankRotation, Vector3.up);
         }
     }
 
-    public float turretRotation {
-        get {
+    public float turretRotation
+    {
+        get
+        {
             return _aimHorizontal;
         }
-        set {
+        set
+        {
             _aimHorizontal = value;
         }
     }
 
-    public float turretElevation {
-        get {
+    public float turretElevation
+    {
+        get
+        {
             return _aimVertical;
         }
-        set {
+        set
+        {
             _aimVertical = value;
-			turret.transform.localRotation = Quaternion.Euler(_aimVertical, 0, 0);
+            turret.transform.localRotation = Quaternion.Euler(_aimVertical, 0, 0);
         }
     }
 
@@ -69,7 +78,7 @@ public class TankModel : MonoBehaviour {
         // instantiate tank base
         if (tankBasePrefab != null) DestroyImmediate(tankBasePrefab);
         var prefab = PrefabRegistry.singleton.GetPrefab<TankBaseKind>(tankBaseKind);
-		tankBasePrefab = Instantiate(
+        tankBasePrefab = Instantiate(
             prefab,
             tankBase.transform.position,
             tankBase.transform.rotation,
@@ -78,7 +87,7 @@ public class TankModel : MonoBehaviour {
         // instantiate turret base
         if (turretBasePrefab != null) DestroyImmediate(turretBasePrefab);
         prefab = PrefabRegistry.singleton.GetPrefab<TankTurretBaseKind>(turretBaseKind);
-		turretBasePrefab = Instantiate(
+        turretBasePrefab = Instantiate(
             prefab,
             turretBase.transform.position,
             turretBase.transform.rotation,
@@ -87,7 +96,7 @@ public class TankModel : MonoBehaviour {
         // instantiate turret
         if (turretPrefab != null) DestroyImmediate(turretPrefab);
         prefab = PrefabRegistry.singleton.GetPrefab<TankTurretKind>(turretKind);
-		turretPrefab = Instantiate(
+        turretPrefab = Instantiate(
             prefab,
             turret.transform.position,
             turret.transform.rotation,
@@ -97,11 +106,18 @@ public class TankModel : MonoBehaviour {
         // instantiate hat
         if (hatPrefab != null) DestroyImmediate(hatPrefab);
         prefab = PrefabRegistry.singleton.GetPrefab<TankHatKind>(hatKind);
-		hatPrefab = Instantiate(
+        hatPrefab = Instantiate(
             prefab,
             hat.transform.position,
             hat.transform.rotation,
             hat.transform);
 
+    }
+
+    public void ActivateMeshes(bool action) {
+        MeshRenderer[] allMeshes = GetComponentsInChildren<MeshRenderer>();
+        for (int i = 0; i < allMeshes.Length; i++) {
+            allMeshes[i].enabled = action;
+        }
     }
 }

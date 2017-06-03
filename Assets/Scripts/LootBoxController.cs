@@ -10,6 +10,7 @@ public class LootBoxController : NetworkBehaviour {
 
     ProjectileKind lootKind;
     int lootCount;
+    private NukeScript theNuke;
 
     // Use this for initialization
     void Start() {
@@ -26,6 +27,8 @@ public class LootBoxController : NetworkBehaviour {
         if (UnityEngine.Random.Range(0, 2) > 0) {
             rotationSpeed *= -1f;
         }
+
+        theNuke = GameObject.FindWithTag("nuke").GetComponent<NukeScript>();
     }
 
     public void AssignLoot(
@@ -37,6 +40,7 @@ public class LootBoxController : NetworkBehaviour {
     }
 
     void Update() {
+        if (theNuke.blastKill) Destroy(gameObject);
         // slowly rotate box
         transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
     }

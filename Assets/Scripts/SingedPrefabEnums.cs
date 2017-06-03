@@ -66,7 +66,8 @@ public enum ExplosionKind {
     molasses,
     peaShooterFire,
     hacking,
-    teleport
+    teleport,
+    nuke
 }
 
 public enum DeformationKind {

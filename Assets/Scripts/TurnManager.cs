@@ -22,6 +22,8 @@ public class TurnManager : NetworkBehaviour {
 
     // Public variables
     public static TurnManager singleton;
+    public Terrain groundZero,
+        patchTerrain;
 
     // the list of all tanks, mapping their tank ID to tank controller
     // NOTE: this mapping is maintained on both client and server
@@ -233,9 +235,7 @@ public class TurnManager : NetworkBehaviour {
             return;
         }
         var nukeScript = nukeGO.GetComponent<NukeScript>();
-
         // start the nuke sequence
-        // FIXME: uncomment to hook into updated nuke script
         nukeScript.StartNukeSequence();
     }
 
@@ -438,6 +438,9 @@ public class TurnManager : NetworkBehaviour {
         // spawn initial lootboxes
         StartCoroutine(DelayLootSpawn());
 
+        // re-enable groundZero terrain
+        groundZero.enabled = true;
+
         // adjust camera
         //RpcViewLocalTank();
 
@@ -620,7 +623,6 @@ public class TurnManager : NetworkBehaviour {
         var nukeScript = nukeGO.GetComponent<NukeScript>();
 
         // register ourselves as listener for nuke finished event
-        // FIXME: uncomment to hook into updated nuke script
         nukeScript.onNukeFinished.AddListener(OnNukeFinished);
 
         // start nuke sequence on client

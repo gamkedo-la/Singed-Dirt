@@ -84,29 +84,89 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b78530fcd48686842a7e021ab73229fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_delayLodUpdate: 0
+  m_delayLodUpdate: 1
   m_instantScar: 1
-  m_radiusWorldUnits: 5
-  m_heightWorldUnits: 3
+  m_radiusWorldUnits: 100
+  m_heightWorldUnits: 50
   m_profile:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: -0.016666666
+      value: -1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.35932636
+      value: -0.3828237
+      inSlope: 2.9612663
+      outSlope: 2.9612663
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.62342525
+      value: 0.36240095
+      inSlope: 0.82028955
+      outSlope: 0.82028955
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1.0019377
+      value: -0.057370476
+      inSlope: -0.7529664
+      outSlope: -0.7529664
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   m_deformationDuration: 0
-  m_bumpScale: 5
-  m_bumpHeightWorldUnits: 0.3
+  m_bumpScale: 10
+  m_bumpHeightWorldUnits: 25
   m_bumpBlend:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.27907136
+      value: 0.44668192
+      inSlope: -0.3373623
+      outSlope: -0.3373623
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.76485634
+      value: 0.8355113
+      inSlope: -1.3199449
+      outSlope: -1.3199449
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0.0062561035
+      inSlope: -1.2543383
+      outSlope: -1.2543383
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_scarTextureIndex: 0
+    m_RotationOrder: 0
+  m_scarTextureIndex: 4
   m_scarBlend:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.024887085
+      value: 1.0106201
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0

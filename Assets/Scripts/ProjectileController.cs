@@ -46,17 +46,31 @@ public class ProjectileController : NetworkBehaviour {
         // only trigger explosion (spawn) if we currently have authority
         // run collisions on server only
         if (isServer && !hasCollided) {
-            // single collision/explosion per projectile
-            hasCollided = true;
             // hide model so it doesn't bounce around before getting destroyed
-            transform.FindChild("Model").gameObject.SetActive(false);
             switch (myKind) {
-                // uncomment when mushboom is ready
-                /* case ProjectileKind.mushboom:
-                     GetComponent<MushBehavior>().PlantIt();
-                     break;
-                 */
+                // FIXME: uncomment when mushboom is ready
+                /*
+                case ProjectileKind.mushboom:
+                    switch (collision.gameObject.name) {
+                        case "GroundZero":
+                            PerformTerrainDeformation(collision);
+                            break;  
+                        case "Terrain":
+                            // plant the mushboom and start countdown sequence
+                            break;
+                    
+                        default:
+                            hasCollided = true;
+                            transform.FindChild("Model").gameObject.SetActive(false);
+                            CreateExplosion();
+                            break;
+                    }
+                    break;
+                    */
                 case ProjectileKind.teleportBall:
+                    // single collision/explosion per projectile
+                    hasCollided = true;
+                    transform.FindChild("Model").gameObject.SetActive(false);
                     PerformTerrainDeformation(collision);
                     CreateExplosion();
                     if (collision.gameObject.name == "Terrain") {
@@ -65,6 +79,9 @@ public class ProjectileController : NetworkBehaviour {
                     }
                     break;
                 default:
+                    // single collision/explosion per projectile
+                    hasCollided = true;
+                    transform.FindChild("Model").gameObject.SetActive(false);
                     Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
                     ServerExplode(collision);
                     break;

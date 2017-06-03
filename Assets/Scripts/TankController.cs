@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 public class TankController : NetworkBehaviour {
 
     private bool isSlowed = false;
+    private NukeScript theNuke;
 
     // Public
     public GameObject modelPrefab;
@@ -233,6 +234,7 @@ public class TankController : NetworkBehaviour {
         model.UpdateAvatar();
 
         savedPowerModifier = shotPowerModifier;
+        theNuke = GameObject.FindGameObjectWithTag("nuke").GetComponent<NukeScript>();
     }
 
     public void InfectPlayer(GameObject patientZero) {
@@ -360,6 +362,7 @@ public class TankController : NetworkBehaviour {
         if (!hasRegistered) {
             Register();
         }
+        if (theNuke.blastKill) model.ActivateMeshes(false);
     }
 
     // ------------------------------------------------------

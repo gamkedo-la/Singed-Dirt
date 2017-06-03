@@ -12,21 +12,29 @@ public class AsplosionScript : MonoBehaviour {
     public float startToScale,
         timeToScale = 0;
 
+    public bool rotateIt = false;
+    public Vector3 rotateVelocity;
+    public float startToRotate,
+        timeToRotate = 0;
+
     private NukeScript control;
     private Vector3 startPos,
         startScale;
     private float stopMoveBy,
         stopScaleBy,
+        stopRotateBy,
         moveTime = 0,
         scaleTime = 0;
 
     private void Awake() {
         control = transform.GetComponentInParent<NukeScript>();
-        stopMoveBy = startToMove + timeToMove;
-        stopScaleBy = startToScale + timeToScale;
     }
 
     private void Start() {
+        stopMoveBy = startToMove + timeToMove;
+        stopScaleBy = startToScale + timeToScale;
+        stopRotateBy = startToRotate + timeToRotate;
+
         startPos = transform.localPosition;
         startScale = transform.localScale;
     }
@@ -44,6 +52,11 @@ public class AsplosionScript : MonoBehaviour {
             transform.localScale = Vector3.Lerp(startScale, scaleTo, scaleTime);
         }
         if (control.timer >= stopScaleBy) scaleIt = false;
+
+        if (rotateIt && control.timer >= startToRotate) {
+            transform.Rotate(rotateVelocity * Time.deltaTime);
+        }
+        if (control.timer >= stopRotateBy) rotateIt = false;
     }
 
 }
