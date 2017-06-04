@@ -22,6 +22,7 @@ public class CameraController : MonoBehaviour {
 	// public float explosionViewTime = 3.0f;
 	public Transform overviewLocation;
 	public Transform centerLocation;
+    public Transform startFocus;
 
 	// Private
 	CameraMode cameraMode = CameraMode.overview;
@@ -60,7 +61,7 @@ public class CameraController : MonoBehaviour {
 		chaseCameraSpot = transform.position;
 		// Debug.Log ("CameraController script starting in " + gameObject.name);
 		transform.position = overviewLocation.transform.position;
-		transform.LookAt(centerLocation.position);
+		transform.LookAt(startFocus.position);
 		desiredPosition = transform.position;
 
         gameCamera = GetComponentInChildren<Camera> ();

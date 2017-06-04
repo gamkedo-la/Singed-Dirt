@@ -23,6 +23,8 @@ public class TankController : NetworkBehaviour {
     public float rotationSpeedVertical = 5.0f;
     public float rotationSpeedHorizontal = 5.0f;
 
+    private MushBehavior mushObject = null;
+
     public Transform passiveCameraSource
     {
         get
@@ -328,6 +330,10 @@ public class TankController : NetworkBehaviour {
 
     public void SetAreaOfEffect(string effect) {
         switch (effect) {
+            case "radiation":
+            case "Radiation":
+                UxChatController.SendToConsole("" + gameObject.name + " was hit with mushtonium!");
+                break;
             case "slow":
             case "Slow":
                 isSlowed = true;
@@ -463,7 +469,7 @@ public class TankController : NetworkBehaviour {
                 virusParticles.Stop();
             }
             else {
-                playerHealth.TakeDamage(10, infectingPlayer);
+                playerHealth.TakeDamage(10, (infectingPlayer != null) ? infectingPlayer : null);
                 virusDuration -= 1;
             }
         }
@@ -670,6 +676,9 @@ public class TankController : NetworkBehaviour {
             return;
         }
 
+        // clear active mushboom projectile
+        mushObject = null;
+
         // instantiate from prefab
         var prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(projectiledKind);
         var liveProjectile = (GameObject)GameObject.Instantiate(
@@ -696,6 +705,10 @@ public class TankController : NetworkBehaviour {
 
         // set initial velocity/force
         liveProjectile.GetComponent<Rigidbody>().AddForce(model.shotSource.forward * shotPower);
+        mushObject = liveProjectile.GetComponent<MushBehavior>();
+        if (mushObject != null) {
+            mushObject.owner = this;
+        }
 
         // set network spawn
         NetworkServer.Spawn(liveProjectile);

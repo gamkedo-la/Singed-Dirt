@@ -478,6 +478,34 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 203139135}
   m_Mesh: {fileID: 4300000, guid: 2b317210d721781469a19846abddcd43, type: 3}
+--- !u!1 &259401892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 259401893}
+  m_Layer: 0
+  m_Name: StartFocus
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &259401893
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 259401892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 100, y: 5, z: 150}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2074174329}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &374429057
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,6 +612,7 @@ MonoBehaviour:
   cameraPositionAboveExplosion: 1.5
   overviewLocation: {fileID: 844394654}
   centerLocation: {fileID: 1136986438}
+  startFocus: {fileID: 259401893}
   moveVelocity: {x: 0, y: 0, z: 0}
 --- !u!82 &374429064
 AudioSource:
@@ -1033,7 +1062,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 844394653}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 100, y: 200, z: -40}
+  m_LocalPosition: {x: 100, y: 150, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2074174329}
@@ -2609,6 +2638,7 @@ Transform:
   - {fileID: 374429062}
   - {fileID: 844394654}
   - {fileID: 1136986438}
+  - {fileID: 259401893}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2740,6 +2770,11 @@ Prefab:
       objectReference: {fileID: 1939730861}
     - target: {fileID: 114819690869281534, guid: 81536346073374546ac64c96f7af3ef7,
         type: 2}
+      propertyPath: smallDustStorm
+      value: 
+      objectReference: {fileID: 183052535}
+    - target: {fileID: 114819690869281534, guid: 81536346073374546ac64c96f7af3ef7,
+        type: 2}
       propertyPath: colliseum
       value: 
       objectReference: {fileID: 669478927}
@@ -2753,11 +2788,6 @@ Prefab:
       propertyPath: audienceLower
       value: 
       objectReference: {fileID: 1294773341}
-    - target: {fileID: 114819690869281534, guid: 81536346073374546ac64c96f7af3ef7,
-        type: 2}
-      propertyPath: smallDustStorm
-      value: 
-      objectReference: {fileID: 183052535}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 81536346073374546ac64c96f7af3ef7, type: 2}
   m_IsPrefabParent: 0

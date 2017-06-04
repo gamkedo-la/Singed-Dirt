@@ -39,7 +39,8 @@ public class LootSpawnController : NetworkBehaviour {
     public int maxAmmoCount = 5;
 
     public ProjectileKind[] excludedProjectiles = new ProjectileKind[] {
-        ProjectileKind.sharkToothBomblet
+        ProjectileKind.sharkToothBomblet,
+        ProjectileKind.mushMine
     };
 
     public int mushboomCount = 0,

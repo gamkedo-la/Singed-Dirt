@@ -10,10 +10,12 @@ public class Health : NetworkBehaviour {
     public class OnValueChangeEvent : UnityEvent<int> { };
 
     [System.Serializable]
-    public class OnDeathEvent: UnityEvent<GameObject> { };
+    public class OnDeathEvent : UnityEvent<GameObject> { };
 
     public OnValueChangeEvent onValueChangeEvent;
     public OnDeathEvent onDeathEvent;
+    public int delayedDamage = 0;
+    public GameObject delayedDamageFrom;
 
     void Awake() {
         onValueChangeEvent = new OnValueChangeEvent();
@@ -27,8 +29,18 @@ public class Health : NetworkBehaviour {
 
     public RectTransform healthBar;
 
-    public void TakeDamage(int amount, GameObject from)
-    {
+    public void RegisterDelayedDamage(int amount, GameObject from) {
+        delayedDamage = amount;
+        delayedDamageFrom = from;
+    }
+
+    public void TakeDelayedDamage() {
+        if (delayedDamageFrom != null) TakeDamage(delayedDamage, delayedDamageFrom);
+        delayedDamage = 0;
+        delayedDamageFrom = null;
+    }
+
+    public void TakeDamage(int amount, GameObject from) {
         if (!isServer) return;
         // Debug.Log("Health.TakeDamage for " + amount + " from : " + from);
 
@@ -41,10 +53,10 @@ public class Health : NetworkBehaviour {
         }
     }
 
-    void OnChangeHealth (int newHealth) {
+    void OnChangeHealth(int newHealth) {
         if (healthBar != null) {
-            var healthScale = (float) newHealth/(float)maxHealth;
-            healthBar.localScale = new Vector3(healthScale,1f,1f);
+            var healthScale = (float)newHealth / (float)maxHealth;
+            healthBar.localScale = new Vector3(healthScale, 1f, 1f);
         }
         health = newHealth;
         onValueChangeEvent.Invoke(newHealth);

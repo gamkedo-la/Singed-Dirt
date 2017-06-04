@@ -207,7 +207,7 @@ public class TurnManager : NetworkBehaviour {
         var player = playerGO.GetComponent<TankController>();
         if (player != null) {
             // remove player from set of active tanks
-            activeTanks.Remove(player.playerIndex);
+            if (activeTanks.Count > 1) activeTanks.Remove(player.playerIndex);
             // Debug.Log("removing index: " + player.playerIndex + " new active tanks -> " + String.Join(",", activeTanks.Select(v=>v.ToString()).ToArray()));
         }
     }
@@ -650,6 +650,5 @@ public class TurnManager : NetworkBehaviour {
         }
         return manager;
     }
-
 
 }
