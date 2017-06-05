@@ -55,7 +55,7 @@ MonoBehaviour:
   m_delayLodUpdate: 1
   m_instantScar: 1
   m_radiusWorldUnits: 20
-  m_heightWorldUnits: 0.5
+  m_heightWorldUnits: 0.2
   m_profile:
     serializedVersion: 2
     m_Curve:
@@ -93,8 +93,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   m_deformationDuration: 0
-  m_bumpScale: 6
-  m_bumpHeightWorldUnits: 0.15
+  m_bumpScale: 7
+  m_bumpHeightWorldUnits: 0.1
   m_bumpBlend:
     serializedVersion: 2
     m_Curve:
@@ -132,20 +132,26 @@ MonoBehaviour:
     - serializedVersion: 2
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.052640695
+      outSlope: -0.052640695
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.9130357
-      value: 0.7869398
-      inSlope: -0.80801064
-      outSlope: -0.80801064
+      time: 0.47454548
+      value: 0.93480873
+      inSlope: -0.37230322
+      outSlope: -0.37230322
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.7835063
+      value: 0.7296278
+      inSlope: -1.2661731
+      outSlope: -1.2661731
       tangentMode: 0
     - serializedVersion: 2
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.4497551
+      outSlope: -1.4497551
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

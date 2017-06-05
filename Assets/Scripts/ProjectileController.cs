@@ -16,6 +16,7 @@ public class ProjectileController : NetworkBehaviour {
 
     public GameObject clusterBomblet;
     public GameObject mushMine;
+    public MushBehavior mushMineStuff;
     public ParticleSystem molasses;
 
     public bool isSlowed = false;
@@ -33,7 +34,7 @@ public class ProjectileController : NetworkBehaviour {
     void Start() {
         terrain = Terrain.activeTerrain;
         manager = TurnManager.GetGameManager();
-        if (myKind == ProjectileKind.mushMine) DisableCollisions(4f);
+        if (myKind == ProjectileKind.mushMine) DisableCollisions(3f);
         else DisableCollisions(0.2f);
         rb = GetComponent<Rigidbody>();
         startPos = transform.position;
@@ -52,8 +53,14 @@ public class ProjectileController : NetworkBehaviour {
                 case ProjectileKind.mushMine:
                     switch (collision.gameObject.name) {
                         case "Terrain":
+                            // do nothing
+                            break;
+                        case "groundZero":
+                            // FIXME: trigger nuke sequence
                             break;
                         default:
+                            // single collision/explosion per projectile
+                            hasCollided = true;
                             ServerExplode(collision);
                             break;
                     }
@@ -66,10 +73,7 @@ public class ProjectileController : NetworkBehaviour {
 
                     switch (collision.gameObject.name) {
                         case "Terrain":
-                            GameObject newMush = GameObject.Instantiate(mushMine, transform.position, transform.rotation);
-                            newMush.GetComponent<ProjectileController>().myKind = ProjectileKind.mushMine;
-                            NetworkServer.Spawn(newMush);
-                            CreateExplosion();
+                            LayMushMine();
                             break;
                         default:
                             ServerExplode(collision);
@@ -82,7 +86,7 @@ public class ProjectileController : NetworkBehaviour {
                     // hide model so it doesn't bounce around before getting destroyed
                     transform.FindChild("Model").gameObject.SetActive(false);
 
-                    PerformTerrainDeformation(collision);
+                    PerformTerrainDeformation(collision.gameObject);
                     CreateExplosion();
                     if (collision.gameObject.name == "Terrain") {
                         gameObject.GetComponent<Light>().enabled = false;
@@ -99,6 +103,18 @@ public class ProjectileController : NetworkBehaviour {
                     ServerExplode(collision);
                     break;
             }
+        }
+    }
+
+    private void LayMushMine() {
+        GameObject newMush = GameObject.Instantiate(mushMine, transform.position, transform.rotation);
+        ProjectileController newMushControl = newMush.transform.GetComponent<ProjectileController>();
+        newMushControl.myKind = ProjectileKind.mushMine;
+        NetworkServer.Spawn(newMush);
+        Destroy(gameObject, 2.5f);
+        if (shooter != null) {
+            UxChatController.SendToConsole("" + shooter.playerName + " has planted a MushBoom!");
+            newMushControl.shooter = shooter;
         }
     }
 
@@ -157,28 +173,30 @@ public class ProjectileController : NetworkBehaviour {
                     // hit dist 10m: about 1 hit point
                     // The formula is based on a max proximity damage distance of 10m
                     int damagePoints = (int)(1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
-                    // add the mushtonium damage effect to damage total
-                    if (myKind == ProjectileKind.mushboom) damagePoints += (int)(effectRadius * 0.25);
-                    if (damagePoints > 0 && myKind != ProjectileKind.pillarShot && myKind != ProjectileKind.teleportBall) {
-                        switch (myKind) {
-                            case ProjectileKind.cannonBall:
-                                damagePoints /= 2;
-                                break;
-                            case ProjectileKind.acorn:
-                                damagePoints = (int)(damagePoints * 1.5);
-                                break;
-                            case ProjectileKind.artilleryShell:
-                                if (tankObj != null && tankObj.hasVirus == false) {
-                                    tankObj.InfectPlayer(rootObject);
-                                    damagePoints = 20;
-                                }
-                                break;
-                        }
 
-                        if (tankObj != null) {
-                            if (!tankObj.hasControl) health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
-                            else health.RegisterDelayedDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
-                        }
+                    switch (myKind) {
+                        case ProjectileKind.cannonBall:
+                            damagePoints /= 2;
+                            break;
+                        case ProjectileKind.acorn:
+                            damagePoints = (int)(damagePoints * 1.5);
+                            break;
+                        case ProjectileKind.artilleryShell:
+                            if (tankObj != null && tankObj.hasVirus == false) {
+                                tankObj.InfectPlayer(rootObject);
+                                damagePoints = 20;
+                            }
+                            break;
+                        case ProjectileKind.mushboom:
+                        case ProjectileKind.mushMine:
+                            damagePoints += (int)(effectRadius * 0.25);
+                            PerformTerrainDeformation(terrain.gameObject);
+                            break;
+                    }
+
+                    if (damagePoints > 0) {
+                        if (tankObj == null || !tankObj.hasControl) health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
+                        else health.RegisterDelayedDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
 
                         SingedMessages.SendPlayAudioClip(
                             PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.tank_hit));
@@ -192,14 +210,13 @@ public class ProjectileController : NetworkBehaviour {
                             //Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
                             rigidbody.AddForce(rigidbody.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);  // Force = mass * accel
                         }
-
                     }
                 }
             }
         }
 
         if (shooter != null) shooter.GetComponent<Health>().TakeDelayedDamage();
-        PerformTerrainDeformation(collision);
+        PerformTerrainDeformation(collision.gameObject);
         CreateExplosion();
 
     }
@@ -224,9 +241,9 @@ public class ProjectileController : NetworkBehaviour {
         //NetworkServer.Destroy(gameObject);
     }
 
-    private void PerformTerrainDeformation(Collision collision) {
+    private void PerformTerrainDeformation(GameObject terrain) {
         // perform terrain deformation (if terrain was hit)
-        var terrainManager = collision.gameObject.GetComponent<TerrainDeformationManager>();
+        var terrainManager = terrain.GetComponent<TerrainDeformationManager>();
         if (terrainManager != null) {
             var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
             SingedMessages.SendPlayAudioClip(

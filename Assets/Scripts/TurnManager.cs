@@ -31,7 +31,8 @@ public class TurnManager : NetworkBehaviour {
 
     // number of players in game
     public int expectedPlayers = 2;
-    public int currentRound = 1;
+    public int currentRound = 1,
+        numberOfTurns = 0;
 
     // the list of tanks currently active in the round... as tanks die, they are removed from this list
     public List<int> activeTanks;
@@ -79,6 +80,7 @@ public class TurnManager : NetworkBehaviour {
         var winner = tankRegistry[activeTanks[0]];
         gameOverState = true;
         currentRound = 1;
+        numberOfTurns = 0;
         LootSpawnController.singleton.mushboomCount = 0;
 
         // declare winner on each client
@@ -90,6 +92,7 @@ public class TurnManager : NetworkBehaviour {
         var winner = nukeOwner;
         gameOverState = true;
         currentRound = 1;
+        numberOfTurns = 0;
         LootSpawnController.singleton.mushboomCount = 0;
         // declare winner on each client
         RpcGameOver(winner.gameObject, true);
@@ -108,6 +111,7 @@ public class TurnManager : NetworkBehaviour {
     void ServerSetActiveTank(TankController tank) {
         // Debug.Log(String.Format("ServerSetActiveTank Activating tank: {0}, isLocalPlayer: {1}", tank.name, tank.isLocalPlayer));
         //activeTank = tank;
+        numberOfTurns++;
         tank.ServerEnableControl();
         RpcSetActiveTank(tank.gameObject);
     }
