@@ -15,15 +15,16 @@ public class LobbyLoader : MonoBehaviour {
         if (SingedLobbyManager.singleton != null){
             Debug.Log("The lobby manager exists~");
             lobbyPrefab = GameObject.Find("LobbyManager(Clone)");
-			mainMenu = GameObject.Find("MainMenu");
-			if (mainMenu != null)
-			{
-				mainMenu.SetActive(false);
-			}
+            mainMenu = GameObject.Find("MainMenu");
+            if (mainMenu != null)
+            {
+                mainMenu.SetActive(false);
+            }
             if (SingedLobbyManager.s_singleton.loadMainMenu == true) {
                 LoadMainMenu();
                 SingedLobbyManager.s_singleton.loadMainMenu = false;
             }
+            SoundManager.instance.PlayMenuMusic();
             Debug.Log("I'm about to return after the manager exists");
             return;
         } 
@@ -39,7 +40,7 @@ public class LobbyLoader : MonoBehaviour {
     }
 
     public void LoadMainMenu() {
-		lobbyPrefab.SetActive(false);
+        lobbyPrefab.SetActive(false);
         mainMenu.SetActive(true);
     }
 }
