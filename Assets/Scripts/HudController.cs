@@ -80,7 +80,11 @@ public class HudController: MonoBehaviour {
         }
     }
 
-	public GameObject getProjectileModel(ProjectileKind shotToShow) {
+    public void ToggleModelView(bool enabled) {
+        projetileModels[selectedProjectile].GetComponent<MeshRenderer>().enabled = enabled;
+    }
+
+    public GameObject getProjectileModel(ProjectileKind shotToShow) {
 		GameObject prefab = PrefabRegistry.singleton.GetPrefab<ProjectileKind>(shotToShow);
 		GameObject shotModelPrefab = prefab.transform.Find("Model").gameObject;
 		GameObject shotModel = (GameObject)GameObject.Instantiate(shotModelPrefab, projectileModelWorldPosition.position, projectileModelWorldPosition.rotation);

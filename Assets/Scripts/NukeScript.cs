@@ -95,12 +95,12 @@ public class NukeScript : MonoBehaviour {
     }
 
     private IEnumerator NukeSequence() {
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(4f);
         sequenceStarted = true;
         explosion.Play();
-        camShake.ChangeShakeAmount(0.75f);
 
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(2.25f);
+        camShake.ChangeShakeAmount(0.75f);
         bloom.bloomIntensity = 0.1f;
 
         yield return new WaitForSeconds(1.75f);

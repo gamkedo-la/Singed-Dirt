@@ -374,6 +374,7 @@ public class TurnManager : NetworkBehaviour {
     [ClientRpc]
     void RpcToggleConsole(bool toggle) {
         hudController.transform.GetComponent<Canvas>().enabled = toggle;
+        hudController.ToggleModelView(toggle);
     }
 
     Vector3 GroundPosition(Vector3 position) {

@@ -46,7 +46,9 @@ public class LootBoxController : NetworkBehaviour {
     }
 
     void OnDeath(GameObject from) {
+        string method = "acquired";
         if (from.name == "mushMine(Clone)") {
+            method = "scavenged";
             List<int> theTanks = TurnManager.singleton.activeTanks;
             TankController theWinner;
             float aNumber = UnityEngine.Random.Range(0f, 1f);
@@ -56,8 +58,9 @@ public class LootBoxController : NetworkBehaviour {
         }
         if (from.GetComponent<TankController>() != null) {
             UxChatController.SendToConsole(
-                String.Format("{0} acquired {1} {2}",
+                String.Format("{0} {1} {2} {3}",
                     from.GetComponent<TankController>().playerName,
+                    method,
                     lootCount,
                     NameMapping.ForProjectile(lootKind)));
         }

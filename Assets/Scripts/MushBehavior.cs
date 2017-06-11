@@ -271,19 +271,21 @@ public class MushBehavior : NetworkBehaviour {
         UxChatController.SendToConsole(owner.playerName + "'s MushBoom", messageColor, "It's been a blast! #Laterz");
         nukeGreen.transform.localScale *= 2f;
         scaleDelay = 0;
-        timeToScale = 8f;
+        timeToScale = 10f;
         groundZero = GameObject.FindWithTag("groundZero");
         Vector3 fixedSpot = transform.position;
         fixedSpot.y = (terrain.SampleHeight(fixedSpot) + terrain.transform.position.y);
         transform.position = fixedSpot;
         mushRigidBody.isKinematic = true;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
+        scaleTo *= 4f;
+        StartCoroutine(GrowTheShroom());
+
+        yield return new WaitForSeconds(1f);
         nukeIsReady.Invoke();
         nukeGreen.Emit(150);
         nukeGreen.transform.localScale *= 2f;
-        scaleTo *= 4f;
-        StartCoroutine(GrowTheShroom());
 
         yield return new WaitForSeconds(0.75f);
         nukeGreen.Emit(200);
