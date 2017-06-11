@@ -46,6 +46,14 @@ public class LootBoxController : NetworkBehaviour {
     }
 
     void OnDeath(GameObject from) {
+        if (from.name == "mushMine(Clone)") {
+            List<int> theTanks = TurnManager.singleton.activeTanks;
+            TankController theWinner;
+            float aNumber = UnityEngine.Random.Range(0f, 1f);
+            if (aNumber >= 0.5) theWinner = TurnManager.singleton.tankRegistry[theTanks[0]];
+            else theWinner = TurnManager.singleton.tankRegistry[theTanks[1]];
+            from = theWinner.gameObject;
+        }
         if (from.GetComponent<TankController>() != null) {
             UxChatController.SendToConsole(
                 String.Format("{0} acquired {1} {2}",
@@ -57,6 +65,7 @@ public class LootBoxController : NetworkBehaviour {
         if (inventory != null) {
             inventory.ServerModify(lootKind, lootCount);
         }
+        if (lootKind == ProjectileKind.mushboom) LootSpawnController.singleton.mushboomCount--;
         Destroy(gameObject);
     }
 }

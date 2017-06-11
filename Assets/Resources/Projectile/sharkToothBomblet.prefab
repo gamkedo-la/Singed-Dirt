@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 54583463696401024}
   m_Layer: 13
   m_Name: sharkToothBomblet
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -225,6 +225,7 @@ MonoBehaviour:
   explosionKind: 3
   deformationKind: 1
   clusterBomblet: {fileID: 0}
+  mushMine: {fileID: 0}
   molasses: {fileID: 198364083980719194}
   isSlowed: 0
   areaOfEffect: None

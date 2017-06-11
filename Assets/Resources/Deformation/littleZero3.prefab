@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1837570862338218}
+  m_IsPrefabParent: 1
+--- !u!1 &1837570862338218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4657200465849638}
+  - component: {fileID: 114813661586647334}
+  - component: {fileID: 114595083501183778}
+  m_Layer: 0
+  m_Name: littleZero3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4657200465849638
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1837570862338218}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114595083501183778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1837570862338218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78530fcd48686842a7e021ab73229fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_delayLodUpdate: 1
+  m_instantScar: 1
+  m_radiusWorldUnits: 40
+  m_heightWorldUnits: 0.6
+  m_profile:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: -0.002431109
+      value: -4.94628
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.22103119
+      value: -4.6891932
+      inSlope: 3.4983163
+      outSlope: 3.4983163
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.4495205
+      value: -2.9591556
+      inSlope: 9.326122
+      outSlope: 9.326122
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8443668
+      value: 2.2157562
+      inSlope: -3.9464142
+      outSlope: -3.9464142
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1.0015901
+      value: -0.0076918006
+      inSlope: -30.85533
+      outSlope: -30.85533
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  m_deformationDuration: 0
+  m_bumpScale: 8
+  m_bumpHeightWorldUnits: 1.5
+  m_bumpBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.27907136
+      value: 0.44668192
+      inSlope: -0.3373623
+      outSlope: -0.3373623
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.76485634
+      value: 0.8355113
+      inSlope: -1.3199449
+      outSlope: -1.3199449
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0.0062561035
+      inSlope: -1.2543383
+      outSlope: -1.2543383
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  m_scarTextureIndex: 4
+  m_scarBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: -0.052640695
+      outSlope: -0.052640695
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.47454548
+      value: 0.93480873
+      inSlope: -0.37230322
+      outSlope: -0.37230322
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.7835063
+      value: 0.7296278
+      inSlope: -1.2661731
+      outSlope: -1.2661731
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0.0687561
+      inSlope: -3.6370935
+      outSlope: -3.6370935
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+--- !u!114 &114813661586647334
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1837570862338218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 80
+    i1: 163
+    i2: 116
+    i3: 233
+    i4: 43
+    i5: 181
+    i6: 161
+    i7: 52
+    i8: 88
+    i9: 117
+    i10: 175
+    i11: 87
+    i12: 192
+    i13: 194
+    i14: 144
+    i15: 154
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0

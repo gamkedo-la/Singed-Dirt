@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 54044529798150982}
   m_Layer: 0
   m_Name: pillarShot
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -193,6 +193,7 @@ MonoBehaviour:
   explosionKind: 0
   deformationKind: 2
   clusterBomblet: {fileID: 0}
+  mushMine: {fileID: 0}
   molasses: {fileID: 198368377362654256}
   isSlowed: 0
   areaOfEffect: None

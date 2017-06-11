@@ -16,7 +16,6 @@ public class ProjectileController : NetworkBehaviour {
 
     public GameObject clusterBomblet;
     public GameObject mushMine;
-    public MushBehavior mushMineStuff;
     public ParticleSystem molasses;
 
     public bool isSlowed = false;
@@ -29,13 +28,14 @@ public class ProjectileController : NetworkBehaviour {
     public int numberOfBomblets = 8;
     public TankController shooter;
     private Vector3 startPos;
+    private bool spawnMush = false;
+    private Vector3 mushSpawnLoc;
 
     // Use this for initialization
     void Start() {
         terrain = Terrain.activeTerrain;
         manager = TurnManager.GetGameManager();
-        if (myKind == ProjectileKind.mushMine) DisableCollisions(3f);
-        else DisableCollisions(0.2f);
+        DisableCollisions(0.2f);
         rb = GetComponent<Rigidbody>();
         startPos = transform.position;
     }
@@ -49,43 +49,38 @@ public class ProjectileController : NetworkBehaviour {
         // only trigger explosion (spawn) if we currently have authority
         // run collisions on server only
         if (isServer && !hasCollided) {
-            switch (myKind) {
-                case ProjectileKind.mushMine:
-                    switch (collision.gameObject.name) {
-                        case "Terrain":
-                            // do nothing
-                            break;
-                        case "groundZero":
-                            // FIXME: trigger nuke sequence
-                            break;
-                        default:
-                            // single collision/explosion per projectile
-                            hasCollided = true;
-                            ServerExplode(collision);
-                            break;
-                    }
-                    break;
-                case ProjectileKind.mushboom:
-                    // single collision/explosion per projectile
-                    hasCollided = true;
-                    // hide model so it doesn't bounce around before getting destroyed
-                    transform.FindChild("Model").gameObject.SetActive(false);
+            // single collision/explosion per projectile
+            hasCollided = true;
+            // hide model so it doesn't bounce around before getting destroyed
+            transform.FindChild("Model").gameObject.SetActive(false);
 
-                    switch (collision.gameObject.name) {
-                        case "Terrain":
-                            LayMushMine();
-                            break;
-                        default:
-                            ServerExplode(collision);
-                            break;
+            switch (myKind) {
+                case ProjectileKind.mushboom:
+                    rb.isKinematic = true;
+                    if (collision.gameObject.name == "Terrain") {
+                        GameObject[] activeMushes = GameObject.FindGameObjectsWithTag("mushMine");
+                        for (int i = 0; i < activeMushes.Length; i++) {
+                            if (activeMushes[i].GetComponent<MushBehavior>().owner == shooter) {
+                                spawnMush = false;
+                                effectRadius = 10f;
+                                break;
+                            }
+                            else spawnMush = true;
+                        }
+                        if (activeMushes.Length < 1) spawnMush = true;
                     }
+                    if (spawnMush) PrepForMushMine();
+                    else {
+                        float aNumber = UnityEngine.Random.Range(0f, 2f);
+                        if (aNumber < 0.5 && shooter != null) {
+                            UxChatController.SendToConsole(shooter.playerName + " scavenged a spore!");
+                            var inventory = shooter.GetComponent<ProjectileInventory>();
+                            inventory.ServerModify(myKind, 1);
+                        }
+                    }
+                    ServerExplode(collision);
                     break;
                 case ProjectileKind.teleportBall:
-                    // single collision/explosion per projectile
-                    hasCollided = true;
-                    // hide model so it doesn't bounce around before getting destroyed
-                    transform.FindChild("Model").gameObject.SetActive(false);
-
                     PerformTerrainDeformation(collision.gameObject);
                     CreateExplosion();
                     if (collision.gameObject.name == "Terrain") {
@@ -94,11 +89,6 @@ public class ProjectileController : NetworkBehaviour {
                     }
                     break;
                 default:
-                    // single collision/explosion per projectile
-                    hasCollided = true;
-                    // hide model so it doesn't bounce around before getting destroyed
-                    transform.FindChild("Model").gameObject.SetActive(false);
-
                     Debug.Log("" + gameObject.name + " collided with " + collision.gameObject.name);
                     ServerExplode(collision);
                     break;
@@ -106,16 +96,19 @@ public class ProjectileController : NetworkBehaviour {
         }
     }
 
+    private void PrepForMushMine() {
+        spawnMush = true;
+        mushSpawnLoc = new Vector3(transform.position.x, transform.position.y - 0.85f, transform.position.z);
+        explosionKind = ExplosionKind.mushPlant;
+        effectRadius = 4f;
+        UxChatController.SendToConsole(shooter.playerName + " has planted a MushBoom!");
+    }
+
     private void LayMushMine() {
-        GameObject newMush = GameObject.Instantiate(mushMine, transform.position, transform.rotation);
-        ProjectileController newMushControl = newMush.transform.GetComponent<ProjectileController>();
-        newMushControl.myKind = ProjectileKind.mushMine;
+        GameObject newMush = GameObject.Instantiate(mushMine, mushSpawnLoc, transform.rotation);
+        MushBehavior newMushBhvr = newMush.GetComponent<MushBehavior>();
+        if (shooter != null) newMushBhvr.owner = shooter;
         NetworkServer.Spawn(newMush);
-        Destroy(gameObject, 2.5f);
-        if (shooter != null) {
-            UxChatController.SendToConsole("" + shooter.playerName + " has planted a MushBoom!");
-            newMushControl.shooter = shooter;
-        }
     }
 
     IEnumerator TeleportPlayer() {
@@ -188,9 +181,7 @@ public class ProjectileController : NetworkBehaviour {
                             }
                             break;
                         case ProjectileKind.mushboom:
-                        case ProjectileKind.mushMine:
-                            damagePoints += (int)(effectRadius * 0.25);
-                            PerformTerrainDeformation(terrain.gameObject);
+                            damagePoints += (int)(effectRadius * 0.5);
                             break;
                     }
 
@@ -205,7 +196,7 @@ public class ProjectileController : NetworkBehaviour {
                         // Do shock displacement
                         // if target has rigidbody, apply displacement force to rigidbody
                         var rigidbody = rootObject.GetComponent<Rigidbody>();
-                        if (rigidbody != null) {
+                        if (rigidbody != null && rootObject.name != "mushMine(Clone)") {
                             Vector3 displacementDirection = cannonballCenterToTankCenter.normalized;
                             //Debug.Log (string.Format ("Displacement stats: direction={0}, magnitude={1}", displacementDirection, damagePoints));
                             rigidbody.AddForce(rigidbody.mass * (displacementDirection * damagePoints * 0.8f), ForceMode.Impulse);  // Force = mass * accel
@@ -217,8 +208,8 @@ public class ProjectileController : NetworkBehaviour {
 
         if (shooter != null) shooter.GetComponent<Health>().TakeDelayedDamage();
         PerformTerrainDeformation(collision.gameObject);
+        if (spawnMush) LayMushMine();
         CreateExplosion();
-
     }
 
     private void CreateExplosion() {

@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 114409513451867856}
   m_Layer: 13
   m_Name: acorn
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -237,6 +237,7 @@ MonoBehaviour:
   explosionKind: 0
   deformationKind: 0
   clusterBomblet: {fileID: 0}
+  mushMine: {fileID: 0}
   molasses: {fileID: 198800027859190956}
   isSlowed: 0
   areaOfEffect: None

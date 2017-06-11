@@ -11,6 +11,12 @@ TagManager:
   - console
   - inputexclusive
   - ammopanel
+  - nuke
+  - Projectile
+  - Undefined
+  - mushMine
+  - nukeCamera
+  - groundZero
   layers:
   - Default
   - TransparentFX

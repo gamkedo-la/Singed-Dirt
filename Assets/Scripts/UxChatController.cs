@@ -100,7 +100,15 @@ public class UxChatController : NetworkBehaviour {
 		}
     }
 
-	public static void SendToConsole(TankController player, string message) {
+    public static void SendToConsole(string messageFrom, Color textColor, string message) {
+        var consoleGo = GameObject.FindWithTag("console");
+        if (consoleGo != null) {
+            var consoleController = consoleGo.GetComponent<UxChatController>();
+            consoleController.AddMessage(messageFrom, textColor, message);
+        }
+    }
+
+    public static void SendToConsole(TankController player, string message) {
 		var consoleGo = GameObject.FindWithTag("console");
 		if (consoleGo != null) {
 			var consoleController = consoleGo.GetComponent<UxChatController>();

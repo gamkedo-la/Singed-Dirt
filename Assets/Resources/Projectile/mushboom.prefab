@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 135995648697234366}
   m_Layer: 13
   m_Name: mushboom
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -183,7 +183,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1095674707728594}
   serializedVersion: 2
-  m_Mass: 1.25
+  m_Mass: 2
   m_Drag: 0.5
   m_AngularDrag: 3
   m_UseGravity: 1
@@ -203,13 +203,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionKind: 8
-  deformationKind: 7
+  deformationKind: 5
   clusterBomblet: {fileID: 0}
-  mushMine: {fileID: 1835350610318238, guid: 08d162ba4332a254c90d6302a247ab07, type: 2}
+  mushMine: {fileID: 1835350610318238, guid: d00dc35f2d14a7c49b8586ec0f96cf41, type: 2}
   molasses: {fileID: 198367915781228510}
   isSlowed: 0
   areaOfEffect: radiation
-  effectRadius: 20
+  effectRadius: 10
   clusterHeight: 15
   bomletForceKick: 50
   numberOfBomblets: 8
@@ -229,21 +229,21 @@ MonoBehaviour:
     m_Value: 0
   m_AssetId:
     i0: 220
-    i1: 16
-    i2: 185
-    i3: 255
-    i4: 157
-    i5: 147
-    i6: 183
-    i7: 164
-    i8: 139
-    i9: 254
-    i10: 16
-    i11: 140
-    i12: 204
-    i13: 175
-    i14: 131
-    i15: 56
+    i1: 139
+    i2: 87
+    i3: 86
+    i4: 69
+    i5: 255
+    i6: 99
+    i7: 180
+    i8: 201
+    i9: 186
+    i10: 190
+    i11: 55
+    i12: 198
+    i13: 80
+    i14: 211
+    i15: 141
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
 --- !u!114 &114955282140669984

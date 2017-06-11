@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 114271340175774458}
   m_Layer: 13
   m_Name: beetMissile
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -206,6 +206,7 @@ MonoBehaviour:
   explosionKind: 4
   deformationKind: 3
   clusterBomblet: {fileID: 0}
+  mushMine: {fileID: 0}
   molasses: {fileID: 198796633686831032}
   isSlowed: 0
   areaOfEffect: Slow

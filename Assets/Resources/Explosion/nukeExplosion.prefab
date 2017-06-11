@@ -67,7 +67,7 @@ Transform:
   m_GameObject: {fileID: 1365623544178384}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 4338217810544748}
   m_Father: {fileID: 0}
@@ -193,7 +193,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -1593809477
+  randomSeed: -226384516
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -226,7 +226,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSpeed:
       minMaxState: 3
-      scalar: 100
+      scalar: 80
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -313,7 +313,7 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.86384, g: 1, b: 0.816, a: 1}
+      maxColor: {r: 0.5647059, g: 1, b: 0.4117647, a: 1}
     startSize:
       minMaxState: 3
       scalar: 80
@@ -334,7 +334,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.5
+          value: 0.625
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -565,7 +565,7 @@ ParticleSystem:
     boxY: 1
     boxZ: 1
     radius:
-      value: 0.1
+      value: 0.5
       mode: 0
       spread: 0
       speed:

@@ -23,8 +23,7 @@ public enum ProjectileKind {
     pillarShot,
     beetMissile,
     mushboom,
-    teleportBall,
-    mushMine
+    teleportBall
 }
 
 public enum MenuSoundKind {
@@ -68,7 +67,8 @@ public enum ExplosionKind {
     peaShooterFire,
     hacking,
     teleport,
-    nukeExplosion
+    nukeExplosion,
+    mushPlant
 }
 
 public enum DeformationKind {
@@ -79,7 +79,11 @@ public enum DeformationKind {
     groundZero,
     peaCrater,
     teleportScar,
-    littleZero
+    littleZero1,
+    littleZero2,
+    littleZero3,
+    littleZero4,
+    littleZero5
 }
 
 public enum TankBaseKind {
@@ -112,5 +116,6 @@ public enum TankHatKind {
 
 public enum SpawnKind {
     lootbox = 0,
-    InfectedParticles
+    InfectedParticles,
+    mushMine
 }

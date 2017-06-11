@@ -330,7 +330,7 @@ public class TankController : NetworkBehaviour {
         switch (effect) {
             case "radiation":
             case "Radiation":
-                UxChatController.SendToConsole("" + gameObject.name + " was hit with mushtonium!");
+                UxChatController.SendToConsole(gameObject.name + " was hit with mushtonium!");
                 break;
             case "slow":
             case "Slow":

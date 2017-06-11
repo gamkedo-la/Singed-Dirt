@@ -22,8 +22,7 @@ public class TurnManager : NetworkBehaviour {
 
     // Public variables
     public static TurnManager singleton;
-    public Terrain groundZero,
-        patchTerrain;
+    public Terrain groundZero;
 
     // the list of all tanks, mapping their tank ID to tank controller
     // NOTE: this mapping is maintained on both client and server
@@ -100,6 +99,10 @@ public class TurnManager : NetworkBehaviour {
 
     public bool GetGameOverState() {
         return gameOverState;
+    }
+
+    public void NukeIsReady() {
+        if (isServer) ServerStartNuke(activeTank);
     }
 
     // Use this for initialization

@@ -39,13 +39,12 @@ public class LootSpawnController : NetworkBehaviour {
     public int maxAmmoCount = 5;
 
     public ProjectileKind[] excludedProjectiles = new ProjectileKind[] {
-        ProjectileKind.sharkToothBomblet,
-        ProjectileKind.mushMine
+        ProjectileKind.sharkToothBomblet
     };
 
     public int mushboomCount = 0,
-        minMushbooms = 1;
-    public float maxPercentMushbooms = 0.15f;
+        minMushbooms = 0,
+        maxMushbooms = 3;
 
     ISpawnGenerator locationGenerator;
     float startWidth = 256f;
@@ -88,7 +87,6 @@ public class LootSpawnController : NetworkBehaviour {
 
     public void ServerSpawnRound() {
         var num = UnityEngine.Random.Range(0, maxPerRound);
-        minMushbooms = Math.Min((int)(maxLootBoxes * maxPercentMushbooms), TurnManager.singleton.currentRound);
         ServerSpawnN(num);
     }
 
@@ -134,14 +132,12 @@ public class LootSpawnController : NetworkBehaviour {
             }
             var ammoAmount = UnityEngine.Random.Range(minAmmoCount, maxAmmoCount + 1);
             switch (ammoKind) {
-                case ((ProjectileKind)6):
+                case ProjectileKind.beetMissile:
+                case ProjectileKind.pillarShot:
                     ammoAmount = 1;
                     break;
-                case ((ProjectileKind)7):
+                case ProjectileKind.mushboom:
                     mushboomCount++;
-                    ammoAmount = 1;
-                    break;
-                case ((ProjectileKind)5):
                     ammoAmount = 1;
                     break;
             }
@@ -154,14 +150,18 @@ public class LootSpawnController : NetworkBehaviour {
             // increment # of active loot boxes that are tracked
             activeLootBoxes++;
         }
+        if (minMushbooms < maxMushbooms) minMushbooms++;
     }
 
     private ProjectileKind FindAmmoKind() {
         if (mushboomCount < minMushbooms) {
-            return (ProjectileKind)7;
+            return ProjectileKind.mushboom;
         }
-        int range = System.Enum.GetValues(typeof(ProjectileKind)).Length;
-        return (ProjectileKind)UnityEngine.Random.Range(1, range--);
+        while (true) {
+            int range = System.Enum.GetValues(typeof(ProjectileKind)).Length,
+                index = UnityEngine.Random.Range(1, range--);
+            if ((ProjectileKind)index != ProjectileKind.mushboom) return (ProjectileKind)index;
+        }
     }
 
     void OnLootBoxDestroy(GameObject from) {
