@@ -46,27 +46,18 @@ public class LootBoxController : NetworkBehaviour {
     }
 
     void OnDeath(GameObject from) {
-        string method = "acquired";
-        if (from.name == "mushMine(Clone)") {
-            method = "scavenged";
-            List<int> theTanks = TurnManager.singleton.activeTanks;
-            TankController theWinner;
-            float aNumber = UnityEngine.Random.Range(0f, 1f);
-            if (aNumber >= 0.5) theWinner = TurnManager.singleton.tankRegistry[theTanks[0]];
-            else theWinner = TurnManager.singleton.tankRegistry[theTanks[1]];
-            from = theWinner.gameObject;
-        }
-        if (from.GetComponent<TankController>() != null) {
+        if (from.name == "mushMine(Clone)") from.GetComponent<MushBehavior>().CollectLoot(lootKind, lootCount);
+        else if (from.GetComponent<TankController>() != null) {
             UxChatController.SendToConsole(
-                String.Format("{0} {1} {2} {3}",
+                String.Format("{0} acquired {1} {2}",
                     from.GetComponent<TankController>().playerName,
-                    method,
                     lootCount,
                     NameMapping.ForProjectile(lootKind)));
-        }
-        var inventory = from.GetComponent<ProjectileInventory>();
-        if (inventory != null) {
-            inventory.ServerModify(lootKind, lootCount);
+
+            var inventory = from.GetComponent<ProjectileInventory>();
+            if (inventory != null) {
+                inventory.ServerModify(lootKind, lootCount);
+            }
         }
         if (lootKind == ProjectileKind.mushboom) LootSpawnController.singleton.mushboomCount--;
         Destroy(gameObject);

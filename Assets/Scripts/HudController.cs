@@ -104,7 +104,8 @@ public class HudController: MonoBehaviour {
 
 		shotModel.transform.localScale = scale;
 
-		shotModel.transform.localRotation = shotModelPrefab.transform.localRotation;
+        if (shotToShow == ProjectileKind.mushboom) shotModel.transform.Rotate(Vector3.up);
+        else shotModel.transform.localRotation = shotModelPrefab.transform.localRotation;
 
 		return shotModel;
 	}

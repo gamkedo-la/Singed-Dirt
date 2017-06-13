@@ -4346,7 +4346,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_delayLodUpdate: 0
   m_allowErosion: 1
-  m_erosionRate: 1
+  m_erosionRate: 0.5
   m_errosionChunkWidthDivider: 8
   m_errosionChunkHeightDivider: 8
   m_settledDifference: 0.01
@@ -19226,7 +19226,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -989345129
+  randomSeed: -140968528
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -22122,7 +22122,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1826894347196674}
   serializedVersion: 5
-  lengthInSec: 5
+  lengthInSec: 7
   simulationSpeed: 1
   looping: 0
   prewarm: 0
@@ -22170,13 +22170,13 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -506369175
+  randomSeed: 554610168
   InitialModule:
     serializedVersion: 3
     enabled: 1
     startLifetime:
       minMaxState: 3
-      scalar: 3
+      scalar: 6
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -22194,7 +22194,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.33333334
+          value: 0.16666667
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -22203,7 +22203,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSpeed:
       minMaxState: 3
-      scalar: 80
+      scalar: 100
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -22221,7 +22221,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.625
+          value: 0.6
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -22293,7 +22293,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
     startSize:
       minMaxState: 3
-      scalar: 80
+      scalar: 100
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -22970,7 +22970,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 0.16470589}
-        key1: {r: 1, g: 1, b: 1, a: 0.16470589}
+        key1: {r: 1, g: 1, b: 1, a: 0.43529412}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}

@@ -263,15 +263,15 @@ public class CameraController : MonoBehaviour {
         yield return new WaitForSeconds(0.75f);
         ChangeShakeAmount(0.2f);
 
-        yield return new WaitForSeconds(0.5f);
-        dampTime = 3.5f;
-        rotationDampTime = 0.0125f;
+        yield return new WaitForSeconds(0.25f);
+        dampTime = 3.25f;
+        rotationDampTime = 0.015f;
         desiredPosition = nukeLocation.position;
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.5f);
         desiredRotation = nukeLocation.rotation;
 
-        yield return new WaitForSeconds(7f);
+        yield return new WaitForSeconds(6.75f);
         dampTime = 0.075f;
         rotationDampTime = 0.075f;
         StopCoroutine(NukeSceneLoop());

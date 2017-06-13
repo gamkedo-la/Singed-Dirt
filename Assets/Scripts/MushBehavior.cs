@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.Networking;
 using UnityEngine.Events;
 
@@ -26,6 +27,8 @@ public class MushBehavior : NetworkBehaviour {
     public Color messageColor,
         warningColor;
 
+    private List<ProjectileKind> lootPool = new List<ProjectileKind>();
+    private List<int> lootCount = new List<int>();
     private bool scaleIt = false,
         isDead = false,
         lifeCycleOver = false,
@@ -61,6 +64,7 @@ public class MushBehavior : NetworkBehaviour {
         }
         if (!lifeCycleOver) {
             if (stage > lifeSpan) {
+                mushRigidBody.detectCollisions = false;
                 lifeCycleOver = true;
                 StartCoroutine(FinishThem());
             }
@@ -83,7 +87,7 @@ public class MushBehavior : NetworkBehaviour {
                 PerformTerrainDeformation(terrain.gameObject);
                 UxChatController.SendToConsole(owner.playerName + "'s MushBoom was destroyed!");
 
-                float aNumber = Random.Range(0f, 1f);
+                float aNumber = UnityEngine.Random.Range(0f, 1f);
                 if (aNumber < 0.5) {
                     if (owner != null) {
                         UxChatController.SendToConsole(owner.playerName + " scavenged a spore!");
@@ -98,6 +102,9 @@ public class MushBehavior : NetworkBehaviour {
 
     private void AdvanceStage() {
         switch (stage) {
+            case 1:
+                explosionScale = 2;
+                break;
             case 2:
                 effectRadius += 10;
                 explosionScale = 3;
@@ -157,6 +164,46 @@ public class MushBehavior : NetworkBehaviour {
         }
     }
 
+    public void CollectLoot(ProjectileKind ammo, int ammoCount) {
+        lootPool.Add(ammo);
+        lootCount.Add(ammoCount);
+    }
+
+    private void DivvyLoot() {
+        List<int> theTanks = TurnManager.singleton.activeTanks;
+        TankController notTheOwner,
+            theWinner;
+        int whoWins = 1;
+
+        if (theTanks.Count > 1) {
+            if (TurnManager.singleton.tankRegistry[theTanks[0]] == owner) {
+                notTheOwner = TurnManager.singleton.tankRegistry[theTanks[1]];
+            }
+            else notTheOwner = TurnManager.singleton.tankRegistry[theTanks[0]];
+
+            for (int i = 0; i < lootPool.Count; i++) {
+                if (whoWins > 0) theWinner = owner;
+                else theWinner = notTheOwner;
+
+                if (theWinner == null) break;
+                else {
+                    var inventory = theWinner.GetComponent<ProjectileInventory>();
+                    if (inventory != null) inventory.ServerModify(lootPool[i], lootCount[i]);
+
+                    UxChatController.SendToConsole(
+                        String.Format("{0} scavenged {1} {2}",
+                        theWinner.playerName,
+                        lootCount[i],
+                        NameMapping.ForProjectile(lootPool[i])));
+
+                    whoWins *= -1;
+                }
+            }
+        }
+        lootPool.Clear();
+        lootCount.Clear();
+    }
+
     private void DealDamage(GameObject from) {
         shooter = from.GetComponent<TankController>();
         Collider[] flakReceivers = Physics.OverlapSphere(transform.position, effectRadius);
@@ -202,7 +249,7 @@ public class MushBehavior : NetworkBehaviour {
                     int damagePoints = (int)(1.23f * hitDistToTankCenter * hitDistToTankCenter - 22.203f * hitDistToTankCenter + 100.012f);
                     damagePoints += (int)(effectRadius * 0.4);
 
-                    if (damagePoints > 0) {
+                    if (damagePoints > 0 && rootObject != null) {
                         if (rootObject.name == "lootbox(Clone)") health.TakeDamage(damagePoints, gameObject);
                         else if (tankObj == null || !tankObj.hasControl) health.TakeDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
                         else health.RegisterDelayedDamage(damagePoints, (shooter != null) ? shooter.gameObject : null);
@@ -221,7 +268,7 @@ public class MushBehavior : NetworkBehaviour {
                 }
             }
         }
-
+        DivvyLoot();
         if (shooter != null) shooter.GetComponent<Health>().TakeDelayedDamage();
     }
 
@@ -229,14 +276,14 @@ public class MushBehavior : NetworkBehaviour {
         // instantiate explosion
         var explosionPrefab = PrefabRegistry.singleton.GetPrefab<ExplosionKind>(explosionKind);
         //Debug.Log("CmdExplode instantiate explosion: " + explosionPrefab);
-        GameObject explosion = Instantiate(explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
-        explosion.transform.localScale = explosion.transform.localScale * explosionScale;
-        NetworkServer.Spawn(explosion);
+        GameObject anExplosion = Instantiate(explosionPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
+        anExplosion.transform.localScale = anExplosion.transform.localScale * explosionScale;
+        NetworkServer.Spawn(anExplosion);
 
         // set explosion duration (destroy after duration)
-        var explosionController = explosion.GetComponent<ExplosionController>();
+        var explosionController = anExplosion.GetComponent<ExplosionController>();
         var explosionDuration = (explosionController != null) ? explosionController.duration : 3.0f;
-        Destroy(explosion, explosionDuration);
+        Destroy(anExplosion, explosionDuration);
     }
 
     private void PerformTerrainDeformation(GameObject terrain) {
@@ -245,13 +292,15 @@ public class MushBehavior : NetworkBehaviour {
         var terrainManager = terrain.GetComponent<TerrainDeformationManager>();
         if (terrainManager != null) {
             var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
-            SingedMessages.SendPlayAudioClip(
+            // FIXME: Different sound effects needed
+            /* SingedMessages.SendPlayAudioClip(
             PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.projectile_explo));
+            */
             //Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
             GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
             NetworkServer.Spawn(deformation);
             // determine deformation seed
-            var seed = Random.Range(1, 1 << 24);
+            var seed = UnityEngine.Random.Range(1, 1 << 24);
             // execute terrain deformation on client
             terrainManager.RpcApplyDeform(deformation, seed);
         }
@@ -269,17 +318,15 @@ public class MushBehavior : NetworkBehaviour {
 
     private IEnumerator FinishThem() {
         UxChatController.SendToConsole(owner.playerName + "'s MushBoom", messageColor, "It's been a blast! #Laterz");
-        nukeGreen.transform.localScale *= 2f;
         scaleDelay = 0;
         timeToScale = 10f;
         groundZero = GameObject.FindWithTag("groundZero");
-        Vector3 fixedSpot = transform.position;
-        fixedSpot.y = (terrain.SampleHeight(fixedSpot) + terrain.transform.position.y);
-        transform.position = fixedSpot;
-        mushRigidBody.isKinematic = true;
+        Vector3 fixedSpot = new Vector3(100f, 15f, 100f);
+        deformationKind = DeformationKind.groundZero;
 
         yield return new WaitForSeconds(1f);
         scaleTo *= 4f;
+        nukeGreen.Emit(150);
         StartCoroutine(GrowTheShroom());
 
         yield return new WaitForSeconds(1f);
@@ -290,18 +337,20 @@ public class MushBehavior : NetworkBehaviour {
         yield return new WaitForSeconds(0.75f);
         nukeGreen.Emit(200);
 
-        yield return new WaitForSeconds(2.25f);
-        explosion.Play();
+        yield return new WaitForSeconds(1f);
+        nukeGreen.transform.localScale *= 2;
+        nukeGreen.Emit(200);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1.25f);
+        explosion.Play();
+        nukeGreen.Emit(200);
+
+        yield return new WaitForSeconds(4.5f);
         Destroy(explosion);
         Destroy(nukeGreen);
-        transform.FindChild("Model").gameObject.SetActive(false);
-
-/*     FIXME: the deformation's not sticking
- *     yield return new WaitForSeconds(5f);
+        transform.position = fixedSpot;
         if (isServer) PerformTerrainDeformation(groundZero);
-*/
+        Destroy(gameObject);
     }
 
 }

@@ -99,12 +99,13 @@ public class NukeScript : MonoBehaviour {
         sequenceStarted = true;
         explosion.Play();
 
-        yield return new WaitForSeconds(2.25f);
+        yield return new WaitForSeconds(2f);
         camShake.ChangeShakeAmount(0.75f);
         bloom.bloomIntensity = 0.1f;
 
-        yield return new WaitForSeconds(1.75f);
+        yield return new WaitForSeconds(0.5f);
         bloomIn = true;
+        dustCloud.Emit(500);
         camShake.ChangeShakeAmount(7f);
         initialDebris.Play();
 
@@ -120,6 +121,7 @@ public class NukeScript : MonoBehaviour {
         Destroy(initialDebris.transform.parent.gameObject);
 
         dustStorm.Stop();
+        dustCloud.Play();
         core.Play();
         baseRing.Play();
         secondaryRing.Play();
@@ -130,7 +132,6 @@ public class NukeScript : MonoBehaviour {
         backBlastRing.Play();
         heavyDust.Play();
         frontDebrisRing.Play();
-        dustCloud.Play();
 
         yield return new WaitForSeconds(0.5f);
         bloom.bloomIntensity = 3f;
@@ -139,6 +140,7 @@ public class NukeScript : MonoBehaviour {
 
         yield return new WaitForSeconds(3f);
         camShake.ChangeShakeAmount(2.25f);
+        dustStorm.Emit(500);
 
         yield return new WaitForSeconds(3f);
         heavyDust.Play();
@@ -147,10 +149,10 @@ public class NukeScript : MonoBehaviour {
 
         yield return new WaitForSeconds(0.5f);
         camShake.ChangeShakeAmount(4f);
+        Destroy(patch.gameObject);
 
         yield return new WaitForSeconds(2.25f);
         Destroy(frontBlastRing.gameObject);
-        Destroy(patch.gameObject);
         camShake.ChangeShakeAmount(3f);
 
         yield return new WaitForSeconds(1f);
@@ -177,6 +179,7 @@ public class NukeScript : MonoBehaviour {
 
         yield return new WaitForSeconds(3.5f);
         onNukeFinished.Invoke();
+        StopCoroutine(NukeSequence());
     }
 
 }

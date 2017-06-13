@@ -36,7 +36,9 @@ public enum MenuSoundKind {
 
 public enum VoiceoversKind {
     voice_hi_intro_1_dry = 0,
-    voice_hi_intro_2_dry
+    voice_hi_intro_2_dry,
+    voice_hi_mushboom1,
+    voice_hi_mushboom3
 }
 
 public enum MusicKind {
