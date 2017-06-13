@@ -15,13 +15,13 @@ public class GameOverController : MonoBehaviour {
         "All the base are belong to {0}",
         "{0} was in the base, killing the d00dz",
         "In life, there are no winners or losers...\r\nbut {0} totally won",
-        "#{0} #Winning",
+        "#{0}\r\n#Winning",
         "{0} was too legit to quit",
         "{0} was the winner we deserved",
         "The princess was in {0}'s castle",
     };
     string[] nukeStrings = {
-        "{0} - King of the Craters!",
+        "Winner, winner, {0} got\r\na chicken dinner!",
         "{0} had the strongest morels!",
         "#{0}\r\n#MicDrop\r\n#RUWearing2MillionSunblock",
         "{0} asks,\r\n\"Are you not entertained?!\""
