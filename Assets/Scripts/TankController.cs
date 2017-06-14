@@ -543,10 +543,10 @@ public class TankController : NetworkBehaviour {
                 else if (Input.GetKey(KeyCode.Keypad6)) {
                     FlyCam.self.RotateRight();
                 }
-                if (Input.GetKey(KeyCode.Keypad0)) {
+                if (Input.GetKey(KeyCode.Keypad1)) {
                     FlyCam.self.TiltLeft();
                 }
-                else if (Input.GetKey(KeyCode.KeypadPeriod)) {
+                else if (Input.GetKey(KeyCode.Keypad3)) {
                     FlyCam.self.TiltRight();
                 }
             }
