@@ -505,6 +505,53 @@ public class TankController : NetworkBehaviour {
                 continue;
             }
 
+            // FlyCam Controls
+            if (FlyCam.self.isEnabled) {
+                if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
+                    FlyCam.self.ZoomIn();
+                }
+                else if (Input.GetKeyDown(KeyCode.KeypadMinus)) {
+                    FlyCam.self.ZoomOut();
+                }
+                if (Input.GetKey(KeyCode.I)) {
+                    FlyCam.self.MoveForward();
+                }
+                else if (Input.GetKey(KeyCode.K)) {
+                    FlyCam.self.MoveBack();
+                }
+                if (Input.GetKey(KeyCode.J)) {
+                    FlyCam.self.MoveLeft();
+                }
+                else if (Input.GetKey(KeyCode.L)) {
+                    FlyCam.self.MoveRight();
+                }
+                if(Input.GetKey(KeyCode.U)) {
+                    FlyCam.self.MoveUp();
+                }
+                else if(Input.GetKey(KeyCode.O)) {
+                    FlyCam.self.MoveDown();
+                }
+                if (Input.GetKey(KeyCode.Keypad8)) {
+                    FlyCam.self.RotateUp();
+                }
+                else if (Input.GetKey(KeyCode.Keypad2)) {
+                    FlyCam.self.RotateDown();
+                }
+                if (Input.GetKey(KeyCode.Keypad4)) {
+                    FlyCam.self.RotateLeft();
+                }
+                else if (Input.GetKey(KeyCode.Keypad6)) {
+                    FlyCam.self.RotateRight();
+                }
+                if (Input.GetKey(KeyCode.Keypad0)) {
+                    FlyCam.self.TiltLeft();
+                }
+                else if (Input.GetKey(KeyCode.KeypadPeriod)) {
+                    FlyCam.self.TiltRight();
+                }
+            }
+            // End FlyCam Controls
+
             // handle power up/down
             if (Input.GetKeyDown(KeyCode.RightBracket) || Input.GetKeyDown(KeyCode.LeftBracket) ||
                 Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Q)) {

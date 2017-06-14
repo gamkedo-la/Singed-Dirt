@@ -147,6 +147,12 @@ public class TurnManager : NetworkBehaviour {
         else if (Input.GetKeyDown(KeyCode.H) && helpUI.activeInHierarchy == true) {
             helpUI.SetActive(false);
         }
+        // FlyCam View Toggle
+        if (Input.GetKeyDown(KeyCode.F) && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))) {
+            if (FlyCam.self.isEnabled == false) FlyCam.self.Enable();
+            else FlyCam.self.Disable();
+        }
+        // End FlyCam View Toggle
     }
 
     int[] GetTurnOrder(Dictionary<int, TankController> tanks) {
