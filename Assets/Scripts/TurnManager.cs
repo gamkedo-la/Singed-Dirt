@@ -624,9 +624,11 @@ public class TurnManager : NetworkBehaviour {
     }
 
     IEnumerator NukeSequence() {
+        SoundManager.instance.FadeOutForNuke();
         // enable Nuke camera
         RpcViewNuke();
         RpcToggleConsole(false);
+        SingedMessages.SendPlayAudioClip("MushboomSound/mushboom_explo");
 
         // find the nuke game object
         var nukeGO = GameObject.FindWithTag("nuke");
@@ -646,7 +648,10 @@ public class TurnManager : NetworkBehaviour {
         while (nukeActive) {
             yield return null;
         }
+        SingedMessages.SendPlayAudioClip("Voiceovers/voice_hi_mushboom_1");
 
+        yield return new WaitForSeconds(4.25f);
+        SoundManager.instance.PlayMusicAfterNuke();
         RpcToggleConsole(true);
     }
 

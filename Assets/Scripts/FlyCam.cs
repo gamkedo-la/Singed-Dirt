@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FlyCam : MonoBehaviour {
 
@@ -11,8 +9,6 @@ public class FlyCam : MonoBehaviour {
     public float moveSpeed = 5f,
         rotateSpeed = 10f;
     public bool isEnabled = false;
-
-    private Vector3 moveVelocity = new Vector3(0f, 0f, 0f);
 
     private void Awake() {
         if (self == null) self = this;

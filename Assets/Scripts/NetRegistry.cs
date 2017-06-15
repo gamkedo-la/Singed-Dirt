@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 /// A singleton registry class providing a cache and access methods to retrieve object prefabs based on
 /// enum identifiers.
 /// </summary>
-public class NetRegistry: NetworkBehaviour {
+public class NetRegistry : NetworkBehaviour {
 
     static Type[] spawnableEnums = new Type[] {
         typeof(ProjectileKind),
@@ -25,17 +25,18 @@ public class NetRegistry: NetworkBehaviour {
         typeof(MenuSoundKind),
         typeof(TankSoundKind),
         typeof(ProjectileSoundKind),
-        typeof(MusicKind)
+        typeof(MusicKind),
+        typeof(MushboomSoundKind)
     };
 
     // singleton instance
     public static NetRegistry singleton;
 
-	/// <summary>
-	/// Client-only method used to register prefab instances into the client scene using the PrefabRegistry
+    /// <summary>
+    /// Client-only method used to register prefab instances into the client scene using the PrefabRegistry
     /// Each prefab in the registry gets added to allow network spawning of those objects
     /// from server to client
-	/// </summary>
+    /// </summary>
     void ClientRegisterPrefabs() {
         foreach (var spawnEnum in spawnableEnums) {
             PrefabRegistry.singleton.LoadEnum(spawnEnum);

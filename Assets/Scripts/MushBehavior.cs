@@ -292,10 +292,6 @@ public class MushBehavior : NetworkBehaviour {
         var terrainManager = terrain.GetComponent<TerrainDeformationManager>();
         if (terrainManager != null) {
             var deformationPrefab = PrefabRegistry.singleton.GetPrefab<DeformationKind>(deformationKind);
-            // FIXME: Different sound effects needed
-            /* SingedMessages.SendPlayAudioClip(
-            PrefabRegistry.GetResourceName<ProjectileSoundKind>(ProjectileSoundKind.projectile_explo));
-            */
             //Debug.Log("CmdExplode instantiate deformation: " + deformationPrefab);
             GameObject deformation = Instantiate(deformationPrefab, gameObject.transform.position, Quaternion.identity) as GameObject;
             NetworkServer.Spawn(deformation);
@@ -323,6 +319,7 @@ public class MushBehavior : NetworkBehaviour {
         groundZero = GameObject.FindWithTag("groundZero");
         Vector3 fixedSpot = new Vector3(100f, 15f, 100f);
         deformationKind = DeformationKind.groundZero;
+        SingedMessages.SendPlayAudioClip("MushboomSound/mushboom_growth");
 
         yield return new WaitForSeconds(1f);
         scaleTo *= 4f;

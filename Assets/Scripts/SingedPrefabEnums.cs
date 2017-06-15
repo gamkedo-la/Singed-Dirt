@@ -60,6 +60,11 @@ public enum ProjectileSoundKind {
     tank_hit
 }
 
+public enum MushboomSoundKind {
+    mushboom_growth = 0,
+    mushboom_explo
+}
+
 public enum ExplosionKind {
     fire = 0,
     virus,
