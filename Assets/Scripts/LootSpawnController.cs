@@ -43,8 +43,8 @@ public class LootSpawnController : NetworkBehaviour {
     };
 
     public int mushboomCount = 0,
-        minMushbooms = 0,
-        maxMushbooms = 3;
+        minMushbooms = 1,
+        maxMushbooms = 5;
 
     ISpawnGenerator locationGenerator;
     float startWidth = 256f;
@@ -150,7 +150,7 @@ public class LootSpawnController : NetworkBehaviour {
             // increment # of active loot boxes that are tracked
             activeLootBoxes++;
         }
-        if (minMushbooms < maxMushbooms) minMushbooms++;
+        if (minMushbooms < maxMushbooms) minMushbooms+= 2;
     }
 
     private ProjectileKind FindAmmoKind() {
