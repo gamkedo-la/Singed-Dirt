@@ -89,6 +89,7 @@ public class TurnManager : NetworkBehaviour {
     public void ServerNukeGameOver() {
         // winning tank is the one that shot the nuke
         var winner = nukeOwner;
+        if (winner == null) winner = activeTank;
         gameOverState = true;
         currentRound = 1;
         numberOfTurns = 0;
@@ -102,7 +103,9 @@ public class TurnManager : NetworkBehaviour {
     }
 
     public void NukeIsReady() {
-        if (isServer) ServerStartNuke(activeTank);
+        if (isServer) {
+            ServerStartNuke(GameObject.FindWithTag("nuke").GetComponent<NukeScript>().theOwner);
+        }
     }
 
     // Use this for initialization
@@ -225,12 +228,12 @@ public class TurnManager : NetworkBehaviour {
         }
     }
 
-    void ServerStartNuke(TankController player) {
+    void ServerStartNuke(TankController theOwner) {
         if (!isServer) return;
         Debug.Log("starting nuke on server");
 
-        // assign nuke owner... this is the game winner
-        nukeOwner = player;
+        // assign winner
+        nukeOwner = theOwner;
 
         // update state
         nukeActive = true;

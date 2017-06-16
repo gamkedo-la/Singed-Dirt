@@ -66,6 +66,7 @@ public class MushBehavior : NetworkBehaviour {
             if (stage > lifeSpan) {
                 mushRigidBody.detectCollisions = false;
                 lifeCycleOver = true;
+                theNuke.theOwner = owner;
                 StartCoroutine(FinishThem());
             }
             else if (stage < TurnManager.singleton.numberOfTurns - startingTurn) {
@@ -170,23 +171,16 @@ public class MushBehavior : NetworkBehaviour {
     }
 
     private void DivvyLoot() {
-        List<int> theTanks = TurnManager.singleton.activeTanks;
-        TankController notTheOwner,
-            theWinner;
-        int whoWins = 1;
+        List<int> theIndices = TurnManager.singleton.activeTanks;
+        Dictionary<int, TankController> theTanks = TurnManager.singleton.tankRegistry;
+        TankController theWinner;
+        int index = UnityEngine.Random.Range(0, theIndices.Count);
 
-        if (theTanks.Count > 1) {
-            if (TurnManager.singleton.tankRegistry[theTanks[0]] == owner) {
-                notTheOwner = TurnManager.singleton.tankRegistry[theTanks[1]];
-            }
-            else notTheOwner = TurnManager.singleton.tankRegistry[theTanks[0]];
-
+        if (theIndices.Count > 1) {
             for (int i = 0; i < lootPool.Count; i++) {
-                if (whoWins > 0) theWinner = owner;
-                else theWinner = notTheOwner;
-
-                if (theWinner == null) break;
-                else {
+                if (index >= theIndices.Count) index = 0;
+                theWinner = theTanks[theIndices[index]];
+                if (theWinner != null) {
                     var inventory = theWinner.GetComponent<ProjectileInventory>();
                     if (inventory != null) inventory.ServerModify(lootPool[i], lootCount[i]);
 
@@ -195,9 +189,8 @@ public class MushBehavior : NetworkBehaviour {
                         theWinner.playerName,
                         lootCount[i],
                         NameMapping.ForProjectile(lootPool[i])));
-
-                    whoWins *= -1;
                 }
+                index++;
             }
         }
         lootPool.Clear();

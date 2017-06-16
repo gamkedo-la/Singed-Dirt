@@ -32,6 +32,7 @@ public class NukeScript : MonoBehaviour {
         frontDebrisRing;
     public float timer;
     public bool blastKill = false;
+    public TankController theOwner;
 
     private bool sequenceStarted = false,
         bloomIn = false,
