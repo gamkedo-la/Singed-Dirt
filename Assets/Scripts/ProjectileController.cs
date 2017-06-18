@@ -52,7 +52,7 @@ public class ProjectileController : NetworkBehaviour {
             // single collision/explosion per projectile
             hasCollided = true;
             // hide model so it doesn't bounce around before getting destroyed
-            transform.FindChild("Model").gameObject.SetActive(false);
+            transform.Find("Model").gameObject.SetActive(false);
 
             switch (myKind) {
                 case ProjectileKind.mushboom:

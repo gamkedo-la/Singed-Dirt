@@ -80,7 +80,7 @@ public class MushBehavior : NetworkBehaviour {
     void OnDeath(GameObject from) {
         if (!isDead) {
             isDead = true;
-            transform.FindChild("Model").gameObject.SetActive(false);
+            transform.Find("Model").gameObject.SetActive(false);
 
             if (isServer) {
                 DealDamage(from);
