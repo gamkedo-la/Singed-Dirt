@@ -621,11 +621,11 @@ MonoBehaviour:
     Pegeas - Pillar shot idea and terrain deformation template\n\nMicky Turner - Select
     and back menu sound effects, tank shot effects\n\nDedrick Sarzaba - UI tank select
     and turn sounds, projectile explosion and tank hit sounds (also hooked up in code),
-    power up/down sounds, tank rotating/aiming sounds\n\nNicholas Polchies - UI health
-    bar and power bar fixes, UI ammo model display fixes\n\nMichael \"Misha\" Fewkes
-    - Gameplay Music\n\nMark Brown - Lobby Music\n\nTim Waskett - Terrain deformation\n\nLou
-    Herard - Radius damage calculation and tank knock back\n\nClick anywhere to close
-    credits."
+    power up/down sounds, tank rotating/aiming sounds, nuke sequence sound effects\n\nNicholas
+    Polchies - UI health bar and power bar fixes, UI ammo model display fixes\n\nMichael
+    \"Misha\" Fewkes - Gameplay Music\n\nMark Brown - Lobby Music\n\nTim Waskett -
+    Terrain deformation\n\nLou Herard - Radius damage calculation and tank knock back\n\nClick
+    anywhere to close credits."
 --- !u!222 &1411483943
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -704,7 +704,7 @@ Prefab:
     - target: {fileID: 224719886853484116, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -290.51575
+      value: -272.9331
       objectReference: {fileID: 0}
     - target: {fileID: 224590781351160464, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
@@ -724,7 +724,7 @@ Prefab:
     - target: {fileID: 224590781351160464, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -290.51575
+      value: -272.9331
       objectReference: {fileID: 0}
     - target: {fileID: 224694051809409968, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
@@ -744,7 +744,7 @@ Prefab:
     - target: {fileID: 224694051809409968, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -290.51575
+      value: -272.9331
       objectReference: {fileID: 0}
     - target: {fileID: 198970573852765418, guid: c76013760e8db471d93c63f2f9c54c5d,
         type: 2}
