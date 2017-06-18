@@ -4332,7 +4332,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &114335024418692956
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5912,7 +5912,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 224521247604832438}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6364,6 +6364,7 @@ MonoBehaviour:
   infoPanel: {fileID: 114469031633521914}
   playerSetupPanel: {fileID: 114716557503228458}
   matchmakerServerPanel: {fileID: 114683820550012548}
+  loadMainMenu: 0
   _isMatchmaking: 0
   isHosting: 1
   doAutoStart: 1
@@ -9870,8 +9871,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 502.28345, y: -50}
-  m_SizeDelta: {x: 1004.5669, y: 100}
+  m_AnchoredPosition: {x: 1170.3019, y: -50}
+  m_SizeDelta: {x: 2340.6038, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224092944362647424
 RectTransform:
@@ -11898,7 +11899,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -60, y: 0}
-  m_SizeDelta: {x: 208.34645, y: 30}
+  m_SizeDelta: {x: 212.93073, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224929723387642542
 RectTransform:
